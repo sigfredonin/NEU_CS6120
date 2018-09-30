@@ -27,8 +27,8 @@ class N_Grams_LM:
     def __init__(self):
         self.files = []                     # Files in corpus
         # ... over whole corpus ...
-        self.sents = defaultdict(int)       # Sentences
-        self.tokens = defaultdict(int)      # Word tokens
+        self.sents = []                     # Sentences
+        self.tokens = []                    # Word tokens
         self.infrequent = defaultdict(int)  # Infrequent tokens -> 'UNK'
         self.tokens_UNK = defaultdict(int)  # Tokens with 'UNK's
         self.grams = defaultdict(int)       # N-grams across corpus
@@ -191,12 +191,12 @@ class N_Grams_LM:
         Report the counts of N-grams found in each file, and in total.
         """
         print("--------------------------------------------------")
-        print("-- Initialize %d-gram model for the files in" % ( n ))
-        print("-- directory %s" % ( dirPath ))
-        print("-- with tokens that occur % or fewer times" % ( TOO_FEW ))
+        print("-- Initialize %d-gram model for the files in directory" % ( n ))
+        print("--   %s" % ( dirPath ))
+        print("-- with tokens that occur %d or fewer times" % ( TOO_FEW ))
         print("-- replaced by 'UNK'")
         print("--------------------------------------------------")
-        self.preprocess_files(self, dirPath, TOO_FEW)
+        self.preprocess_files(dirPath, TOO_FEW)
 
         print("----+- Files -+----+----+----| %d-Grams |-- New --|" % (n))
         for fnx in files:
@@ -354,6 +354,9 @@ if __name__ == '__main__':
     print("First 30 prepped tokens --")
     print(fnx_tokens_prepped[:30])
 
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
     print("-- test preprocess_file_to_tokens() --")
     print("prep tokens for %s" % (fnx))
     fnx_0_sents, fnx_0_tokens = \
@@ -373,6 +376,9 @@ if __name__ == '__main__':
     print("First 30 prepped tokens --")
     print(fnx_0_tokens_prepped[:30])
 
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
     print("-- test add_grams() --")
     fnx_0_4_grams, countNewInAll = model.add_grams(4, fnx_0_tokens)
     fnx_0_4_gram_count = len(fnx_0_4_grams)
@@ -391,11 +397,13 @@ if __name__ == '__main__':
     print("Last 30 4-grams --")
     print(list(fnx_0_4_grams.items())[-30:])
 
-"""
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
     for n in range(1, 7):
         print("-- test set_n_grams_from_files()- %d-grams --" % (n))
         model = N_Grams_LM()
-        model.set_n_grams_from_files(n, pathGutenberg, pathGutenberg+r'/test')
+        model.set_n_grams_from_files(pathGutenberg, n, 5)
         grams = [ (gram, model.grams[gram],) for gram in model.grams]
         print("Sample first 30 %d-grams found --" % (n))
         print(grams[:30])
@@ -404,6 +412,7 @@ if __name__ == '__main__':
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
 
+"""
 if __name__ == '__main__':
 
     from datetime import datetime
