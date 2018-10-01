@@ -12,6 +12,7 @@ import os
 import re
 from collections import defaultdict
 
+pathToyData = r'D:/Documents/NLP/NEU_CS6120/assignment_1/toy'
 pathGutenberg = r'D:/Documents/NLP/NEU_CS6120/assignment_1/gutenberg'
 pathNewsData = r'D:/Documents/NLP/NEU_CS6120/assignment_1/news_data'
 pathImdbData = r'D:/Documents/NLP/NEU_CS6120/assignment_1/imdb_data'
@@ -29,15 +30,15 @@ class N_Grams_LM:
         # ... over whole corpus ...
         self.sents = []                     # Sentences
         self.tokens = []                    # Word tokens
+        self.grams = []                     # N-grams across corpus
         self.infrequent = defaultdict(int)  # Infrequent tokens -> 'UNK'
         self.tokens_UNK = defaultdict(int)  # Tokens with 'UNK's
-        self.grams = defaultdict(int)       # N-grams across corpus
         # ... by file in corpus ...
         self.sents_in_files = {}            # Sentences, by file
         self.tokens_in_files = {}           # Word tokens, by file
+        self.grams_in_files = {}            # N-grams, by file
         self.infrequent_in_files = {}       # Infrequent tokens, by file
         self.tokens_UNK_in_files = {}       # Tokens with 'UNKs', by file
-        self.grams_in_files = {}            # N-grams, by file
 
 # ------------------------------------------------------------------------
 # Preprocessing ---
@@ -165,7 +166,7 @@ class N_Grams_LM:
             the total number of N-grams found new to the corpus
         """
         countNewInAll = 0;
-        grams_in_doc = defaultdict(int)
+        grams_in_doc = []
         if len(tokens) >= n:
             for i in range(len(tokens)-(n-1)):
                 gramList = []
@@ -174,8 +175,8 @@ class N_Grams_LM:
                 gram = tuple(gramList)
                 if gram not in self.grams:
                     countNewInAll += 1
-                grams_in_doc[gram] += 1
-                self.grams[gram] += 1
+                grams_in_doc += [ gram ]
+                self.grams += [ gram ]
         return grams_in_doc, countNewInAll
 
     def set_n_grams_from_files(self, dirPath, n, TOO_FEW):
@@ -252,27 +253,49 @@ class N_Grams_LM:
         Compute alpha-smoothed unigram probabilities
         from a list of words.
         """
+        # Count the grams
         dist_words = nltk.FreqDist(words)    # unigram counts
+        print("+++ Count unique unigrams:", len(dist_words))
+        print("+++ first 30 unigram counts:", list(dist_words.items())[:30])
+        # Get alpha * vocabulary size
+        alpha_vocabulary = alpha * len(dist_words)
+        print("+++ alpha: %f, vocabulary size: %d, alpha * vocabulary size: %f" % \
+            ( alpha, len(set(words)), alpha_vocabulary ))
+        # Calculate probabilities
         pgrams = {}
-        for gram in set(words):
-            count_word = dist_words[gram]
-            pgram = (count_word + alpha) / (len(words) + (alpha * len(words)))
-            pgrams[gram] = pgram
+        for word, count_word in dist_words.items():
+            pgram = (count_word + alpha) / (len(words) + alpha_vocabulary)
+            pgrams[word] = pgram
         return pgrams
 
     def alpha_smoothed_ngrams(self, alpha, words, grams):
         """
         Compute alpha-smoothed N-gram probabilities
-        from a list of words, and a list of N-grams.
+        from a list of words and a list of N-grams.
         """
-        dist_words = nltk.FreqDist(words)    # unigram counts
-        dist_grams = nltk.FreqDist(grams)    # N-gram counts
+        # Extract w[i-N+1:i-2] from each N-gram, accumulate the counts
+        prefixes = []                       # N-gram N-1 prefixes
+        for gram in grams:
+            prefixes += [ gram[0:-1] ]
+        last = grams[-1]                    # Last one, followed by nothing
+        prefixes += [ gram[1:] ]
+        print("--- Last prefix:", prefixes[-1])
+        # Count the grams
+        dist_prefs = nltk.FreqDist(prefixes)    # (N-1)-gram counts
+        dist_grams = nltk.FreqDist(grams)       # N-gram counts
+        print("+++ Count unique prefix-N-1-grams:", len(dist_prefs))
+        print("+++ first 30 prefix counts:", list(dist_prefs.items())[:30])
+        print("+++ Count unique N-grams:", len(dist_grams))
+        print("+++ first 30 N-gram counts:", list(dist_grams.items())[:30])
+        # Get alpha * vocabulary size
+        alpha_vocabulary = alpha * len(set(words))
+        print("+++ alpha: %f, vocabulary size: %d, alpha * vocabulary size: %f" % \
+            ( alpha, len(set(words)), alpha_vocabulary ))
+        # Calculate probabilities
         pgrams = {}
-        for iGram in range(len(grams)):
-            gram = grams[iGram]
-            count_gram = dist_grams[gram]
-            count_word_0 = dist_words[gram[0]]
-            pgram = (count_gram + alpha) / (count_word_0 + (alpha * len(words)))
+        for gram, count_gram in dist_grams.items():
+            count_pref = dist_prefs[ gram[0:-1] ]
+            pgram = (count_gram + alpha) / (count_pref + alpha_vocabulary)
             pgrams[gram] = pgram
         return pgrams
 
@@ -333,15 +356,16 @@ if __name__ == '__main__':
 
     model = N_Grams_LM()
     TOO_FEW = 5
+    testPath = pathToyData
 
     print("-- test infrequent_to_UNK() --")
-    files = os.listdir(pathGutenberg)
+    files = os.listdir(testPath)
     fnx = files[0]
-    with open(pathGutenberg + r'/' + fnx) as f:
+    with open(testPath + r'/' + fnx) as f:
         fnx_data = f.read()
     fnx_data_nnl = re.sub(r'\n', ' ', fnx_data)
     fnx_data_sb = re.sub(r"( )+", ' ', fnx_data_nnl)
-    fnx_sents = nltk.corpus.gutenberg.sents(fnx)
+#    fnx_sents = nltk.corpus.gutenberg.sents(fnx)
     fnx_sents_nltk = nltk.sent_tokenize(fnx_data_sb)
     fnx_tokens = model.words_from_sents(fnx_sents_nltk)
     fnx_tokens_nltk = nltk.word_tokenize(fnx_data_sb)
@@ -360,12 +384,12 @@ if __name__ == '__main__':
     print("-- test preprocess_file_to_tokens() --")
     print("prep tokens for %s" % (fnx))
     fnx_0_sents, fnx_0_tokens = \
-        model.preprocess_file_to_tokens(pathGutenberg, fnx)
+        model.preprocess_file_to_tokens(testPath, fnx)
     fnx_0_unk = model.get_infrequent_tokens(fnx_0_tokens, TOO_FEW)
     fnx_0_tokens_prepped = model.infrequent_to_UNK(fnx_0_tokens, fnx_0_unk)
     print("Count sentences:", len(fnx_0_sents))
-    print("First 5 sentences --")
-    print(fnx_0_sents[:5])
+    print("First 30 sentences --")
+    print(fnx_0_sents[:30])
     print("Count of word tokens:", len(fnx_0_tokens))
     print("First 30 word tokens --")
     print(fnx_0_tokens[:30])
@@ -380,12 +404,14 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     print("-- test add_grams() --")
-    fnx_0_4_grams, countNewInAll = model.add_grams(4, fnx_0_tokens)
-    fnx_0_4_gram_count = len(fnx_0_4_grams)
-    fnx_0_4_repeats = [ (gram, fnx_0_4_grams[gram],) \
-        for gram in fnx_0_4_grams if fnx_0_4_grams[gram] > 1 ]
+    fnx_0_4_grams, countNewInAll = model.add_grams(4, fnx_0_tokens_prepped)
+    fnx_0_4_gram_counts = nltk.FreqDist(fnx_0_4_grams)
+    fnx_0_4_gram_count = len(fnx_0_4_gram_counts)
+    fnx_0_4_repeats = [ (gram, fnx_0_4_gram_counts[gram],) \
+        for gram in fnx_0_4_gram_counts if fnx_0_4_gram_counts[gram] > 1 ]
     fnx_0_4_repeats_total = sum([ count for gram, count in fnx_0_4_repeats ])
-    fnx_0_4_grams_total = sum([count for gram, count in fnx_0_4_grams.items()])
+    fnx_0_4_grams_total = \
+        sum([count for gram, count in fnx_0_4_gram_counts.items()])
     print("%-30s%10d%10d" % (fnx, fnx_0_4_gram_count, countNewInAll) )
     print("Count of 4-grams used more than once:", len(fnx_0_4_repeats))
     print("Total instances of repeated 4-grams:", fnx_0_4_repeats_total)
@@ -393,9 +419,47 @@ if __name__ == '__main__':
     print("Sample 30 repeated 4-grams ---")
     print(fnx_0_4_repeats[:30])
     print("First 30 4-grams --")
-    print(list(fnx_0_4_grams.items())[:30])
+    print(fnx_0_4_grams[:30])
     print("Last 30 4-grams --")
-    print(list(fnx_0_4_grams.items())[-30:])
+    print(fnx_0_4_grams[-30:])
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("-- compute uni-, 2-, 3-, 4-gram probabilities over corpus --")
+    print()
+
+    print(" ... unigrams --")
+    fnx_0_1_pGrams = model.alpha_smoothed_unigrams(0.1, \
+        fnx_0_tokens_prepped)
+    print("Count unigram probabilities:", len(fnx_0_1_pGrams))
+    print("First 30 unigram probabilities")
+    print(list(fnx_0_1_pGrams.items())[:30])
+
+    print(" ... 2-grams --")
+    model_2 = N_Grams_LM()
+    fnx_0_2_grams, countNewInAll = model_2.add_grams(2, fnx_0_tokens_prepped)
+    fnx_0_2_pGrams = model_2.alpha_smoothed_ngrams(0.1, \
+        fnx_0_tokens_prepped, fnx_0_2_grams)
+    print("Count 2-gram probablilities:", len(fnx_0_2_pGrams))
+    print("First 30 2-Gram probabilities")
+    print(list(fnx_0_2_pGrams.items())[:30])
+
+    print(" ... 3-grams --")
+    model_3 = N_Grams_LM()
+    fnx_0_3_grams, countNewInAll = model_3.add_grams(3, fnx_0_tokens_prepped)
+    fnx_0_3_pGrams = model_3.alpha_smoothed_ngrams(0.1, \
+        fnx_0_tokens_prepped, fnx_0_3_grams)
+    print("Count 3-gram probablilities:", len(fnx_0_3_pGrams))
+    print("First 30 3-Gram probabilities")
+    print(list(fnx_0_3_pGrams.items())[:30])
+
+    print(" ... 4-grams --")
+    fnx_0_4_pGrams = model.alpha_smoothed_ngrams(0.1, \
+        fnx_0_tokens_prepped, fnx_0_4_grams)
+    print("Count 4-gram probablilities:", len(fnx_0_4_pGrams))
+    print("First 30 4-Gram probabilities")
+    print(list(fnx_0_4_pGrams.items())[:30])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
@@ -403,12 +467,11 @@ if __name__ == '__main__':
     for n in range(1, 7):
         print("-- test set_n_grams_from_files()- %d-grams --" % (n))
         model = N_Grams_LM()
-        model.set_n_grams_from_files(pathGutenberg, n, 5)
-        grams = [ (gram, model.grams[gram],) for gram in model.grams]
+        model.set_n_grams_from_files(testPath, n, 5)
         print("Sample first 30 %d-grams found --" % (n))
-        print(grams[:30])
+        print(model.grams[:30])
         print("Sample last 30 %d-grams found --" % (n))
-        print(grams[-30:])
+        print(model.grams[-30:])
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
 
