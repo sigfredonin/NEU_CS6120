@@ -25,12 +25,11 @@ class N_Grams_LM:
     Can generate random sentences.
     """
 
-    def __init__(self):
-        self.files = []                     # Files in corpus
+    def reset(self):
         # ... over whole corpus ...
         self.sents = []                     # Sentences
         self.tokens = []                    # Word tokens
-        self.grams = []                     # N-grams across corpus
+        self.grams = defaultdict(int)       # N-grams across corpus
         self.infrequent = defaultdict(int)  # Infrequent tokens -> 'UNK'
         self.tokens_UNK = defaultdict(int)  # Tokens with 'UNK's
         # ... by file in corpus ...
@@ -39,6 +38,10 @@ class N_Grams_LM:
         self.grams_in_files = {}            # N-grams, by file
         self.infrequent_in_files = {}       # Infrequent tokens, by file
         self.tokens_UNK_in_files = {}       # Tokens with 'UNKs', by file
+
+    def __init__(self):
+        self.files = []                     # Files in corpus
+        self.reset()
 
 # ------------------------------------------------------------------------
 # Preprocessing ---
@@ -132,11 +135,12 @@ class N_Grams_LM:
         For each file in the corpus:
         1. Replace the infrequent tokens with 'UNK'
         """
-        self.files = os.listdir(dirPath)
         # Collect sentences and word tokens
         # per file and for the whole corpus.
         # Collect infrequent tokens per file
         # (mainly for collecting statistics).
+        self.files = os.listdir(dirPath)
+        self.reset()
         for fnx in self.files:
             fnxPath = os.path.join(dirPath, fnx)
             if fnx != 'README' and os.path.isfile(fnxPath):
@@ -152,7 +156,7 @@ class N_Grams_LM:
         self.infrequent = self.get_infrequent_tokens(self.tokens, TOO_FEW)
         self.tokens_UNK = self.infrequent_to_UNK(self.tokens, self.infrequent)
         # Replace the infrequent tokens with 'UNK'
-        for fnx in files:
+        for fnx in self.files:
             fnxPath = os.path.join(dirPath, fnx)
             if fnx != 'README' and os.path.isfile(fnxPath):
                 fnx_tokens = self.tokens_in_files[fnx]
@@ -170,11 +174,11 @@ class N_Grams_LM:
         Add each N-gram found to the document N-grams dictionary.
         Add new N-grams found to the corpus N-grams dictionary.
         Return
-            the N-grams found in the document
+            the N-grams and their counts found in the document
             the total number of N-grams found new to the corpus
         """
         countNewInAll = 0;
-        grams_in_doc = []
+        grams_in_doc = defaultdict(int)
         if len(tokens) >= n:
             for i in range(len(tokens)-(n-1)):
                 gramList = []
@@ -183,8 +187,8 @@ class N_Grams_LM:
                 gram = tuple(gramList)
                 if gram not in self.grams:
                     countNewInAll += 1
-                grams_in_doc += [ gram ]
-                self.grams += [ gram ]
+                grams_in_doc[gram] += 1
+                self.grams[gram] += 1
         return grams_in_doc, countNewInAll
 
     def set_n_grams_from_files(self, dirPath, n, TOO_FEW, SENT_SEPS):
@@ -286,8 +290,7 @@ class N_Grams_LM:
         prefixes = []                       # N-gram N-1 prefixes
         for gram in grams:
             prefixes += [ gram[0:-1] ]
-        last = grams[-1]                    # Last one, followed by nothing
-        prefixes += [ gram[1:] ]
+        prefixes += [ gram[1:] ]            # Last one, followed by nothing
         print("--- Last prefix:", prefixes[-1])
         # Count the grams
         dist_prefs = nltk.FreqDist(prefixes)    # (N-1)-gram counts
@@ -418,8 +421,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     print("-- test add_grams() --")
-    fnx_0_4_grams, countNewInAll = model.add_grams(4, fnx_0_tokens_prepped)
-    fnx_0_4_gram_counts = nltk.FreqDist(fnx_0_4_grams)
+    fnx_0_4_gram_counts, countNewInAll = model.add_grams(4, fnx_0_tokens_prepped)
     fnx_0_4_gram_count = len(fnx_0_4_gram_counts)
     fnx_0_4_repeats = [ (gram, fnx_0_4_gram_counts[gram],) \
         for gram in fnx_0_4_gram_counts if fnx_0_4_gram_counts[gram] > 1 ]
@@ -433,9 +435,9 @@ if __name__ == '__main__':
     print("Sample 30 repeated 4-grams ---")
     print(fnx_0_4_repeats[:30])
     print("First 30 4-grams --")
-    print(fnx_0_4_grams[:30])
+    print(list(fnx_0_4_gram_counts.items())[:30])
     print("Last 30 4-grams --")
-    print(fnx_0_4_grams[-30:])
+    print(list(fnx_0_4_gram_counts.items())[-30:])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
@@ -471,27 +473,29 @@ if __name__ == '__main__':
 
     print(" ... 4-grams --")
     model_4 = N_Grams_LM()
+    fnx_0_4_grams, countNewInAll = model_4.add_grams(4, fnx_0_tokens_prepped)
     fnx_0_4_pGrams = model_4.alpha_smoothed_ngrams(0.1, \
         fnx_0_tokens_prepped, fnx_0_4_grams)
     print("Count 4-gram probabilities:", len(fnx_0_4_pGrams))
     print("First 30 4-Gram probabilities")
     print(list(fnx_0_4_pGrams.items())[:30])
 
+if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
     testPath = pathGutenberg
+    model_n = N_Grams_LM()
+    SENT_SEPS = True        # Use <s> </s> delimiters
+    if testPath == pathGutenberg:
+        SENT_SEPS = False   # Don't use <s> </s> delimiters
     for n in range(1, 7):
         print("-- test set_n_grams_from_files()- %d-grams --" % (n))
-        model_n = N_Grams_LM()
-        SENT_SEPS = True        # Use <s> </s> delimiters
-        if testPath == pathGutenberg:
-            SENT_SEPS = False   # Don't use <s> </s> delimiters
         model_n.set_n_grams_from_files(testPath, n, 5, SENT_SEPS)
         print("Sample first 30 %d-grams found --" % (n))
-        print(model_n.grams[:30])
+        print(list(model_n.grams.items())[:30])
         print("Sample last 30 %d-grams found --" % (n))
-        print(model_n.grams[-30:])
+        print(list(model_n.grams.items())[-30:])
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
 
