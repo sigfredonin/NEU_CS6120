@@ -90,13 +90,15 @@ class N_Grams_LM:
                 tokens_prepped[i] = 'UNK'
         return tokens_prepped
 
-    def preprocess_file_to_tokens(self, dirPath, fnx):
+    def preprocess_file_to_tokens(self, dirPath, fnx, SENT_SEPS):
         """
         Preprocess a file ...
         1. remove blank lines
         2. change newline characters to blanks
         3. change multiple blanks to single blanks
-        4. tokenize the file (nltk word tokenize)
+        4. tokenize the file to sentences (nltk sent tokenize)
+        5. tokenize the sentences to words,
+           with <s> </s>, if SENTS_SEPS set True
         """
         fnxPath = os.path.join(dirPath, fnx)
         with open(fnxPath) as f:
@@ -105,15 +107,20 @@ class N_Grams_LM:
         fnx_data_sb = re.sub(r"( )+", ' ', fnx_data_nnl)
 
         fnx_sents = nltk.sent_tokenize(fnx_data_sb)
-        fnx_words = self.words_from_sents(fnx_sents)
+
+        if SENT_SEPS:
+            fnx_words = self.words_from_sents(fnx_sents)
+        else:
+            fnx_words = nltk.word_tokenize(fnx_data_sb)
         
         return fnx_sents, fnx_words
 
-    def preprocess_files(self, dirPath, TOO_FEW):
+    def preprocess_files(self, dirPath, TOO_FEW, SENT_SEPS):
         """
         PHASE I -
         For each file in the corpus:
-        1. Preprocess to word tokens, with <s> and </s> marking sentences'
+        1. Preprocess to word tokens,
+           with <s> and </s> marking sentences if SENT_SEPS set True,
            blank lines removed, newlines converted to blanks, and
            multiple blanks collapsed to single blanks.
         2. Collect infrequent tokens, to compare with tokens
@@ -130,10 +137,11 @@ class N_Grams_LM:
         # per file and for the whole corpus.
         # Collect infrequent tokens per file
         # (mainly for collecting statistics).
-        for fnx in files:
+        for fnx in self.files:
             fnxPath = os.path.join(dirPath, fnx)
             if fnx != 'README' and os.path.isfile(fnxPath):
-                sents, tokens = self.preprocess_file_to_tokens(dirPath, fnx)
+                sents, tokens = \
+                    self.preprocess_file_to_tokens(dirPath, fnx, SENT_SEPS)
                 infrequent = self.get_infrequent_tokens(tokens, TOO_FEW)
                 self.sents_in_files[fnx] = sents
                 self.tokens_in_files[fnx] = tokens
@@ -179,12 +187,13 @@ class N_Grams_LM:
                 self.grams += [ gram ]
         return grams_in_doc, countNewInAll
 
-    def set_n_grams_from_files(self, dirPath, n, TOO_FEW):
+    def set_n_grams_from_files(self, dirPath, n, TOO_FEW, SENT_SEPS):
         """
         Process all the files in the given directory
         (except the README) to set the N-grams in the instance.
         For each file:
-          Preprocess to tokens, with <s> and </s> delimiting sentences,
+          Preprocess to tokens,
+              with <s> and </s> delimiting sentences, if SENT_SEPS set True
           and infrequent tokens replaced by 'UNK'.
           Add the N-grams and a count for each N-gram
           to a dictionary of N-grams for the file,
@@ -197,10 +206,10 @@ class N_Grams_LM:
         print("-- with tokens that occur %d or fewer times" % ( TOO_FEW ))
         print("-- replaced by 'UNK'")
         print("--------------------------------------------------")
-        self.preprocess_files(dirPath, TOO_FEW)
+        self.preprocess_files(dirPath, TOO_FEW, SENT_SEPS)
 
         print("----+- Files -+----+----+----| %d-Grams |-- New --|" % (n))
-        for fnx in files:
+        for fnx in self.files:
             fnxPath = os.path.join(dirPath, fnx)
             if fnx != 'README' and os.path.isfile(fnxPath):
                 fnx_tokens = self.tokens_in_files[fnx]
@@ -365,7 +374,8 @@ if __name__ == '__main__':
         fnx_data = f.read()
     fnx_data_nnl = re.sub(r'\n', ' ', fnx_data)
     fnx_data_sb = re.sub(r"( )+", ' ', fnx_data_nnl)
-#    fnx_sents = nltk.corpus.gutenberg.sents(fnx)
+    if testPath == pathGutenberg:
+        fnx_sents_gut = nltk.corpus.gutenberg.sents(fnx)
     fnx_sents_nltk = nltk.sent_tokenize(fnx_data_sb)
     fnx_tokens = model.words_from_sents(fnx_sents_nltk)
     fnx_tokens_nltk = nltk.word_tokenize(fnx_data_sb)
@@ -382,9 +392,13 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     print("-- test preprocess_file_to_tokens() --")
+    
     print("prep tokens for %s" % (fnx))
+    SENT_SEPS = True        # Use <s> </s> delimiters
+    if testPath == pathGutenberg:
+        SENT_SEPS = False   # Don't use <s> </s> delimiters
     fnx_0_sents, fnx_0_tokens = \
-        model.preprocess_file_to_tokens(testPath, fnx)
+        model.preprocess_file_to_tokens(testPath, fnx, SENT_SEPS)
     fnx_0_unk = model.get_infrequent_tokens(fnx_0_tokens, TOO_FEW)
     fnx_0_tokens_prepped = model.infrequent_to_UNK(fnx_0_tokens, fnx_0_unk)
     print("Count sentences:", len(fnx_0_sents))
@@ -430,7 +444,8 @@ if __name__ == '__main__':
     print()
 
     print(" ... unigrams --")
-    fnx_0_1_pGrams = model.alpha_smoothed_unigrams(0.1, \
+    model_1 = N_Grams_LM()
+    fnx_0_1_pGrams = model_1.alpha_smoothed_unigrams(0.1, \
         fnx_0_tokens_prepped)
     print("Count unigram probabilities:", len(fnx_0_1_pGrams))
     print("First 30 unigram probabilities")
@@ -441,7 +456,7 @@ if __name__ == '__main__':
     fnx_0_2_grams, countNewInAll = model_2.add_grams(2, fnx_0_tokens_prepped)
     fnx_0_2_pGrams = model_2.alpha_smoothed_ngrams(0.1, \
         fnx_0_tokens_prepped, fnx_0_2_grams)
-    print("Count 2-gram probablilities:", len(fnx_0_2_pGrams))
+    print("Count 2-gram probabilities:", len(fnx_0_2_pGrams))
     print("First 30 2-Gram probabilities")
     print(list(fnx_0_2_pGrams.items())[:30])
 
@@ -450,28 +465,33 @@ if __name__ == '__main__':
     fnx_0_3_grams, countNewInAll = model_3.add_grams(3, fnx_0_tokens_prepped)
     fnx_0_3_pGrams = model_3.alpha_smoothed_ngrams(0.1, \
         fnx_0_tokens_prepped, fnx_0_3_grams)
-    print("Count 3-gram probablilities:", len(fnx_0_3_pGrams))
+    print("Count 3-gram probabilities:", len(fnx_0_3_pGrams))
     print("First 30 3-Gram probabilities")
     print(list(fnx_0_3_pGrams.items())[:30])
 
     print(" ... 4-grams --")
-    fnx_0_4_pGrams = model.alpha_smoothed_ngrams(0.1, \
+    model_4 = N_Grams_LM()
+    fnx_0_4_pGrams = model_4.alpha_smoothed_ngrams(0.1, \
         fnx_0_tokens_prepped, fnx_0_4_grams)
-    print("Count 4-gram probablilities:", len(fnx_0_4_pGrams))
+    print("Count 4-gram probabilities:", len(fnx_0_4_pGrams))
     print("First 30 4-Gram probabilities")
     print(list(fnx_0_4_pGrams.items())[:30])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
+    testPath = pathGutenberg
     for n in range(1, 7):
         print("-- test set_n_grams_from_files()- %d-grams --" % (n))
-        model = N_Grams_LM()
-        model.set_n_grams_from_files(testPath, n, 5)
+        model_n = N_Grams_LM()
+        SENT_SEPS = True        # Use <s> </s> delimiters
+        if testPath == pathGutenberg:
+            SENT_SEPS = False   # Don't use <s> </s> delimiters
+        model_n.set_n_grams_from_files(testPath, n, 5, SENT_SEPS)
         print("Sample first 30 %d-grams found --" % (n))
-        print(model.grams[:30])
+        print(model_n.grams[:30])
         print("Sample last 30 %d-grams found --" % (n))
-        print(model.grams[-30:])
+        print(model_n.grams[-30:])
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
 
