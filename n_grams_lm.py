@@ -8,6 +8,7 @@ Sig Nin
 21 Sep 2018
 """
 import nltk
+import numpy as np
 import os
 import re
 from collections import defaultdict
@@ -191,7 +192,8 @@ class N_Grams_LM:
                 self.grams[gram] += 1
         return grams_in_doc, countNewInAll
 
-    def set_n_grams_from_files(self, dirPath, n, TOO_FEW, SENT_SEPS):
+    def set_n_grams_from_files(self, dirPath, n, TOO_FEW,
+                               SENT_SEPS=True, USE_UNK=True):
         """
         Process all the files in the given directory
         (except the README) to set the N-grams in the instance.
@@ -216,7 +218,10 @@ class N_Grams_LM:
         for fnx in self.files:
             fnxPath = os.path.join(dirPath, fnx)
             if fnx != 'README' and os.path.isfile(fnxPath):
-                fnx_tokens = self.tokens_in_files[fnx]
+                if USE_UNK:
+                    fnx_tokens = self.tokens_UNK_in_files[fnx]
+                else:
+                    fnx_tokens = self.tokens_in_files[fnx]
                 fnx_grams, countNew = self.add_grams(n, fnx_tokens)
                 self.grams_in_files[fnx] = fnx_grams
                 print("%-30s%10d%10d" % (fnx, len(fnx_grams), countNew) )
@@ -284,29 +289,34 @@ class N_Grams_LM:
     def alpha_smoothed_ngrams(self, alpha, words, grams):
         """
         Compute alpha-smoothed N-gram probabilities
-        from a list of words and a list of N-grams.
+        from a list of words,
+        and a dictionary of N-grams and their counts.
+        NOTE: The fix for the last prefix relies on dictionaries
+              keeping the keys in the order they were added, so
+              the last N-gram updated in grams is last.  This works
+              in Python 3.6, and is guaranteed in Python 3.7+,
+              but does not work in earlier Python releases.
+              Should probably fix this.
         """
         # Extract w[i-N+1:i-2] from each N-gram, accumulate the counts
-        prefixes = []                       # N-gram N-1 prefixes
-        for gram in grams:
-            prefixes += [ gram[0:-1] ]
-        prefixes += [ gram[1:] ]            # Last one, followed by nothing
-        print("--- Last prefix:", prefixes[-1])
-        # Count the grams
-        dist_prefs = nltk.FreqDist(prefixes)    # (N-1)-gram counts
-        dist_grams = nltk.FreqDist(grams)       # N-gram counts
-        print("+++ Count unique prefix-N-1-grams:", len(dist_prefs))
-        print("+++ first 30 prefix counts:", list(dist_prefs.items())[:30])
-        print("+++ Count unique N-grams:", len(dist_grams))
-        print("+++ first 30 N-gram counts:", list(dist_grams.items())[:30])
+        prefixes = defaultdict(int)         # N-gram N-1 prefixes
+        for gram, count in grams.items():
+            prefixes [ gram[0:-1] ] += count
+        prefixes [ gram[1:] ] += 1          # Last one, followed by nothing
+        print("--- Last N-gram:", list(grams.items())[-1], gram)
+        print("--- Last prefix:", list(prefixes.items())[-1])
+        print("+++ Count unique prefix-N-1-grams:", len(prefixes))
+        print("+++ first 30 prefix counts:", list(prefixes.items())[:30])
+        print("+++ Count unique N-grams:", len(grams))
+        print("+++ first 30 N-gram counts:", list(grams.items())[:30])
         # Get alpha * vocabulary size
         alpha_vocabulary = alpha * len(set(words))
         print("+++ alpha: %f, vocabulary size: %d, alpha * vocabulary size: %f" % \
             ( alpha, len(set(words)), alpha_vocabulary ))
         # Calculate probabilities
         pgrams = {}
-        for gram, count_gram in dist_grams.items():
-            count_pref = dist_prefs[ gram[0:-1] ]
+        for gram, count_gram in grams.items():
+            count_pref = prefixes[ gram[0:-1] ]
             pgram = (count_gram + alpha) / (count_pref + alpha_vocabulary)
             pgrams[gram] = pgram
         return pgrams
@@ -356,6 +366,21 @@ class N_Grams_LM:
         return utcps[last]
 
 # ------------------------------------------------------------------------
+# Perplexity ---
+# ------------------------------------------------------------------------
+
+    def perplexity(self, probabilities):
+        """
+        Compute perplexity for a list of N-gram probabilities,
+            PP = [ Prod ( 1/P(w_i | w_i-1_i-N+1) ] ^ (1/N)
+        where N is the number of N-grams.
+        """
+        n = len(probabilities)
+        pv = np.array(probabilities)
+        pp = np.prod((1 / pv) ** (n ** -1))
+        return pp
+
+# ------------------------------------------------------------------------
 # Tests ---
 # ------------------------------------------------------------------------
 
@@ -397,11 +422,11 @@ if __name__ == '__main__':
     print("-- test preprocess_file_to_tokens() --")
     
     print("prep tokens for %s" % (fnx))
-    SENT_SEPS = True        # Use <s> </s> delimiters
+    USE_SENT_SEPS = True        # Use <s> </s> delimiters
     if testPath == pathGutenberg:
-        SENT_SEPS = False   # Don't use <s> </s> delimiters
+        USE_SENT_SEPS = False   # Don't use <s> </s> delimiters
     fnx_0_sents, fnx_0_tokens = \
-        model.preprocess_file_to_tokens(testPath, fnx, SENT_SEPS)
+        model.preprocess_file_to_tokens(testPath, fnx, USE_SENT_SEPS)
     fnx_0_unk = model.get_infrequent_tokens(fnx_0_tokens, TOO_FEW)
     fnx_0_tokens_prepped = model.infrequent_to_UNK(fnx_0_tokens, fnx_0_unk)
     print("Count sentences:", len(fnx_0_sents))
@@ -418,6 +443,7 @@ if __name__ == '__main__':
     print(fnx_0_tokens_prepped[:30])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print()
     print("====" + nowStr + "====")
 
     print("-- test add_grams() --")
@@ -440,6 +466,7 @@ if __name__ == '__main__':
     print(list(fnx_0_4_gram_counts.items())[-30:])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print()
     print("====" + nowStr + "====")
 
     print("-- compute uni-, 2-, 3-, 4-gram probabilities over corpus --")
@@ -449,90 +476,61 @@ if __name__ == '__main__':
     model_1 = N_Grams_LM()
     fnx_0_1_pGrams = model_1.alpha_smoothed_unigrams(0.1, \
         fnx_0_tokens_prepped)
+    fnx_0_1_perplexity = model_1.perplexity(list(fnx_0_1_pGrams.values()))
     print("Count unigram probabilities:", len(fnx_0_1_pGrams))
     print("First 30 unigram probabilities")
     print(list(fnx_0_1_pGrams.items())[:30])
+    print("Perplexity:", fnx_0_1_perplexity)
 
     print(" ... 2-grams --")
     model_2 = N_Grams_LM()
     fnx_0_2_grams, countNewInAll = model_2.add_grams(2, fnx_0_tokens_prepped)
     fnx_0_2_pGrams = model_2.alpha_smoothed_ngrams(0.1, \
         fnx_0_tokens_prepped, fnx_0_2_grams)
+    fnx_0_2_perplexity = model_2.perplexity(list(fnx_0_2_pGrams.values()))
     print("Count 2-gram probabilities:", len(fnx_0_2_pGrams))
     print("First 30 2-Gram probabilities")
     print(list(fnx_0_2_pGrams.items())[:30])
+    print("Perplexity:", fnx_0_2_perplexity)
 
     print(" ... 3-grams --")
     model_3 = N_Grams_LM()
     fnx_0_3_grams, countNewInAll = model_3.add_grams(3, fnx_0_tokens_prepped)
     fnx_0_3_pGrams = model_3.alpha_smoothed_ngrams(0.1, \
         fnx_0_tokens_prepped, fnx_0_3_grams)
+    fnx_0_3_perplexity = model_3.perplexity(list(fnx_0_3_pGrams.values()))
     print("Count 3-gram probabilities:", len(fnx_0_3_pGrams))
     print("First 30 3-Gram probabilities")
     print(list(fnx_0_3_pGrams.items())[:30])
+    print("Perplexity:", fnx_0_3_perplexity)
 
     print(" ... 4-grams --")
     model_4 = N_Grams_LM()
     fnx_0_4_grams, countNewInAll = model_4.add_grams(4, fnx_0_tokens_prepped)
     fnx_0_4_pGrams = model_4.alpha_smoothed_ngrams(0.1, \
         fnx_0_tokens_prepped, fnx_0_4_grams)
+    fnx_0_4_perplexity = model_4.perplexity(list(fnx_0_3_pGrams.values()))
     print("Count 4-gram probabilities:", len(fnx_0_4_pGrams))
     print("First 30 4-Gram probabilities")
     print(list(fnx_0_4_pGrams.items())[:30])
+    print("Perplexity:", fnx_0_4_perplexity)
 
-if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print()
     print("====" + nowStr + "====")
 
-    testPath = pathGutenberg
     model_n = N_Grams_LM()
-    SENT_SEPS = True        # Use <s> </s> delimiters
+    USE_SENT_SEPS = True        # Use <s> </s> delimiters
     if testPath == pathGutenberg:
-        SENT_SEPS = False   # Don't use <s> </s> delimiters
+        USE_SENT_SEPS = False   # Don't use <s> </s> delimiters
     for n in range(1, 7):
         print("-- test set_n_grams_from_files()- %d-grams --" % (n))
-        model_n.set_n_grams_from_files(testPath, n, 5, SENT_SEPS)
+        model_n.set_n_grams_from_files(testPath, n, 5, \
+            SENT_SEPS=USE_SENT_SEPS, USE_UNK=True)
         print("Sample first 30 %d-grams found --" % (n))
         print(list(model_n.grams.items())[:30])
         print("Sample last 30 %d-grams found --" % (n))
         print(list(model_n.grams.items())[-30:])
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+        print()
         print("====" + nowStr + "====")
-
-"""
-if __name__ == '__main__':
-
-    from datetime import datetime
-
-    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-    print("====" + nowStr + "====")
-
-    bar = "|" + 5 * "----+----|"
-    print(bar)
-    print("-- 3.2 Perplexity --")
-    print(bar)
-
-    print("-- building blocks --")
-    pmodel = N_Grams_LM()
-    pfiles = os.listdir(pathNewsData)
-    pfnx = pfiles[0]
-    pfnxPath = os.path.join(pathNewsData, pfnx)
-    with open(pfnxPath) as f:
-        pfnx_data = f.read()
-    pfnx_data_nnl = re.sub(r'\n', ' ', pfnx_data)
-    pfnx_data_sb = re.sub(r"( )+", ' ', pfnx_data_nnl)
-    pfnx_sents = nltk.sent_tokenize(pfnx_data_sb)
-    pfnx_words = nltk.word_tokenize(pfnx_data_sb)
-    pfnx_word_tokens = pmodel.words_from_sents(pfnx_sents)
-    pfnx_unk, pfnx_tokens_prepped = pmodel.infrequent_to_UNK(pfnx_word_tokens)
-    print("Count UNK tokens:", len(pfnx_unk))
-    print("First 30 UNK tokens --")
-    print(pfnx_unk[:30])
-    print("Count prepped tokens:", len(pfnx_tokens_prepped))
-    print("First 30 prepped tokens --")
-    print(pfnx_tokens_prepped[:30])
-    
-
-    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-    print("====" + nowStr + "====")
-"""
