@@ -1,0 +1,50 @@
+>>> 
+============== RESTART: D:\Documents\NLP\alice\preprocess__.py ==============
+====October 04, 2018 11:59:01 PM====
+austen-emma.txt
+austen-persuasion.txt
+austen-sense.txt
+bible-kjv.txt
+blake-poems.txt
+bryant-stories.txt
+burgess-busterbrown.txt
+carroll-alice.txt
+chesterton-ball.txt
+chesterton-brown.txt
+chesterton-thursday.txt
+edgeworth-parents.txt
+melville-moby_dick.txt
+milton-paradise.txt
+shakespeare-caesar.txt
+shakespeare-hamlet.txt
+shakespeare-macbeth.txt
+whitman-leaves.txt
+====October 04, 2018 11:59:02 PM====
+len str: 11744888
+sample str: [Emma by Jane Austen 1816]
+
+VOLUME I
+
+CHAPTER I
+
+
+
+====October 04, 2018 11:59:02 PM====
+len no_new_line: 11744888
+sample no_new_line: [Emma by Jane Austen 1816]  VOLUME I  CHAPTER I   
+====October 04, 2018 11:59:03 PM====
+len no_dup_spaces: 11622514
+sample no_dup_spaces: [Emma by Jane Austen 1816] VOLUME I CHAPTER I Emma
+====October 05, 2018 12:00:53 AM====
+len tokens: 2539282
+sample tokens: ['[', 'emma', 'by', 'jane', 'austen', '1816', ']', 'volume', 'i', 'chapter', 'i', 'emma', 'woodhouse', ',', 'handsome', ',', 'clever', ',', 'and', 'rich', ',', 'with', 'a', 'comfortable', 'home', 'and', 'happy', 'disposition', ',', 'seemed']
+====October 05, 2018 12:00:55 AM====
+len unknowns 37331
+sample unknowns ['over-woody', 'helpes', 'tugging', '_invite_', 'broadening', 'birthdome', 'bethezel', '_know_', 'gittites', 'tourist', 'substantive', 'gederoth', 'dipping', 'realism', 'kossabone', 'raddai', 'intill', 'wreck-place', 'xxxii', 'buffoon', 'reueller', 'quartered', 'burampooter', 'pine-wood', 'thicken', 'cleveland.', 'festooning', 'entrusted', 'fac-similes', 'ballast']
+====October 05, 2018 12:00:57 AM====
+len prepped: 2539282
+sample prepped: ['[', 'emma', 'by', 'jane', 'UNK', 'UNK', ']', 'volume', 'i', 'chapter', 'i', 'emma', 'woodhouse', ',', 'handsome', ',', 'clever', ',', 'and', 'rich', ',', 'with', 'a', 'comfortable', 'home', 'and', 'happy', 'disposition', ',', 'seemed']
+>>> len fully processed tokens: 2539282
+First 30 fully processed tokens: ['[', 'emma', 'by', 'jane', 'UNK', 'UNK', ']', 'volume', 'i', 'chapter', 'i', 'emma', 'woodhouse', ',', 'handsome', ',', 'clever', ',', 'and', 'rich', ',', 'with', 'a', 'comfortable', 'home', 'and', 'happy', 'disposition', ',', 'seemed']
+Last 30 fully processed tokens: [',', '(', 'who', 'knows', '?', ')', 'may-be', 'it', 'is', 'you', 'the', 'mortal', 'UNK', 'really', 'UNK', ',', 'turning', '--', 'so', 'now', 'finally', ',', 'good-bye', '--', 'and', 'hail', '!', 'my', 'fancy', '.']
+====October 05, 2018 12:00:57 AM====
