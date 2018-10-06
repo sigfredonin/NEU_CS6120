@@ -1,0 +1,43 @@
+A more elegant approach to build bigrams with python’s builtin zip(). Simply convert the original string into a list by split(), then pass the list once normally and once offset by one element.
+string = "I really like python, it's pretty awesome." def find_bigrams(s): input_list = s.split(" ") return zip(input_list, input_list[1:]) def find_ngrams(s, n): input_list = s.split(" ") return zip(*[input_list[i:] for i in range(n)]) find_bigrams(string) [('I', 'really'), ('really', 'like'), ('like', 'python,'), ('python,', "it's"), ("it's", 'pretty'), ('pretty', 'awesome.')]
+
+In [35]: N = 4 In [36]: grams = [sentence[i:i+N] for i in xrange(len(sentence)-N+1)]
+def find_bigrams(s):
+   input_list = s.split(" ")
+   return zip(input_list, input_list[1:])
+
+def find_ngrams(s, n):
+ input_list = s.split(" ")
+ return zip(*[input_list[i:] for i in range(n)])
+
+find_bigrams(string)
+
+[('I', 'really'), ('really', 'like'), ('like', 'python,'), ('python,', "it's"), ("it's", 'pretty'), ('pretty', 'awesome.')]
+
+grams = [sentence[i:i+N] for i in xrange(len(sentence)-N+1)]
+
+
+***********************************************************************************************
+>>> t = model_n.tokens
+>>> len(t)
+2539282
+>>> g4=list(zip(['','','']+t,['','']+t+[''],['']+t+['',''],t+['','','']))[3:-3]
+>>> len(g4)
+2539279
+>>> g4[:6]
+[('[', 'Emma', 'by', 'Jane'), ('Emma', 'by', 'Jane', 'Austen'), ('by', 'Jane', 'Austen', '1816'), ('Jane', 'Austen', '1816', ']'), ('Austen', '1816', ']', 'VOLUME'), ('1816', ']', 'VOLUME', 'I')]
+>>> g4[-6:]
+[(',', 'Good-bye', '--', 'and'), ('Good-bye', '--', 'and', 'hail'), ('--', 'and', 'hail', '!'), ('and', 'hail', '!', 'my'), ('hail', '!', 'my', 'Fancy'), ('!', 'my', 'Fancy', '.')]
+>>>
+***********************************************************************************************
+>>> p=[1,2,3,4,5,6,7,8,9,0]
+>>> list(zip(p,p[1:],p[2:],p[3:]))
+[(1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6), (4, 5, 6, 7), (5, 6, 7, 8), (6, 7, 8, 9), (7, 8, 9, 0)]
+>>> N=4
+>>> [p[i:i+N] for i in range(len(p)-N+1)]
+[[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6], [4, 5, 6, 7], [5, 6, 7, 8], [6, 7, 8, 9], [7, 8, 9, 0]]
+>>> [tuple(p[i:i+N]) for i in range(len(p)-N+1)]
+[(1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6), (4, 5, 6, 7), (5, 6, 7, 8), (6, 7, 8, 9), (7, 8, 9, 0)]
+>>> >>> list(zip(*[p[i:] for i in range(N)]))
+[(1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6), (4, 5, 6, 7), (5, 6, 7, 8), (6, 7, 8, 9), (7, 8, 9, 0)]
+>>> 
