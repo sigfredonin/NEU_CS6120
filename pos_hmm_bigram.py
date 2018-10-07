@@ -69,6 +69,77 @@ class POS_HMM_BiGram:
     """
 
 # ------------------------------------------------------------------------
+# Cumulative Probabilities and Random Choosing ---
+# ------------------------------------------------------------------------
+
+    def _cumulative_probabilities_for_prior(self, probabilities):
+        """
+        Calculate cumulative probabilities for a list of probabilities.
+        Input:
+            List of probabilities for each possible successor:
+            [ ( successor, probability ), ... ]
+        Output:
+            List of cumulative probabilities for each possible successor:
+            [ ( successor, cumulative probability ), ... ]
+        """
+        cps = []                                      # .. cumulative
+        cumulative_probability = 0.0
+        for s, p in probabilities:
+            cumulative_probability += p
+            cps += [(s, cumulative_probability, )]
+        return cps
+
+    def _cumulative_probabilities(self, successor_probabilities):
+        """
+        Calculate cumulative probabilities for a list of succesor probabilities.
+        The successor probabilities for each prior sum to 1.
+        The cumulative successor probabilities end in 1.
+        Input:
+            List of probabilities for each possible successor for each prior:
+            { prior : [ ( successor, probability ), ... ] ), ... }
+        Output:
+            List of cumulative probabilities for each possible successor for each prior:
+            { prior, [ ( successor, cumulative probability ), ... ] ), ... }
+        """
+        scps = { }
+        for prior, probabilities in successor_probabilities.items():
+            cps = self._cumulative_probabilities_for_prior(probabilities)
+            last, cp = cps[-1]
+            if abs(1.0 - cp) > 1e-14:
+                print("Warning: Probabilities don't add to 1.0", prior, last, cp)
+            cps[-1] = ( last, 1.0 )
+            scps[prior] = cps
+        return scps
+
+    def _choose_by_probability(self, cps):
+        """
+        Choose an item at random from a list of
+          (item, cumulative probability)
+        so that each item has its own probability of being chosen.
+        Use binary search.
+        """
+        from random import uniform
+        cumulative_probability = cps[-1][1]
+        r = uniform(0.0, cumulative_probability)
+        print("Random value, r:", r, ", Item list size:", len(cps))
+        entry = None
+        first = 0
+        last = len(cps) - 1
+        found = False
+        while first < last:     # while interval size > 1
+            i = (first + last) // 2
+            entry = cps[i]
+            prob = entry[1];
+            if i < 20:
+                print("---", first, i, last, ":", entry, prob)
+            if r < prob:
+                last = i        # in this or earlier interval
+            else:
+                first = i + 1   # in later interval
+            
+        return cps[last]
+
+# ------------------------------------------------------------------------
 # HMM Probabilities - transition and emission ---
 # ------------------------------------------------------------------------
 
@@ -240,6 +311,10 @@ class POS_HMM_BiGram:
             self.count_word_tags, self.count_tag_unigrams)
         self.pEmUNK, self.pTagEmUNK = self._emission_probabilities( \
             self.count_word_tags_UNK, self.count_tag_unigrams)
+        # cumulative probabilities for random choosing
+        self.pCumTrans = self._cumulative_probabilities(self.pTagTrans)
+        self.pCumEmiss = self._cumulative_probabilities(self.pTagEmiss)
+        self.pCumEmUNK = self._cumulative_probabilities(self.pTagEmUNK)
 
     def reset(self):
         # ... over whole training set ...
@@ -257,8 +332,11 @@ class POS_HMM_BiGram:
         self.pEmiss = None                  # (w_i, t_i) : P(w_i | t_i)
         self.pEmUNK = None                  # (w_i, t_i) : P(w_i | t_i)
         self.pTagTrans = None               #  t_i-1 : (t_i, P(t_i-1, t_i))
-        self.pTagEmiss = None               #  w_i : (w_i, P(w_i | t_i))
-        self.pTagEmUNK = None               #  w_i : (w_i, P(w_i | t_i))
+        self.pTagEmiss = None               #  w_i   : (w_i, P(w_i  | t_i))
+        self.pTagEmUNK = None               #  w_i   : (w_i, P(w_i  | t_i))
+        self.pCumTrans = None               #  t_i-1 : [ (t_i, cP(t_i-1, t_i)) ]
+        self.pCumEmiss = None               #  w_i   : [ (w_i, cP(w_i  | t_i)) ]
+        self.pCumEmUNK = None               #  w_i   : [ (w_i, cP(w_i  | t_i)) ]
 
     def __init__(self):
         self.reset()
@@ -363,6 +441,21 @@ if __name__ == '__main__':
     print("Length tag emission probabilities UNK:", len(fnx_pTagEmUNK))
     print("First 5 tag emission probabilities UNK:", list(fnx_pTagEmUNK.items())[:5])
     print("Last 5 tag emission probabilities UNK:", list(fnx_pTagEmUNK.items())[-5:])
+
+    fnx_pCumTrans = hmm._cumulative_probabilities(fnx_pTagTrans)
+    print("Length cumulative tag transition probabilities UNK:", len(fnx_pCumTrans))
+    print("First 5 cumulative tag transition probabilities UNK:", list(fnx_pCumTrans.items())[:5])
+    print("Last 5 cumulative tag transition probabilities UNK:", list(fnx_pCumTrans.items())[-5:])
+
+    fnx_pCumEmiss = hmm._cumulative_probabilities(fnx_pTagEmiss)
+    print("Length cumulative tag emission probabilities:", len(fnx_pCumEmiss))
+    print("First 5 cumulative tag emission probabilities:", list(fnx_pCumEmiss.items())[:5])
+    print("Last 5 cumulative tag emission probabilities:", list(fnx_pCumEmiss.items())[-5:])
+
+    fnx_pCumEmUNK = hmm._cumulative_probabilities(fnx_pTagEmUNK)
+    print("Length cumulative tag emission probabilities UNK:", len(fnx_pCumEmUNK))
+    print("First 5 cumulative tag emission probabilities UNK:", list(fnx_pCumEmUNK.items())[:5])
+    print("Last 5 cumulative tag emission probabilities UNK:", list(fnx_pCumEmUNK.items())[-5:])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
