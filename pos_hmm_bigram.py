@@ -143,50 +143,58 @@ class POS_HMM_BiGram:
 # HMM Probabilities - transition and emission ---
 # ------------------------------------------------------------------------
 
-    def _emission_probabilities(self, count_word_tags, count_tag_unigrams):
+    def _emission_probabilities(self, count_word_tags):
         """
         Calculate emission probability:
             P(w_i | t_i) = C(w_i, t_i) / C(t_i)
         Inputs:
             count_word_tags:
-                defaultdict: { ( w_i, t_i ) : count )
-            count_tag_unigrams:
-                defaultdict: { ( t_i ) : count )
+                { ( ( w_i, t_i ) : count )... }
         Outputs:
             emission probabilities:
-                dictionary: { ( w_i , t_i ) : probability )
+                { { ( w_i , t_i ) : probability ), ... }
         """
-        emission_probabilities = { }
-        word_transition_probabilities = defaultdict(list)
+        # Extract tag counts from the word/tag pair counts
+        tag_counts = defaultdict(int)
         for word_tag_pair, word_tag_count in count_word_tags.items():
             word, tag = word_tag_pair
-            unigram_count = count_tag_unigrams[(tag,)]
-            probability = float(word_tag_count) / unigram_count
+            tag_counts[tag] += word_tag_count
+        # Calculate the emission probability P(w_i | t_i)
+        emission_probabilities = { }
+        word_emission_probabilities = defaultdict(list)
+        for word_tag_pair, word_tag_count in count_word_tags.items():
+            word, tag = word_tag_pair
+            tag_count = tag_counts[tag]
+            probability = float(word_tag_count) / tag_count
             emission_probabilities[word_tag_pair] = probability
-            word_transition_probabilities[tag] += [ ( word, probability ) ]
-        return emission_probabilities, word_transition_probabilities
+            word_emission_probabilities[tag] += [ ( word, probability ) ]
+        return emission_probabilities, word_emission_probabilities
 
-    def _transition_probabilities(self, count_tag_unigrams, count_tag_bigrams):
+    def _transition_probabilities(self, count_tag_bigrams):
         """
         Calculate transition probability:
             P(t_i-1, t_i) = C(t_i-1, t_i) / C(t_i-1)
         Inputs:
-            count_tag_unigrams:
-                defaultdict: { ( t_i ) : count )
             count_tag_bigrams:
-                defaultdict: { ( t_i-1, t_i ) : count )
+                { { ( t_i-1, t_i ) : count ), ... }
         Outputs:
             transition probabilities:
-                dictionary: { ( t_i-1, t_i ) : probability )
+                { { ( t_i-1, t_i ) : probability ), ... }
             tag transition probabilities:
-                dictionary: { t_i-1 : [ ( t_i, probability ) ... ] }
+                { { t_i-1 : [ ( t_i, probability ) ... ] }, ... }
         """
+        # Extract prev_tag counts from the prev_tag/tag pair counts
+        tag_counts = defaultdict(int)
+        for bigram, bigram_count in count_tag_bigrams.items():
+            prev_tag, tag = bigram
+            tag_counts[prev_tag] += bigram_count
+        # Calculate the transition probability P(t_i-1, t_i)
         transition_probabilities = { }
         tag_transition_probabilities = defaultdict(list)
         for bigram, bigram_count in count_tag_bigrams.items():
             prev_tag, tag = bigram
-            unigram_count = count_tag_unigrams[(prev_tag,)]
-            probability = float(bigram_count) / unigram_count
+            prev_tag_count = tag_counts[prev_tag]
+            probability = float(bigram_count) / prev_tag_count
             transition_probabilities[bigram] = probability
             tag_transition_probabilities[prev_tag] += [ ( tag, probability, ) ]
         return transition_probabilities, tag_transition_probabilities
@@ -261,7 +269,7 @@ class POS_HMM_BiGram:
         p = re.compile(r'(\S+)/(\S+)')
         word_tag_pairs = []
         for sent in sents:
-            pairs_in_sent = p.findall(sent)
+            pairs_in_sent = [ (word.lower(), tag) for word, tag in p.findall(sent) ]
             word_tag_pairs += [ ( '<s>', '<$s>', ) ]    # Start of sentence
             word_tag_pairs += pairs_in_sent             # words and tags
             word_tag_pairs += [ ( '</s>', '<s$>', ) ]   # End of sentence
@@ -306,11 +314,11 @@ class POS_HMM_BiGram:
             self._unknown_word_tags(self.count_word_tags, self.count_infrequent)
         # transition and emission probabilities
         self.pTrans, self.pTagTrans = self._transition_probabilities( \
-            self.count_tag_unigrams, self.count_tag_bigrams)
+            self.count_tag_bigrams)
         self.pEmiss, self.pTagEmiss = self._emission_probabilities( \
-            self.count_word_tags, self.count_tag_unigrams)
+            self.count_word_tags)
         self.pEmUNK, self.pTagEmUNK = self._emission_probabilities( \
-            self.count_word_tags_UNK, self.count_tag_unigrams)
+            self.count_word_tags_UNK)
         # cumulative probabilities for random choosing
         self.pCumTrans = self._cumulative_probabilities(self.pTagTrans)
         self.pCumEmiss = self._cumulative_probabilities(self.pTagEmiss)
@@ -416,7 +424,7 @@ if __name__ == '__main__':
     print("Last 5 count word tags UNK:", list(fnx_count_word_tags_UNK.items())[-5:])
 
     fnx_pTrans, fnx_pTagTrans = hmm._transition_probabilities( \
-        fnx_count_tag_unigrams, fnx_count_tag_bigrams)
+        fnx_count_tag_bigrams)
     print("Length transition probabilities:", len(fnx_pTrans))
     print("First 5 transition probabilities:", list(fnx_pTrans.items())[:5])
     print("Last 5 transition probabilities:", list(fnx_pTrans.items())[-5:])
@@ -425,7 +433,7 @@ if __name__ == '__main__':
     print("Last 5 tag transition probabilities:", list(fnx_pTagTrans.items())[-5:])
 
     fnx_pEmiss, fnx_pTagEmiss = hmm._emission_probabilities( \
-        fnx_count_word_tags, fnx_count_tag_unigrams)
+        fnx_count_word_tags)
     print("Length emission probabilities:", len(fnx_pEmiss))
     print("First 5 emission probabilities:", list(fnx_pEmiss.items())[:5])
     print("Last 5 emission probabilities:", list(fnx_pEmiss.items())[-5:])
@@ -434,7 +442,7 @@ if __name__ == '__main__':
     print("Last 5 tag emission probabilities:", list(fnx_pTagEmiss.items())[-5:])
 
     fnx_pEmUNK, fnx_pTagEmUNK = hmm._emission_probabilities( \
-        fnx_count_word_tags_UNK, fnx_count_tag_unigrams)
+        fnx_count_word_tags_UNK)
     print("Length emission probabilities UNK:", len(fnx_pEmUNK))
     print("First 5 emission probabilities UNK:", list(fnx_pEmUNK.items())[:5])
     print("Last 5 emission probabilities UNK:", list(fnx_pEmUNK.items())[-5:])
