@@ -54,6 +54,14 @@ import os
 import re
 from collections import defaultdict
 
+# ------------------------------------------------------------------------
+# Constants ---
+# ------------------------------------------------------------------------
+TOK_SS = '<s>'  # start sentence
+TAG_SS = '$S'
+TOK_ES = '</s>' # end sentence
+TAG_ES = 'S$'
+
 pathToyPOS = r'D:/Documents/NLP/NEU_CS6120/assignment_1/toyPOS'
 pathBrownData = r'D:/Documents/NLP/NEU_CS6120/assignment_1/brown'
 pathTestDataFile = r'D:/Documents/NLP/NEU_CS6120/science_sample.txt'
@@ -66,7 +74,7 @@ class POS_HMM_BiGram:
     Can generate random sentences.
     Can generate sequences of likely tags for words in sentences,
     using the Viterbi algorithm.
-    """
+    """  
 
 # ------------------------------------------------------------------------
 # Cumulative Probabilities and Random Choosing ---
@@ -121,7 +129,8 @@ class POS_HMM_BiGram:
         from random import uniform
         cumulative_probability = cps[-1][1]
         r = uniform(0.0, cumulative_probability)
-        print("Random value, r:", r, ", Item list size:", len(cps))
+        if self.DEBUG:
+            print("Random value, r:", r, ", Item list size:", len(cps))
         entry = None
         first = 0
         last = len(cps) - 1
@@ -130,7 +139,7 @@ class POS_HMM_BiGram:
             i = (first + last) // 2
             entry = cps[i]
             prob = entry[1];
-            if i < 20:
+            if self.DEBUG and i < 20:
                 print("---", first, i, last, ":", entry, prob)
             if r < prob:
                 last = i        # in this or earlier interval
@@ -270,9 +279,9 @@ class POS_HMM_BiGram:
         word_tag_pairs = []
         for sent in sents:
             pairs_in_sent = [ (word.lower(), tag) for word, tag in p.findall(sent) ]
-            word_tag_pairs += [ ( '<s>', '<$s>', ) ]    # Start of sentence
+            word_tag_pairs += [ ( TOK_SS, TAG_SS, ) ]    # Start of sentence
             word_tag_pairs += pairs_in_sent             # words and tags
-            word_tag_pairs += [ ( '</s>', '<s$>', ) ]   # End of sentence
+            word_tag_pairs += [ ( TOK_ES, TAG_ES, ) ]   # End of sentence
         return word_tag_pairs
 
     def _tagged_sentences_from_file(self, dirPath, fnx):
@@ -346,8 +355,68 @@ class POS_HMM_BiGram:
         self.pCumEmiss = None               #  w_i   : [ (w_i, cP(w_i  | t_i)) ]
         self.pCumEmUNK = None               #  w_i   : [ (w_i, cP(w_i  | t_i)) ]
 
-    def __init__(self):
+    def set_DEBUG(self, DEBUG=True):
+        self.DEBUG=DEBUG
+ 
+    def __init__(self, DEBUG=False):
+        self.set_DEBUG(DEBUG)
         self.reset()
+
+# ------------------------------------------------------------------------
+# Sentence Generation ---
+# ------------------------------------------------------------------------
+
+    def _assemble_sentence(self, swt):
+        sent = ""
+        sent_tagged = ""
+        ss = False
+        for word, tag in swt:
+            if tag == TAG_SS:
+                ss = True
+            elif tag != TAG_ES:
+                if tag == 'np' or ss:
+                    word = word.capitalize()
+                    ss = False
+                sent += word + ' '
+                sent_tagged += word + "/"  + tag + ' '
+            if tag == TAG_ES:
+                sent = sent[:-1]
+                sent_tagged = sent_tagged[:-1]
+        return sent, sent_tagged
+
+    def generate_sentence(self, pTrans, pEmiss, pCumTrans, pCumEmiss):
+        swt = []    # sentence word/tag pairs
+        stp = []    # sentence transition probabilities
+        sep = []    # sentence emission probabilities
+        # start of sentence word and tag
+        word_tag = ( TOK_SS, TAG_SS, )
+        swt += [ word_tag ]
+        stp += [ 1.0 ]
+        sep += [ 1.0 ]
+        # Iterate choosing tags and words until end of sentence is chosen
+        next_word = None
+        next_tag = None
+        while next_word != TOK_ES:
+            # generate the next word/tag pair
+            word, tag = word_tag
+            tcps = pCumTrans[tag]   # List of cumulative transition probabilities
+            next_tag_cumP = self._choose_by_probability(tcps)
+            next_tag, tagCumP = next_tag_cumP
+            ecps = pCumEmiss[next_tag]  # List of cumulative emission probabilities
+            next_word_cumP = self._choose_by_probability(ecps)
+            next_word, wordCumP = next_word_cumP
+            # get the probabilities used
+            tp = pTrans[( tag, next_tag, )]
+            ep = pEmiss[( next_word, next_tag )]
+            # record word/tag pair
+            word_tag = ( next_word, next_tag )
+            swt += [ word_tag ]
+            stp += [ tp ]
+            sep += [ ep ]
+            # continue generating as long as the next word is not the end of sentence token
+        sent, sent_tagged = self._assemble_sentence(swt)
+        prob = np.prod(np.array(stp)) * np.prod(np.array(sep))
+        return swt, stp, sep, sent, sent_tagged, prob
 
 # ------------------------------------------------------------------------
 # Tests ---
@@ -464,6 +533,43 @@ if __name__ == '__main__':
     print("Length cumulative tag emission probabilities UNK:", len(fnx_pCumEmUNK))
     print("First 5 cumulative tag emission probabilities UNK:", list(fnx_pCumEmUNK.items())[:5])
     print("Last 5 cumulative tag emission probabilities UNK:", list(fnx_pCumEmUNK.items())[-5:])
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Randomly generated characters ...")
+    cps = [ ('a', 0.5), ('b', 0.6), ('c', 0.8), ('d', 0.95), ('e', 1.0) ]
+    print(cps)
+    sent = ""
+    for i in range(30):
+        char_prob = hmm._choose_by_probability(cps)
+        char, prob = char_prob
+        sent += char
+        print(char_prob, end='')
+    print()
+    print(sent)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Randomly generated sentences ...")
+    swp = stp = sep = sent = sent_tagged = prob = None
+    for i in range(5):
+        print("--- %d ---" % i)
+        swt, stp, sep, sent, sent_tagged, prob = hmm.generate_sentence( \
+            fnx_pTrans, fnx_pEmiss, fnx_pCumTrans, fnx_pCumEmiss)
+        print("SWT---")
+        print(swt)
+        print("STP---")
+        print(stp)
+        print("SEP---")
+        print(sep)
+        print("SENTENCE ---")
+        print(sent)
+        print("TAGGED SENTENCE ---")
+        print(sent_tagged)
+        print("Sentence probability---")
+        print(prob)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
