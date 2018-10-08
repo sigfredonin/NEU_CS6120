@@ -161,7 +161,9 @@ class POS_HMM_BiGram:
                 { ( ( w_i, t_i ) : count )... }
         Outputs:
             emission probabilities:
-                { { ( w_i , t_i ) : probability ), ... }
+                { ( w_i , t_i ) : probability, ... }
+            word emission probabilities:
+                { t_i : [ ( w_i , probability ), ... ], ... }
         """
         # Extract tag counts from the word/tag pair counts
         tag_counts = defaultdict(int)
@@ -188,9 +190,9 @@ class POS_HMM_BiGram:
                 { { ( t_i-1, t_i ) : count ), ... }
         Outputs:
             transition probabilities:
-                { { ( t_i-1, t_i ) : probability ), ... }
+                { ( t_i-1, t_i ) : probability, ... }
             tag transition probabilities:
-                { { t_i-1 : [ ( t_i, probability ) ... ] }, ... }
+                { t_i-1 : [ ( t_i, probability ) ... ], ... }
         """
         # Extract prev_tag counts from the prev_tag/tag pair counts
         tag_counts = defaultdict(int)
@@ -349,11 +351,11 @@ class POS_HMM_BiGram:
         self.pEmiss = None                  # (w_i, t_i) : P(w_i | t_i)
         self.pEmUNK = None                  # (w_i, t_i) : P(w_i | t_i)
         self.pTagTrans = None               #  t_i-1 : (t_i, P(t_i-1, t_i))
-        self.pTagEmiss = None               #  w_i   : (w_i, P(w_i  | t_i))
-        self.pTagEmUNK = None               #  w_i   : (w_i, P(w_i  | t_i))
+        self.pTagEmiss = None               #  t_i   : (w_i, P(w_i  | t_i))
+        self.pTagEmUNK = None               #  t_i   : (w_i, P(w_i  | t_i))
         self.pCumTrans = None               #  t_i-1 : [ (t_i, cP(t_i-1, t_i)) ]
-        self.pCumEmiss = None               #  w_i   : [ (w_i, cP(w_i  | t_i)) ]
-        self.pCumEmUNK = None               #  w_i   : [ (w_i, cP(w_i  | t_i)) ]
+        self.pCumEmiss = None               #  t_i   : [ (w_i, cP(w_i  | t_i)) ]
+        self.pCumEmUNK = None               #  t_i   : [ (w_i, cP(w_i  | t_i)) ]
 
     def set_DEBUG(self, DEBUG=True):
         self.DEBUG=DEBUG
