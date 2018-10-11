@@ -286,11 +286,10 @@ class N_Grams_LM:
             pgrams[word] = pgram
         return pgrams
 
-    def alpha_smoothed_ngrams(self, alpha, words, grams):
+    def alpha_smoothed_ngrams(self, alpha, words, n):
         """
         Compute alpha-smoothed N-gram probabilities
-        from a list of words,
-        and a dictionary of N-grams and their counts.
+        from a list of words.
         NOTE: The fix for the last prefix relies on dictionaries
               keeping the keys in the order they were added, so
               the last N-gram updated in grams is last.  This works
@@ -298,28 +297,32 @@ class N_Grams_LM:
               but does not work in earlier Python releases.
               Should probably fix this.
         """
-        # Extract w[i-N+1:i-2] from each N-gram, accumulate the counts
-        prefixes = defaultdict(int)         # N-gram N-1 prefixes
-        for gram, count in grams.items():
-            prefixes [ gram[0:-1] ] += count
-        prefixes [ gram[1:] ] += 1          # Last one, followed by nothing
-        print("--- Last N-gram:", list(grams.items())[-1], gram)
-        print("--- Last prefix:", list(prefixes.items())[-1])
-        print("+++ Count unique prefix-N-1-grams:", len(prefixes))
-        print("+++ first 30 prefix counts:", list(prefixes.items())[:30])
-        print("+++ Count unique N-grams:", len(grams))
-        print("+++ first 30 N-gram counts:", list(grams.items())[:30])
+        if n < 2:
+            print("ERROR: n > 1 required, %d given." % n)
+            return
+        p = words
+        grams = [tuple(p[i:i+n]) for i in range(len(p)-n+1)]
+        prefixes = [tuple(p[i:i+(n-1)]) for i in range(len(p)-(n-1)+1)]
+        print("--- Last N-gram:", list(grams)[-1], 'of', len(grams))
+        print("--- Last prefix:", list(prefixes)[-1], 'of', len(prefixes))
+        fdist_grams = nltk.FreqDist(grams)
+        fdist_prefixes = nltk.FreqDist(prefixes)
+        print("+++ Count unique N-grams:", len(fdist_grams))
+        print("+++ first 30 N-gram counts:", list(fdist_grams.items())[:30])
+        print("+++ Count unique prefix-N-1-grams:", len(fdist_prefixes))
+        print("+++ first 30 prefix counts:", list(fdist_prefixes.items())[:30])
         # Get alpha * vocabulary size
-        alpha_vocabulary = alpha * len(set(words))
+        alpha_vocabulary = float(alpha) * len(set(grams))
         print("+++ alpha: %f, vocabulary size: %d, alpha * vocabulary size: %f" % \
-            ( alpha, len(set(words)), alpha_vocabulary ))
+            ( alpha, len(set(grams)), alpha_vocabulary ))
         # Calculate probabilities
         pgrams = {}
-        for gram, count_gram in grams.items():
-            count_pref = prefixes[ gram[0:-1] ]
+        for gram, count_gram in fdist_grams.items():
+            count_pref = fdist_prefixes[ gram[0:-1] ]
             pgram = (count_gram + alpha) / (count_pref + alpha_vocabulary)
             pgrams[gram] = pgram
-        return pgrams
+        pgram_unknown = alpha / alpha_vocabulary
+        return pgrams, pgram_unknown
 
 # ------------------------------------------------------------------------
 # Cumulative Probabilities and Random Choosing ---
@@ -394,6 +397,8 @@ if __name__ == '__main__':
     model = N_Grams_LM()
     TOO_FEW = 5
     testPath = pathToyData
+    outPath = r'D:/Documents/NLP/NEU_CS6120/assignment_1/toy_%d.txt'
+
 
     print("-- test infrequent_to_UNK() --")
     files = os.listdir(testPath)
@@ -531,6 +536,10 @@ if __name__ == '__main__':
         print(list(model_n.grams.items())[:30])
         print("Sample last 30 %d-grams found --" % (n))
         print(list(model_n.grams.items())[-30:])
+        # Write n-grams to a file
+        with open(outPath % n, 'w') as f:
+            for ngram, count in model_n.grams.items():
+                f.write("%-60s%10d\n" % (ngram, count))
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print()
         print("====" + nowStr + "====")

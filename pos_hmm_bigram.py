@@ -68,133 +68,6 @@ pathTestDataFile = r'D:/Documents/NLP/NEU_CS6120/science_sample.txt'
 
 
 # ------------------------------------------------------------------------
-# Helper Class - Viterbi Decoder ---
-# ------------------------------------------------------------------------
-
-class POS_HMM_Viterbi:
-    """
-    HMM Viterbi POS Decoder
-
-    Initialize with transmission and emission probabilities,
-    indexed by tag:
-        pTagTrans: { prev_tag : [ ( tag, probability), ...], ...}
-        pTagEmiss: { curr_tag : [ ( word, probability), ...], ...}
-    """
-# ------------------------------------------------------------------------
-# Class constructor ---
-# ------------------------------------------------------------------------
-
-    def _probability_LUT(self, pTagProbs):
-        """
-        Create a transition or emission probability lookup table.
-        Input:
-            pTagProbs: { t_i-1 : [ ( t_i, P(t_i-1, t_i), ...], ...}
-                   or: ( t_i   : [ ( w_i, P(w_i | t_i),  ...], ...}
-        Output:
-            dT : { prev_tag : { tag : probability, ...}, ...}
-        """
-        dP = {}
-        for prior, pList in pTagProbs.items():
-            dV = defaultdict(float)
-            for value, probability in pList:
-                dV[value] = probability
-            dP[prior] = dV
-        return dP
-
-    def _init(self, pTagTrans, pTagEmiss):
-        self.tags = sorted(pTagTrans)
-        if self.tags != sorted(pTagEmiss):
-            msg = ""
-            print("ERROR: transmission and emission probabilities",
-                  "are not for the same tag set.")
-            return
-        self.dT = self._probability_LUT(pTagTrans)
-        self.dE = self._probability_LUT(pTagEmiss)
-        self.viterbi = []       # Viterbi[time_step, tag]
-        self.backpointer = []   # best_tag[time_step]
-
-    def __init__(self, pTagTrans, pTagEmiss):
-        self._init(pTagTrans, pTagEmiss)
-
-# ------------------------------------------------------------------------
-# Viterbi decoding ---
-# ------------------------------------------------------------------------
-
-    def _initialize(self, word):
-        """
-        Initialize decoder with transition from start of sentence
-        """
-        pTs = self.dT[TAG_SS]   # probabilities of tags at start of sentence
-        pS = {}                 # Viterbi[0, tag]
-        bS = {}                 # backpointer[0, tag]
-        for tag in self.tags:       # iterate over all possible POS tags
-            pEs = self.dE[tag]      # word probabilities for this tag
-            pE = pEs[word]          # P(word | tag)
-            pT = pTs[tag]           # P(TAG_SS, Tag)
-            pS[tag] = pT * pE       # Viterbi[0, tag], start of sentence
-            bS[tag] = TAG_SS        # backpointer[0, tag], start of sentence
-        return pS, bS
-
-    def _find_max(self, tag, pE):
-        pMax = 0.0
-        tMax = None
-        for prev_tag in self.tags: # iterate over previous tags
-            pPrev = pS_prev[prev_tag]   # Viterbi[i-1, prev_tag]
-            pTs = self.dT[prev_tag]     # { tag : P(prev_tag, tag)}
-            pT = pTs[tag]               # P(prev_tag, tag)
-            p = pPrev * pT * pE         # ? Viterbi(i, tag)
-            if p > pMax:
-                pMax = p
-                tMax = prev_tag
-        return pMax, tMax
-
-    def _step(self, word):
-        pS_prev = pS            # Viterbi[i-1, tag], previous time step
-        pS = {}                 # Viterbi[i, tag], this time step
-        bB = {}                 # backpointer[i, tag], this time step
-        for tag in self.tags:   # iterate over all possible POS tags
-            # probability of this word given this tag
-            word = observations[iObservation]
-            pEs = self.dE[tag]      # word probabilities for this tag
-            pE = pEs[word]          # P(word | tag)
-            # find previous tag that gives highest probability for tag
-            pMax, tMax = self._find_max(tag, pE)
-            pS[tag] = pMax
-            pB[tag] = tMax
-        return pS, pB
-
-    def _find_max_result(self, pS, bS):
-        probabilities = [ p for tag, p in pS.items ]
-        pMax = max(probabilities)
-        tagsMax = [ tag for tag, p in pS.items if p == pMax ]
-        if len(tagsMax) > 1:
-            print("Warning: there are %d tags with max p = %f" \
-                % (len(tagsMax), pMax) )
-        tMax = tagsMax[0]
-        return pMax, tMax
-
-    def decode(self, observations):
-        """
-        Find the most probable POS tag assignment for
-        a given list of observed tokens.
-        Inputs:
-            observations: [ token, ... ]
-        """
-        # Initialize with transition from start of sentence
-        word = observations[0]  # first word observed
-        pS, bS = self._initialize(word)
-        self.viterbi += [ pS ]      # Viterbi[i, tag], this time step
-        self.backpointer += [ bS ]  # backpointer[i, tag], this time step
-        # iterate over observations, starting with second word
-        for word in observations[1:]:
-            pS, bS = self._step(word)
-            self.viterbi += [ pS ]      # Viterbi[i, tag], this time step
-            self.backpointer += [ bS ]  # backpointer[i, tag], this time step
-        # termination: transition to end of sentence
-        # find the maximum probability and corresponding tag in last time step
-        pMax, tMax = self._find_max_results(pS, bS)
-
-# ------------------------------------------------------------------------
 # Main Class - HMM POS Bigram Model ---
 # ------------------------------------------------------------------------
 class POS_HMM_BiGram:
@@ -289,7 +162,7 @@ class POS_HMM_BiGram:
             P(w_i | t_i) = C(w_i, t_i) / C(t_i)
         Inputs:
             count_word_tags:
-                { ( ( w_i, t_i ) : count )... }
+                { ( w_i, t_i ) : count, ... }
         Outputs:
             emission probabilities:
                 { ( w_i , t_i ) : probability, ... }
@@ -318,7 +191,7 @@ class POS_HMM_BiGram:
             P(t_i-1, t_i) = C(t_i-1, t_i) / C(t_i-1)
         Inputs:
             count_tag_bigrams:
-                { { ( t_i-1, t_i ) : count ), ... }
+                { ( t_i-1, t_i ) : count, ... }
         Outputs:
             transition probabilities:
                 { ( t_i-1, t_i ) : probability, ... }
@@ -471,22 +344,26 @@ class POS_HMM_BiGram:
         self.files = None                   # List of files in training set
         self.TOO_FEW = None                 # UNK if word count <= TOO_FEW
         self.sents = None                   # List of sentences
-        self.tags = None                    # (word, tag)
-        self.count_word_tags = None         # (w_i, t_i) : count
-        self.count_words = None             #  w_i : count
-        self.count_infrequent = None        # (w_i, t_i) : count
-        self.count_word_tags_UNK = None     # (w_i, t_i) : count
-        self.count_tag_unigrams = None      # (t_i) : count
-        self.count_tag_bigrams = None       # (t_i-1, t_i) : count
-        self.pTrans = None                  # (t_i-1, t_i) : P(t_i-1, t_i)
-        self.pEmiss = None                  # (w_i, t_i) : P(w_i | t_i)
-        self.pEmUNK = None                  # (w_i, t_i) : P(w_i | t_i)
-        self.pTagTrans = None               #  t_i-1 : (t_i, P(t_i-1, t_i))
-        self.pTagEmiss = None               #  t_i   : (w_i, P(w_i  | t_i))
-        self.pTagEmUNK = None               #  t_i   : (w_i, P(w_i  | t_i))
-        self.pCumTrans = None               #  t_i-1 : [ (t_i, cP(t_i-1, t_i)) ]
-        self.pCumEmiss = None               #  t_i   : [ (w_i, cP(w_i  | t_i)) ]
-        self.pCumEmUNK = None               #  t_i   : [ (w_i, cP(w_i  | t_i)) ]
+        self.tags = None                    # List of (word, tag) pairs
+        # counts ...
+        self.count_word_tags = None         # { (w_i, t_i) : count, .. }
+        self.count_words = None             # { w_i : count, ... }
+        self.count_infrequent = None        # { (w_i, t_i) : count, ... }
+        self.count_word_tags_UNK = None     # { (w_i, t_i) : count, ... }
+        self.count_tag_unigrams = None      # { (t_i) : count, ... }
+        self.count_tag_bigrams = None       # { (t_i-1, t_i) : count, ... }
+        # probabilities
+        self.pTrans = None          # { (t_i-1, t_i) : P(t_i-1, t_i), ... }
+        self.pEmiss = None          # { (w_i, t_i) : P(w_i | t_i), ... }
+        self.pEmUNK = None          # { (w_i, t_i) : P(w_i | t_i), ... }
+        # conditional probabilities
+        self.pTagTrans = None       #  { t_i-1 : (t_i, P(t_i-1, t_i)), ... }
+        self.pTagEmiss = None       #  { t_i   : (w_i, P(w_i  | t_i)), ... }
+        self.pTagEmUNK = None       #  { t_i   : (w_i, P(w_i  | t_i)), ... }
+        # cumulative conditional probabilities
+        self.pCumTrans = None       # { t_i-1 : [ (t_i, cP(t_i-1, t_i)) ], ... }
+        self.pCumEmiss = None       # { t_i   : [ (w_i, cP(w_i  | t_i)) ], ... }
+        self.pCumEmUNK = None       # { t_i   : [ (w_i, cP(w_i  | t_i)) ], ... }
 
     def set_DEBUG(self, DEBUG=True):
         self.DEBUG=DEBUG
