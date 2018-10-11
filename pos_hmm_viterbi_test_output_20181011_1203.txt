@@ -1,0 +1,59 @@
+======== RESTART: D:\Documents\NLP\NEU_CS6120\pos_hmm_viterbi_test.py ========
+====October 11, 2018 11:26:43 AM====
+Begin test with Fig 5.18 example
+Tags - tag set ---
+{'NN', 'VB', 'TO', 'PPSS', '$S'}
+dT - transmission probabilities ---
+{'$S': defaultdict(<class 'float'>, {'VB': 0.019, 'TO': 0.0043, 'NN': 0.041, 'PPSS': 0.067}), 'VB': defaultdict(<class 'float'>, {'VB': 0.0038, 'TO': 0.035, 'NN': 0.047, 'PPSS': 0.007}), 'TO': defaultdict(<class 'float'>, {'VB': 0.83, 'TO': 0.0, 'NN': 0.00047, 'PPSS': 0.0}), 'NN': defaultdict(<class 'float'>, {'VB': 0.004, 'TO': 0.016, 'NN': 0.087, 'PPSS': 0.0045}), 'PPSS': defaultdict(<class 'float'>, {'VB': 0.23, 'TO': 0.00079, 'NN': 0.0012, 'PPSS': 0.00014})}
+dE - emission probabilities ---
+{'$S': defaultdict(<class 'float'>, {'I': 0.0, 'want': 0.0, 'to': 0.0, 'race': 0.0, '$S': 1.0}), 'VB': defaultdict(<class 'float'>, {'I': 0.0, 'want': 0.0093, 'to': 0.0, 'race': 0.00012}), 'TO': defaultdict(<class 'float'>, {'I': 0.0, 'want': 0.0, 'to': 0.99, 'race': 0.0}), 'NN': defaultdict(<class 'float'>, {'I': 0.0, 'want': 5.4e-05, 'to': 0.0, 'race': 0.00057}), 'PPSS': defaultdict(<class 'float'>, {'I': 0.37, 'want': 0.0, 'to': 0.0, 'race': 0.0})}
+--- <s> ---
+pS: {'NN': 0.0, 'VB': 0.0, 'TO': 0.0, 'PPSS': 0.0, '$S': 1.0}
+bS: {'NN': None, 'VB': None, 'TO': None, 'PPSS': None, '$S': None}
+--- I ---
+pS: {'NN': 0.0, 'VB': 0.0, 'TO': 0.0, 'PPSS': 0.02479, '$S': 0.0}
+bS: {'NN': None, 'VB': None, 'TO': None, 'PPSS': '$S', '$S': None}
+--- want ---
+pS: {'NN': 1.6063919999999999e-09, 'VB': 5.3025810000000004e-05, 'TO': 0.0, 'PPSS': 0.0, '$S': 0.0}
+bS: {'NN': 'PPSS', 'VB': 'PPSS', 'TO': None, 'PPSS': None, '$S': None}
+--- to ---
+pS: {'NN': 0.0, 'VB': 0.0, 'TO': 1.8373443165000004e-06, 'PPSS': 0.0, '$S': 0.0}
+bS: {'NN': None, 'VB': None, 'TO': 'VB', 'PPSS': None, '$S': None}
+--- race ---
+pS: {'NN': 4.922245423903501e-13, 'VB': 1.8299949392340004e-10, 'TO': 0.0, 'PPSS': 0.0, '$S': 0.0}
+bS: {'NN': 'TO', 'VB': 'TO', 'TO': None, 'PPSS': None, '$S': None}
+-------------------Backtrace-------------------
+words: ['I', 'want', 'to', 'race']
+----------
+iV: 3
+word: race
+pS: {'NN': 4.922245423903501e-13, 'VB': 1.8299949392340004e-10, 'TO': 0.0, 'PPSS': 0.0, '$S': 0.0}
+bS: {'NN': 'TO', 'VB': 'TO', 'TO': None, 'PPSS': None, '$S': None}
+tMax, pMax: VB 1.8299949392340004e-10
+----------
+iV: 2
+word: to
+pS: {'NN': 0.0, 'VB': 0.0, 'TO': 1.8373443165000004e-06, 'PPSS': 0.0, '$S': 0.0}
+bS: {'NN': None, 'VB': None, 'TO': 'VB', 'PPSS': None, '$S': None}
+tMax, pMax: TO 1.8373443165000004e-06
+----------
+iV: 1
+word: want
+pS: {'NN': 1.6063919999999999e-09, 'VB': 5.3025810000000004e-05, 'TO': 0.0, 'PPSS': 0.0, '$S': 0.0}
+bS: {'NN': 'PPSS', 'VB': 'PPSS', 'TO': None, 'PPSS': None, '$S': None}
+tMax, pMax: VB 5.3025810000000004e-05
+----------
+iV: 0
+word: I
+pS: {'NN': 0.0, 'VB': 0.0, 'TO': 0.0, 'PPSS': 0.02479, '$S': 0.0}
+bS: {'NN': None, 'VB': None, 'TO': None, 'PPSS': '$S', '$S': None}
+tMax, pMax: PPSS 0.02479
+--------------------Results--------------------
+Obvservations
+['I', 'want', 'to', 'race']
+Most probable tags
+['PPSS', 'VB', 'TO', 'VB']
+Sequence probabilities
+[0.02479, 5.3025810000000004e-05, 1.8373443165000004e-06, 1.8299949392340004e-10]
+Probability of sentence: 1.8299949392340004e-10
+>>> 
