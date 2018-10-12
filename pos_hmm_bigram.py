@@ -296,6 +296,7 @@ class POS_HMM_BiGram:
         re_sb = re.compile(r'( )+')
         sents_in_file = []
         with open(fnxPath) as f:
+            print(fnx)
             for line in f:
                 nnl = re_nl.sub(' ', line)      # '\n' -> ' '
                 sb  = re_sb.sub(' ', nnl)       # ' '+ -> ' '
@@ -307,7 +308,7 @@ class POS_HMM_BiGram:
         sents = []
         for fnx in files:
             fnx_sents = self._tagged_sentences_from_file(dirPath, fnx)
-            sents += [ fnx_sents ]
+            sents += fnx_sents
         return sents
 
 # ------------------------------------------------------------------------
@@ -444,7 +445,7 @@ if __name__ == '__main__':
     TOO_FEW = 1
 
     files = os.listdir(testPath)
-    fnx = files[0]
+    fnx = files[-1]
     print("--- ", fnx, " ---")
 
     fnx_sents = hmm._tagged_sentences_from_file(testPath, fnx)
