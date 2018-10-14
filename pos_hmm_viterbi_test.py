@@ -46,7 +46,8 @@ if __name__ == '__main__':
     print("Begin test with Fig 5.18 example")
     pTagTrans = pT_5_18
     pTagEmiss = pE_5_18
-    vd = pos.POS_HMM_Viterbi(pTagTrans, pTagEmiss)
+    pTagUnseen = defaultdict(lambda: 1e-128)
+    vd = pos.POS_HMM_Viterbi(pTagTrans, pTagUnseen, pTagEmiss, pTagUnseen)
 
     print("Tags - tag set ---")
     print(vd.tags)

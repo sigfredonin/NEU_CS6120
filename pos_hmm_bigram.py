@@ -156,10 +156,11 @@ class POS_HMM_BiGram:
 # HMM Probabilities - transition and emission ---
 # ------------------------------------------------------------------------
 
-    def _emission_probabilities(self, count_word_tags):
+    def _emission_probabilities(self, count_tag_unigrams, count_word_tag_pairs):
         """
-        Calculate emission probability:
-            P(w_i | t_i) = C(w_i, t_i) / C(t_i)
+        Calculate emission probability (alpha-smoothed):
+            P(w_i | t_i) = (C(w_i, t_i) + alpha) / (C(t_i) + alpha * V)
+            where V = count unique word tag pairs and alpha = 0.1
         Inputs:
             count_word_tags:
                 { ( w_i, t_i ) : count, ... }
@@ -169,26 +170,32 @@ class POS_HMM_BiGram:
             word emission probabilities:
                 { t_i : [ ( w_i , probability ), ... ], ... }
         """
-        # Extract tag counts from the word/tag pair counts
-        tag_counts = defaultdict(int)
-        for word_tag_pair, word_tag_count in count_word_tags.items():
-            word, tag = word_tag_pair
-            tag_counts[tag] += word_tag_count
+        alpha = 0.1
+        V = len(count_word_tag_pairs)   # count of unique word tag pairs
+        alpha_V = alpha * V
+        # Compute probability of unseen word tag pair (count = 0)
+        emission_probabilities_unseen = defaultdict(lambda: 1.0 / V)
+        for tag, tag_count in count_tag_unigrams.items():
+            unseen_probability = alpha / (tag_count + alpha_V)
+            emission_probabilities_unseen[tag] = unseen_probability
         # Calculate the emission probability P(w_i | t_i)
         emission_probabilities = { }
         word_emission_probabilities = defaultdict(list)
-        for word_tag_pair, word_tag_count in count_word_tags.items():
+        for word_tag_pair, word_tag_count in count_word_tag_pairs.items():
             word, tag = word_tag_pair
-            tag_count = tag_counts[tag]
-            probability = float(word_tag_count) / tag_count
+            tag_count = count_tag_unigrams[tag]
+            probability = (float(word_tag_count) + alpha) \
+                        / (tag_count + alpha_V)
             emission_probabilities[word_tag_pair] = probability
             word_emission_probabilities[tag] += [ ( word, probability ) ]
-        return emission_probabilities, word_emission_probabilities
+        return emission_probabilities, word_emission_probabilities, \
+               emission_probabilities_unseen
 
-    def _transition_probabilities(self, count_tag_bigrams):
+    def _transition_probabilities(self, count_tag_unigrams, count_tag_bigrams):
         """
-        Calculate transition probability:
-            P(t_i-1, t_i) = C(t_i-1, t_i) / C(t_i-1)
+        Calculate transition probability (alpha-smoothed):
+            P(t_i-1, t_i) = (C(t_i-1, t_i) + alpha) / (C(t_i-1) + alpha * V)
+            where V = count unique bigrams, alpha = 0.1
         Inputs:
             count_tag_bigrams:
                 { ( t_i-1, t_i ) : count, ... }
@@ -198,21 +205,26 @@ class POS_HMM_BiGram:
             tag transition probabilities:
                 { t_i-1 : [ ( t_i, probability ) ... ], ... }
         """
-        # Extract prev_tag counts from the prev_tag/tag pair counts
-        tag_counts = defaultdict(int)
-        for bigram, bigram_count in count_tag_bigrams.items():
-            prev_tag, tag = bigram
-            tag_counts[prev_tag] += bigram_count
+        alpha = 0.1
+        V = len(count_tag_bigrams)  # count of unique tag bigrams
+        alpha_V = alpha * V
+        # Compute probability of unseen bigram (count = 0)
+        transition_probabilities_unseen = defaultdict(lambda: 1.0 / V)
+        for tag, tag_count in count_tag_unigrams.items():
+            unseen_probability = alpha / (tag_count + alpha_V)
+            transition_probabilities_unseen[tag] = unseen_probability
         # Calculate the transition probability P(t_i-1, t_i)
         transition_probabilities = { }
         tag_transition_probabilities = defaultdict(list)
         for bigram, bigram_count in count_tag_bigrams.items():
             prev_tag, tag = bigram
-            prev_tag_count = tag_counts[prev_tag]
-            probability = float(bigram_count) / prev_tag_count
+            prev_tag_count = count_tag_unigrams[prev_tag]
+            probability = (float(bigram_count) + alpha) \
+                        / (prev_tag_count + alpha_V)
             transition_probabilities[bigram] = probability
             tag_transition_probabilities[prev_tag] += [ ( tag, probability, ) ]
-        return transition_probabilities, tag_transition_probabilities
+        return transition_probabilities, tag_transition_probabilities, \
+               transition_probabilities_unseen
 
 # ------------------------------------------------------------------------
 # Infrequent and unknown words, conversion to 'UNK' ---
@@ -236,9 +248,14 @@ class POS_HMM_BiGram:
         for word, count in count_words.items():
             if count <= TOO_FEW:
                 count_infrequent[word] += count
-        return count_words, count_infrequent
+        word_tag_pairs_UNK = []
+        for word, tag in word_tag_pairs:
+            if word in count_infrequent:
+                word = 'UNK'
+            word_tag_pairs_UNK += [ ( word, tag ) ]
+        return count_words, count_infrequent, word_tag_pairs_UNK
 
-    def _unknown_word_tags(self, count_word_tags, count_infrequent):
+    def _unknown_word_tags(self, word_tag_pairs, count_infrequent):
         """
         Return a copy of the word counts dictionary
         with the infrequent words replaced by a 'UNK' entry
@@ -247,18 +264,22 @@ class POS_HMM_BiGram:
             count_word_tags:   { ( word, tag ) : count, ... }
             count_infrequent:  { word : count, ... }
         Outputs:
-            count_word_tags_UNK:  { ( word, tag  ): count, ...
+            count_word_tag_pairs_UNK:  { ( word, tag  ): count, ...
                                     ( 'UNK', tag ) : count_unk, ... }
             ... where count_unk is the sum of the counts of the
                 infrequent words with that tag.
         """
-        count_word_tags_UNK = count_word_tags.copy()
-        for word_tag, count in count_word_tags.items():
+        count_word_tag_pairs = defaultdict(int)
+        for word_tag in word_tag_pairs:
+            word, tag = word_tag
+            count_word_tag_pairs[word_tag] += 1
+        count_word_tag_pairs_UNK = count_word_tag_pairs.copy()
+        for word_tag, count in count_word_tag_pairs.items():
             word, tag = word_tag
             if word in count_infrequent:
-                count_word_tags_UNK[('UNK', tag,)] += count
-                del count_word_tags_UNK[word_tag]
-        return count_word_tags_UNK
+                count_word_tag_pairs_UNK[('UNK', tag,)] += count
+                del count_word_tag_pairs_UNK[word_tag]
+        return count_word_tag_pairs_UNK
 
 # ------------------------------------------------------------------------
 # Sentences, words, tags and counts ---
@@ -321,20 +342,24 @@ class POS_HMM_BiGram:
         # sentences, word/tag pairs, counts
         self.sents = self._tagged_sentences_from_files(dirPath, self.files)
         self.word_tag_pairs = self._tags_from_sentences(self.sents)
-        self.count_word_tags, self.count_tag_unigrams, self.count_tag_bigrams = \
-            self._counts_from_word_tag_pairs(self.word_tag_pairs)
         # identify infrequent words and replace with ('UNK',tag) counts
-        self.count_words, self.count_infrequent = \
+        self.count_words, self.count_infrequent, self.word_tag_pairs_UNK = \
             self._infrequent_words(self.word_tag_pairs, self.TOO_FEW)
-        self.count_word_tags_UNK = \
-            self._unknown_word_tags(self.count_word_tags, self.count_infrequent)
+        self.count_word_tag_pairs_UNK = \
+            self._unknown_word_tags(self.word_tag_pairs, self.count_infrequent)
+        # bigrams and counts, from word tag pairs with infrequent set to UNK
+        self.count_word_tags, self.count_tag_unigrams, self.count_tag_bigrams = \
+            self._counts_from_word_tag_pairs(self.word_tag_pairs_UNK)
         # transition and emission probabilities
-        self.pTrans, self.pTagTrans = self._transition_probabilities( \
-            self.count_tag_bigrams)
-        self.pEmiss, self.pTagEmiss = self._emission_probabilities( \
-            self.count_word_tags)
-        self.pEmUNK, self.pTagEmUNK = self._emission_probabilities( \
-            self.count_word_tags_UNK)
+        self.pTrans, self.pTagTrans, self.pTransUnseen = \
+            self._transition_probabilities( \
+                self.count_tag_unigrams, self.count_tag_bigrams)
+        self.pEmiss, self.pTagEmiss, self.pEmissUnseen = \
+            self._emission_probabilities( \
+                self.count_tag_unigrams, self.count_word_tags)
+        self.pEmUNK, self.pTagEmUNK, self.pEmUNKUnseen = \
+            self._emission_probabilities( \
+                self.count_tag_unigrams, self.count_word_tag_pairs_UNK)
         # cumulative probabilities for random choosing
         self.pCumTrans = self._cumulative_probabilities(self.pTagTrans)
         self.pCumEmiss = self._cumulative_probabilities(self.pTagEmiss)
@@ -350,7 +375,7 @@ class POS_HMM_BiGram:
         self.count_word_tags = None         # { (w_i, t_i) : count, .. }
         self.count_words = None             # { w_i : count, ... }
         self.count_infrequent = None        # { (w_i, t_i) : count, ... }
-        self.count_word_tags_UNK = None     # { (w_i, t_i) : count, ... }
+        self.count_word_tag_pairs_UNK = None     # { (w_i, t_i) : count, ... }
         self.count_tag_unigrams = None      # { (t_i) : count, ... }
         self.count_tag_bigrams = None       # { (t_i-1, t_i) : count, ... }
         # probabilities
@@ -479,7 +504,7 @@ if __name__ == '__main__':
     print("First 5 count tag bigrams:", list(fnx_count_tag_bigrams.items())[:5])
     print("Last 5 count tag bigrams:", list(fnx_count_tag_bigrams.items())[-5:])
 
-    fnx_count_words, fnx_count_infrequent = \
+    fnx_count_words, fnx_count_infrequent, fnx_word_tag_pairs_UNK = \
             hmm._infrequent_words(fnx_word_tag_pairs, TOO_FEW)
     fnx_count_words_sum = sum([c for p, c in
                               fnx_count_words.items()])
@@ -494,17 +519,19 @@ if __name__ == '__main__':
     print("First 5 count infrequent words:", list(fnx_count_infrequent.items())[:5])
     print("Last 5 count infrequent words:", list(fnx_count_infrequent.items())[-5:])
 
-    fnx_count_word_tags_UNK = \
-        hmm._unknown_word_tags(fnx_count_word_tags, fnx_count_infrequent)
-    fnx_count_word_tags_UNK_sum = sum([c for p, c in
-                              fnx_count_word_tags_UNK.items()])
-    print("Sum counts in count word tags UNK =", fnx_count_word_tags_UNK_sum)
-    print("Length count word tags UNK:", len(fnx_count_word_tags_UNK))
-    print("First 5 count word tags UNK:", list(fnx_count_word_tags_UNK.items())[:5])
-    print("Last 5 count word tags UNK:", list(fnx_count_word_tags_UNK.items())[-5:])
+    fnx_count_word_tags, fnx_count_tag_unigrams, fnx_count_tag_bigrams = \
+            hmm._counts_from_word_tag_pairs(fnx_word_tag_pairs_UNK)
+    fnx_count_word_tag_pairs_UNK = \
+        hmm._unknown_word_tags(fnx_word_tag_pairs, fnx_count_infrequent)
+    fnx_count_word_tag_pairs_UNK_sum = sum([c for p, c in
+                              fnx_count_word_tag_pairs_UNK.items()])
+    print("Sum counts in count word tags UNK =", fnx_count_word_tag_pairs_UNK_sum)
+    print("Length count word tags UNK:", len(fnx_count_word_tag_pairs_UNK))
+    print("First 5 count word tags UNK:", list(fnx_count_word_tag_pairs_UNK.items())[:5])
+    print("Last 5 count word tags UNK:", list(fnx_count_word_tag_pairs_UNK.items())[-5:])
 
-    fnx_pTrans, fnx_pTagTrans = hmm._transition_probabilities( \
-        fnx_count_tag_bigrams)
+    fnx_pTrans, fnx_pTagTrans, fnx_pTransUnseen = \
+        hmm._transition_probabilities(fnx_count_tag_unigrams, fnx_count_tag_bigrams)
     print("Length transition probabilities:", len(fnx_pTrans))
     print("First 5 transition probabilities:", list(fnx_pTrans.items())[:5])
     print("Last 5 transition probabilities:", list(fnx_pTrans.items())[-5:])
@@ -512,8 +539,8 @@ if __name__ == '__main__':
     print("First 5 tag transition probabilities:", list(fnx_pTagTrans.items())[:5])
     print("Last 5 tag transition probabilities:", list(fnx_pTagTrans.items())[-5:])
 
-    fnx_pEmiss, fnx_pTagEmiss = hmm._emission_probabilities( \
-        fnx_count_word_tags)
+    fnx_pEmiss, fnx_pTagEmiss, fnx_pEmissUnseen = \
+        hmm._emission_probabilities(fnx_count_tag_unigrams, fnx_count_word_tags)
     print("Length emission probabilities:", len(fnx_pEmiss))
     print("First 5 emission probabilities:", list(fnx_pEmiss.items())[:5])
     print("Last 5 emission probabilities:", list(fnx_pEmiss.items())[-5:])
@@ -521,8 +548,8 @@ if __name__ == '__main__':
     print("First 5 tag emission probabilities:", list(fnx_pTagEmiss.items())[:5])
     print("Last 5 tag emission probabilities:", list(fnx_pTagEmiss.items())[-5:])
 
-    fnx_pEmUNK, fnx_pTagEmUNK = hmm._emission_probabilities( \
-        fnx_count_word_tags_UNK)
+    fnx_pEmUNK, fnx_pTagEmUNK, fnx_pEmUNKUnknown = \
+        hmm._emission_probabilities(fnx_count_tag_unigrams, fnx_count_word_tag_pairs_UNK)
     print("Length emission probabilities UNK:", len(fnx_pEmUNK))
     print("First 5 emission probabilities UNK:", list(fnx_pEmUNK.items())[:5])
     print("Last 5 emission probabilities UNK:", list(fnx_pEmUNK.items())[-5:])
@@ -559,6 +586,64 @@ if __name__ == '__main__':
         print(char_prob, end='')
     print()
     print(sent)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Randomly generated sentences ...")
+    swp = stp = sep = sent = sent_tagged = prob = None
+    for i in range(5):
+        print("--- %d ---" % i)
+        swt, stp, sep, sent, sent_tagged, prob = hmm.generate_sentence( \
+            fnx_pTrans, fnx_pEmiss, fnx_pCumTrans, fnx_pCumEmiss)
+        print("SWT---")
+        print(swt)
+        print("STP---")
+        print(stp)
+        print("SEP---")
+        print(sep)
+        print("SENTENCE ---")
+        print(sent)
+        print("TAGGED SENTENCE ---")
+        print(sent_tagged)
+        print("Sentence probability---")
+        print(prob)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    testPath = pathToyPOS
+    print("Test with all file in %s -----" % testPath)
+    hmm.init(testPath, TOO_FEW=5)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Randomly generated sentences ...")
+    swp = stp = sep = sent = sent_tagged = prob = None
+    for i in range(5):
+        print("--- %d ---" % i)
+        swt, stp, sep, sent, sent_tagged, prob = hmm.generate_sentence( \
+            fnx_pTrans, fnx_pEmiss, fnx_pCumTrans, fnx_pCumEmiss)
+        print("SWT---")
+        print(swt)
+        print("STP---")
+        print(stp)
+        print("SEP---")
+        print(sep)
+        print("SENTENCE ---")
+        print(sent)
+        print("TAGGED SENTENCE ---")
+        print(sent_tagged)
+        print("Sentence probability---")
+        print(prob)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    testPath = pathBrownData
+    print("Test with all file in %s -----" % testPath)
+    hmm.init(testPath, TOO_FEW=5)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
