@@ -1,2 +1,16 @@
 __pycache__
-assignment_1/
+assignment_1/brown
+assignment_1/brown__
+assignment_1/gutenberg
+assignment_1/imdb_data
+assignment_1/imdb_data__
+assignment_1/news_data
+assignment_1/news_data__
+assignment_1/toy
+assignment_1/toyPOS
+assignment_1/toyPOS__
+
+assignment_2/Brown_tokenized_text
+assignment_2/Brown_tokenized_text__
+assignment_2/stanford-parser-full-2018-02-27
+assignment_2/stanford-postagger-2018-02-27
