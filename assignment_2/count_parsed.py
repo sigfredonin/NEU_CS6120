@@ -178,34 +178,36 @@ def write_counts_files(dirPath, outDir):
 	all_fd = FreqDist([])
 	for filename in files:
 		filePath = os.path.join(dirPath, filename)
-		print()
-		print("<-- %s" % filePath)
-		text = get_results(filePath)
-		verb_counts = count_verbs(text)
-		root_counts = count_parsed_sentences(text)
-		prep_data = count_prepositions(text)
-		write_counts(outPath, filePath, verb_counts, root_counts, prep_data)
-		pt_verb_counts, ts_verb_counts = verb_counts
-		
+		if os.path.isfile(filePath):
+			print()
+			print("<-- %s" % filePath)
+			text = get_results(filePath)
+			verb_counts = count_verbs(text)
+			root_counts = count_parsed_sentences(text)
+			prep_data = count_prepositions(text)
+			write_counts(outPath, filePath, verb_counts, root_counts, prep_data)
+			pt_verb_counts, ts_verb_counts = verb_counts
+			
 
-		print("Tagged Verbs --------------")
-		print("       Parse trees :",pt_verb_counts)
-		print("  Tagged sentences :",ts_verb_counts)
+			print("Tagged Verbs --------------")
+			print("       Parse trees :",pt_verb_counts)
+			print("  Tagged sentences :",ts_verb_counts)
 
-		pt_root_count, ts_root_count = root_counts
-		print("Parsed Sentences ----------")
-		print("       Parse trees :",pt_root_count)
-		print("   Dependency tags :",ts_root_count)
+			pt_root_count, ts_root_count = root_counts
+			print("Parsed Sentences ----------")
+			print("       Parse trees :",pt_root_count)
+			print("   Dependency tags :",ts_root_count)
 
-		prep_count_total, prep_count_unique, prep_top_3, prep_fd = prep_data
-		print("Prepositions --------------")
-		print("    Tota; IN and TO : %8d" % prep_count_total)
-		print("   Unique IN and TO : %8d" % prep_count_unique)
-		print(" Top 3 prepositions : %s"  % prep_top_3)
-		
-		total_roots += pt_root_count
-		all_fd += prep_fd
-		write_totals(outPath, total_roots, all_fd)
+			prep_count_total, prep_count_unique, prep_top_3, prep_fd = prep_data
+			print("Prepositions --------------")
+			print("    Tota; IN and TO : %8d" % prep_count_total)
+			print("   Unique IN and TO : %8d" % prep_count_unique)
+			print(" Top 3 prepositions : %s"  % prep_top_3)
+			
+			total_roots += pt_root_count
+			all_fd += prep_fd
+	
+	write_totals(outPath, total_roots, all_fd)
 
 	print("Total sentences parsed over all files: %8d" % total_roots)
 	print("Top 3 prepositions over all files: %s" % all_fd.most_common(3))
