@@ -1,0 +1,11 @@
+Command ...
+
+C:\Users\Alice\NLP\NEU_CS6120\assignment_2\stanford-parser-full-2018-02-27>stanford_parse_englishPCFG.bat ..\Brown_tokenized_text\mystery.txt > ..\output\mystery_parsed_20181018_1742
+
+Console tail ...
+
+Parsing [sent. 3705 len. 13]: And , in case , I brought the money with me '' .
+Parsed file: ..\Brown_tokenized_text\mystery.txt [3705 sentences].
+Parsed 56076 words in 3705 sentences (201.61 wds/sec; 13.32 sents/sec).
+  32 sentences were not parsed:
+    32 were skipped as length 0 or greater than 50

@@ -1,0 +1,11 @@
+Command ...
+
+C:\Users\Alice\NLP\NEU_CS6120\assignment_2\stanford-parser-full-2018-02-27>stanford_parse_englishPCFG.bat ..\Brown_tokenized_text\news.txt > ..\output\news_parsed_20181018_1804
+
+Console tail ...
+
+Parsing [sent. 4109 len. 32]: This is one of the main reasons for National Library Week , April 16-22 , and for its theme : `` For a richer , fuller life , read '' ! !
+Parsed file: ..\Brown_tokenized_text\news.txt [4109 sentences].
+Parsed 92248 words in 4109 sentences (119.28 wds/sec; 5.31 sents/sec).
+  153 sentences were not parsed:
+    153 were skipped as length 0 or greater than 50

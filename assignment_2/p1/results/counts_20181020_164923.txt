@@ -1,0 +1,98 @@
+
+File: output\government_parsed_20181018_1708
+verb      :    trees    sents
+-----------------------------
+VB        :     1682     1682
+VBD       :      753      753
+VBG       :      699      699
+VBN       :     1544     1544
+VBP       :      777      777
+VBZ       :     1059     1059
+-----------------------------
+ALL       :     6514     6514
+Parsed sentences -------- 
+        Parse trees :     2296
+    Depencency tags :     2296
+Prepositions -------------
+    Total IN and TO :     8010
+   Unique IN and TO :       67
+ Top 3 prepositions : [('of', 2156), ('to', 1363), ('in', 1118)]
+
+File: output\mystery_parsed_20181018_1742
+verb      :    trees    sents
+-----------------------------
+VB        :     2051     2051
+VBD       :     4205     4205
+VBG       :      872      872
+VBN       :     1145     1145
+VBP       :      760      760
+VBZ       :      527      527
+-----------------------------
+ALL       :     9560     9560
+Parsed sentences -------- 
+        Parse trees :     3673
+    Depencency tags :     3673
+Prepositions -------------
+    Total IN and TO :     6283
+   Unique IN and TO :       78
+ Top 3 prepositions : [('to', 1225), ('of', 865), ('in', 623)]
+
+File: output\news_parsed_20181018_1804
+verb      :    trees    sents
+-----------------------------
+VB        :     2478     2478
+VBD       :     3617     3617
+VBG       :     1219     1219
+VBN       :     2105     2105
+VBP       :      944      944
+VBZ       :     1580     1580
+-----------------------------
+ALL       :    11943    11943
+Parsed sentences -------- 
+        Parse trees :     3956
+    Depencency tags :     3956
+Prepositions -------------
+    Total IN and TO :    12286
+   Unique IN and TO :       81
+ Top 3 prepositions : [('of', 2543), ('to', 1929), ('in', 1809)]
+
+File: output\reviews_parsed_20181018_1807
+verb      :    trees    sents
+-----------------------------
+VB        :      793      793
+VBD       :      832      832
+VBG       :      408      408
+VBN       :      725      725
+VBP       :      471      471
+VBZ       :     1184     1184
+-----------------------------
+ALL       :     4413     4413
+Parsed sentences -------- 
+        Parse trees :     1517
+    Depencency tags :     1517
+Prepositions -------------
+    Total IN and TO :     4520
+   Unique IN and TO :       68
+ Top 3 prepositions : [('of', 1174), ('in', 631), ('to', 626)]
+
+File: output\romance_parsed_20181018_1829
+verb      :    trees    sents
+-----------------------------
+VB        :     2392     2392
+VBD       :     4903     4903
+VBG       :     1153     1153
+VBN       :     1281     1281
+VBP       :      868      868
+VBZ       :      598      598
+-----------------------------
+ALL       :    11195    11195
+Parsed sentences -------- 
+        Parse trees :     4149
+    Depencency tags :     4149
+Prepositions -------------
+    Total IN and TO :     7028
+   Unique IN and TO :       83
+ Top 3 prepositions : [('to', 1381), ('of', 1075), ('in', 808)]
+
+Total sentences parsed over all files:    15591
+Top 3 prepositions over all files: [('of', 7813), ('to', 6524), ('in', 4989)]

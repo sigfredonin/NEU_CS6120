@@ -1,0 +1,11 @@
+Command ...
+
+C:\Users\Alice\NLP\NEU_CS6120\assignment_2\stanford-parser-full-2018-02-27>stanford_parse_englishPCFG.bat ..\Brown_tokenized_text\romance.txt > ..\output\romance_parsed_20181018_1829
+
+Console tail ...
+
+Parsing [sent. 4239 len. 7]: `` I 'm afraid not '' .
+Parsed file: ..\Brown_tokenized_text\romance.txt [4239 sentences].
+Parsed 65875 words in 4239 sentences (183.39 wds/sec; 11.80 sents/sec).
+  90 sentences were not parsed:
+    90 were skipped as length 0 or greater than 50

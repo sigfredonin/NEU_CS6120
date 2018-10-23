@@ -1,0 +1,11 @@
+Command ...
+
+D:\Documents\NLP\NEU_CS6120\assignment_2\stanford-parser-full-2018-02-27>stanford_parse_englishPCFG.bat ..\Brown_tokenized_text\reviews.txt > ..\output\reviews_parsed_20181018_1807
+
+Console tail ...
+
+Parsing [sent. 1593 len. 12]: , but each exerts a radically different influence on blood cholesterol .
+Parsed file: ..\Brown_tokenized_text\reviews.txt [1593 sentences].
+Parsed 35808 words in 1593 sentences (28.44 wds/sec; 1.27 sents/sec).
+  76 sentences were not parsed:
+    76 were skipped as length 0 or greater than 50

@@ -1,0 +1,18 @@
+
+   government.txt 
+6514 verbs, 2296 sentences, 8010 prepositions 
+most common prepositions: [('of', 2156), ('to', 1363), ('in', 1118)]
+ mystery.txt 
+9560 verbs, 3673 sentences, 6283 prepositions most common prepositions: [('to', 1225), ('of', 865), ('in', 623)]
+ news.txt 
+11943 verbs, 3956 sentences, 12286 prepositions most common prepositions: [('of', 2543), ('to', 1929), ('in', 1809)] 
+reviews.txt 
+4413 verbs, 1517 sentences, 4520 prepositions 
+most common prepositions: [('of', 1174), ('in', 631), ('to', 626)]
+ romance.txt 
+11195 verbs, 4149 sentences, 7028 prepositions 
+most common prepositions: [('to', 1381), ('of', 1075), ('in', 808)]
+
+ totals: 43625 total verbs, 15591
+ total sentences, 38127 
+ total prepositions most common prepositions overall: [('to', 1381), ('of', 1075), ('in', 808)]

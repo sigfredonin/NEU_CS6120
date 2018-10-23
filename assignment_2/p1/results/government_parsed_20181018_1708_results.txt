@@ -1,0 +1,11 @@
+Command ...
+
+D:\Documents\NLP\NEU_CS6120\assignment_2\stanford-parser-full-2018-02-27>stanford_parse_englishPCFG.bat ..\Brown_tokenized_text\government.txt > ..\output\government_parsed_20181018_1708
+
+Console tail ...
+
+Parsing [sent. 2535 len. 45]: By sharing the load of important speeches with his colleagues , the president can develop a cadre of able spokesmen who will help to create a public perception of the university as an institution , something more than the lengthened shadow of one man .
+Parsed file: ..\Brown_tokenized_text\government.txt [2535 sentences].
+Parsed 52456 words in 2535 sentences (27.62 wds/sec; 1.33 sents/sec).
+  239 sentences were not parsed:
+    239 were skipped as length 0 or greater than 50
