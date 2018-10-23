@@ -1,0 +1,45 @@
+Python 3.6.0 |Anaconda 4.3.1 (32-bit)| (default, Dec 23 2016, 12:06:52) [MSC v.1900 32 bit (Intel)] on win32
+Type "copyright", "credits" or "license()" for more information.
+>>> 
+============ RESTART: D:\Documents\NLP\NLP-NLTK\neu_cs6120_a1.py ============
+====September 23, 2018 10:01:46 PM====
+-- test infreq_to_UNK() --
+Count UNK tokens: 6310
+First 30 UNK tokens --
+[('[', 2), ('Austen', 1), ('1816', 1), (']', 2), ('VOLUME', 3), ('unite', 3), ('twenty-one', 1), ('vex', 1), ('youngest', 4), ('indulgent', 2), ('died', 4), ('indistinct', 1), ('caresses', 1), ('supplied', 5), ('Sixteen', 2), ('Between', 2), ('_them_', 4), ('nominal', 1), ('mildness', 1), ('impose', 1), ('restraint', 3), ('shadow', 2), ('mutually', 3), ('esteeming', 1), ('disadvantages', 1), ('threatened', 4), ('alloy', 3), ('enjoyments', 3), ('unperceived', 2), ('misfortunes', 1)]
+First 30 prepped tokens --
+['UNK', 'Emma', 'by', 'Jane', 'UNK', 'UNK', 'UNK', 'UNK', 'I', 'CHAPTER', 'I', 'Emma', 'Woodhouse', ',', 'handsome', ',', 'clever', ',', 'and', 'rich', ',', 'with', 'a', 'comfortable', 'home', 'and', 'happy', 'disposition', ',', 'seemed']
+-- test add_four_grams() --
+austen-emma.txt                   170065    170065
+Count of 4-grams used more than once: 11122
+Sample 30 repeated 4-grams ---
+[(('UNK', 'UNK', 'UNK', 'UNK'), 14), ((',', 'seemed', 'to', 'UNK'), 2), (('to', 'UNK', 'some', 'of'), 3), (('UNK', 'some', 'of', 'the'), 2), (('some', 'of', 'the', 'best'), 2), (('the', 'best', 'blessings', 'of'), 2), (('best', 'blessings', 'of', 'existence'), 2), (('blessings', 'of', 'existence', ';'), 2), (('UNK', 'her', '.', 'She'), 2), (('her', '.', 'She', 'was'), 8), (('.', 'She', 'was', 'the'), 3), (('She', 'was', 'the', 'UNK'), 2), (('was', 'the', 'UNK', 'of'), 8), (('the', 'UNK', 'of', 'the'), 44), (('UNK', 'of', 'the', 'two'), 5), (('of', 'the', 'two', 'daughters'), 2), (('the', 'two', 'daughters', 'of'), 2), (('two', 'daughters', 'of', 'a'), 2), (('of', 'her', 'sister', "'s"), 2), (('for', 'her', 'to', 'have'), 3), (('more', 'than', 'an', 'UNK'), 3), (('of', 'her', 'UNK', ';'), 2), (('her', 'UNK', ';', 'and'), 4), (('UNK', ';', 'and', 'her'), 2), (('in', 'Mr.', 'Woodhouse', "'s"), 2), (('Mr.', 'Woodhouse', "'s", 'family'), 2), ((',', 'the', 'UNK', 'of'), 19), (('the', 'UNK', 'of', 'her'), 28), (('to', 'UNK', 'any', 'UNK'), 2), (('any', 'UNK', ';', 'and'), 2)]
+-- test process() --
+----+ File ---+----+----+----| 4-Grams |-- New --|
+austen-emma.txt                   170065    170065
+austen-persuasion.txt              88486     80353
+austen-sense.txt                  127402    114450
+bible-kjv.txt                     684299    675924
+blake-poems.txt                     6756      5629
+bryant-stories.txt                 47230     39774
+burgess-busterbrown.txt            15632     12958
+carroll-alice.txt                  28046     23549
+chesterton-ball.txt                81795     69992
+chesterton-brown.txt               72673     59213
+chesterton-thursday.txt            58293     45391
+edgeworth-parents.txt             179169    153171
+melville-moby_dick.txt            224922    199256
+milton-paradise.txt                87646     80598
+shakespeare-caesar.txt             22534     18838
+shakespeare-hamlet.txt             31655     25936
+shakespeare-macbeth.txt            18843     14466
+whitman-leaves.txt                127195    113818
+Total 4-grams found: 1903381
+--------------------------------------------------
+Total 4-grams found: 1903381
+Sample first 30 4-grams found --
+[(('UNK', 'Emma', 'by', 'Jane'), 1), (('Emma', 'by', 'Jane', 'UNK'), 1), (('by', 'Jane', 'UNK', 'UNK'), 1), (('Jane', 'UNK', 'UNK', 'UNK'), 1), (('UNK', 'UNK', 'UNK', 'UNK'), 418), (('UNK', 'UNK', 'UNK', 'I'), 6), (('UNK', 'UNK', 'I', 'CHAPTER'), 1), (('UNK', 'I', 'CHAPTER', 'I'), 1), (('I', 'CHAPTER', 'I', 'Emma'), 1), (('CHAPTER', 'I', 'Emma', 'Woodhouse'), 1), (('I', 'Emma', 'Woodhouse', ','), 1), (('Emma', 'Woodhouse', ',', 'handsome'), 1), (('Woodhouse', ',', 'handsome', ','), 1), ((',', 'handsome', ',', 'clever'), 1), (('handsome', ',', 'clever', ','), 1), ((',', 'clever', ',', 'and'), 1), (('clever', ',', 'and', 'rich'), 1), ((',', 'and', 'rich', ','), 1), (('and', 'rich', ',', 'with'), 1), (('rich', ',', 'with', 'a'), 1), ((',', 'with', 'a', 'comfortable'), 1), (('with', 'a', 'comfortable', 'home'), 1), (('a', 'comfortable', 'home', 'and'), 1), (('comfortable', 'home', 'and', 'happy'), 1), (('home', 'and', 'happy', 'disposition'), 1), (('and', 'happy', 'disposition', ','), 1), (('happy', 'disposition', ',', 'seemed'), 1), (('disposition', ',', 'seemed', 'to'), 1), ((',', 'seemed', 'to', 'UNK'), 5), (('seemed', 'to', 'UNK', 'some'), 1)]
+Sample last 30 4-grams found --
+[(('really', 'UNK', 'me', 'to'), 1), (('me', 'to', 'the', 'true'), 1), (('to', 'the', 'true', 'songs'), 1), (('the', 'true', 'songs', ','), 1), (('true', 'songs', ',', '('), 1), (('songs', ',', '(', 'who'), 1), (('knows', '?', ')', 'May-be'), 1), (('?', ')', 'May-be', 'it'), 1), ((')', 'May-be', 'it', 'is'), 1), (('May-be', 'it', 'is', 'you'), 1), (('it', 'is', 'you', 'the'), 1), (('is', 'you', 'the', 'mortal'), 1), (('you', 'the', 'mortal', 'UNK'), 1), (('the', 'mortal', 'UNK', 'really'), 1), (('mortal', 'UNK', 'really', 'UNK'), 1), (('UNK', 'really', 'UNK', ','), 1), (('really', 'UNK', ',', 'turning'), 1), (('UNK', ',', 'turning', '--'), 1), ((',', 'turning', '--', 'so'), 1), (('turning', '--', 'so', 'now'), 1), (('--', 'so', 'now', 'finally'), 1), (('so', 'now', 'finally', ','), 1), (('now', 'finally', ',', 'Good-bye'), 1), (('finally', ',', 'Good-bye', '--'), 1), ((',', 'Good-bye', '--', 'and'), 1), (('Good-bye', '--', 'and', 'UNK'), 1), (('--', 'and', 'UNK', '!'), 1), (('and', 'UNK', '!', 'my'), 1), (('UNK', '!', 'my', 'Fancy'), 1), (('!', 'my', 'Fancy', '.'), 1)]
+====September 23, 2018 10:04:12 PM====
+>>> 
