@@ -1,0 +1,48 @@
+(venv) C:\Users\Alice\NLP\NEU_CS6120\assignment_2\tensorflow_tests>python Linear_regression.py
+2018-10-23 15:29:06.058189: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2
+loss: 2.4318013
+loss: 2.1164782
+loss: 1.8425809
+loss: 1.604667
+loss: 1.3980093
+loss: 1.2185017
+loss: 1.0625768
+loss: 0.9271367
+loss: 0.8094903
+loss: 0.7072999
+loss: 0.61853474
+loss: 0.5414312
+loss: 0.47445723
+loss: 0.416282
+loss: 0.3657496
+loss: 0.321856
+loss: 0.2837289
+loss: 0.25061086
+loss: 0.22184367
+loss: 0.19685583
+loss: 0.17515081
+loss: 0.1562973
+loss: 0.13992067
+loss: 0.12569556
+loss: 0.113339245
+loss: 0.10260627
+loss: 0.09328333
+loss: 0.085185215
+loss: 0.078151
+loss: 0.072040915
+
+(venv) C:\Users\Alice\NLP\NEU_CS6120\assignment_2\tensorflow_tests>dir
+ Volume in drive C has no label.
+ Volume Serial Number is F87F-9459
+
+ Directory of C:\Users\Alice\NLP\NEU_CS6120\assignment_2\tensorflow_tests
+
+10/23/2018  03:35 PM    <DIR>          .
+10/23/2018  03:35 PM    <DIR>          ..
+10/23/2018  03:24 PM             1,698 Linear_regression.py
+10/23/2018  03:35 PM                 0 Linear_regression_console_3_20181023_1535.txt
+10/23/2018  03:29 PM            21,234 linear_regression_plot.png
+               3 File(s)         22,932 bytes
+               2 Dir(s)  545,071,591,424 bytes free
+
+(venv) C:\Users\Alice\NLP\NEU_CS6120\assignment_2\tensorflow_tests>
