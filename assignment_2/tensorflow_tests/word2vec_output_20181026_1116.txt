@@ -1,0 +1,287 @@
+Load data ...
+Text:  anar ... ive b
+Words: ['anarchism', 'originated', 'as', 'a', 'term'] .. ['one', 'nine', 'six', 'five', 'b']
+Vocabulary: [('UNK', 418391), ('the', 1061396), ('of', 593677)]  [('unscr', 9), ('leonards', 9), ('hif', 9)]
+Dictionary: [('UNK', 0), ('the', 1), ('of', 2)] ... [('unscr', 49997), ('leonards', 49998), ('hif', 49999)]
+Reverse Dictionary: [(0, 'UNK'), (1, 'the'), (2, 'of')] ... [(49997, 'unscr'), (49998, 'leonards'), (49999, 'hif')]
+data: [5234, 3081, 12, 6, 195, 2, 3134, 46, 59, 156] ...
+Training batch: (array([   12,    12,    12,    12,     6,     6,     6,     6,   195,
+         195,   195,   195,     2,     2,     2,     2,  3134,  3134,
+        3134,  3134,    46,    46,    46,    46,    59,    59,    59,
+          59,   156,   156,   156,   156,   128,   128,   128,   128,
+         742,   742,   742,   742,   477,   477,   477,   477, 10572,
+       10572, 10572, 10572,   134,   134,   134,   134,     1,     1,
+           1,     1, 27350, 27350, 27350, 27350,     2,     2,     2,
+           2,     1,     1,     1,     1,   103,   103,   103,   103,
+         855,   855,   855,   855,     3,     3,     3,     3,     1,
+           1,     1,     1, 15068, 15068, 15068, 15068,     0,     0,
+           0,     0,     2,     2,     2,     2,     1,     1,     1,
+           1,   151,   151,   151,   151,   855,   855,   855,   855,
+        3581,  3581,  3581,  3581,     1,     1,     1,     1,   195,
+         195,   195,   195,    11,    11,    11,    11,   191,   191,
+         191,   191]), array([[  195],
+       [ 3081],
+       [ 5234],
+       [    6],
+       [ 3081],
+       [   12],
+       [  195],
+       [    2],
+       [   12],
+       [    2],
+       [ 3134],
+       [    6],
+       [   46],
+       [  195],
+       [    6],
+       [ 3134],
+       [   59],
+       [    2],
+       [  195],
+       [   46],
+       [   59],
+       [  156],
+       [    2],
+       [ 3134],
+       [  128],
+       [   46],
+       [  156],
+       [ 3134],
+       [   46],
+       [   59],
+       [  128],
+       [  742],
+       [  477],
+       [  742],
+       [  156],
+       [   59],
+       [10572],
+       [  156],
+       [  477],
+       [  128],
+       [10572],
+       [  134],
+       [  742],
+       [  128],
+       [  742],
+       [  477],
+       [    1],
+       [  134],
+       [    1],
+       [  477],
+       [27350],
+       [10572],
+       [    2],
+       [27350],
+       [10572],
+       [  134],
+       [  134],
+       [    2],
+       [    1],
+       [    1],
+       [    1],
+       [27350],
+       [  103],
+       [    1],
+       [    2],
+       [27350],
+       [  855],
+       [  103],
+       [  855],
+       [    3],
+       [    2],
+       [    1],
+       [  103],
+       [    1],
+       [    1],
+       [    3],
+       [    1],
+       [  103],
+       [15068],
+       [  855],
+       [    3],
+       [    0],
+       [15068],
+       [  855],
+       [    0],
+       [    3],
+       [    2],
+       [    1],
+       [    2],
+       [    1],
+       [15068],
+       [    1],
+       [    0],
+       [15068],
+       [    1],
+       [  151],
+       [  151],
+       [    0],
+       [    2],
+       [  855],
+       [  855],
+       [    2],
+       [ 3581],
+       [    1],
+       [    1],
+       [  151],
+       [    1],
+       [ 3581],
+       [    1],
+       [  151],
+       [  195],
+       [  855],
+       [  855],
+       [ 3581],
+       [  195],
+       [   11],
+       [ 3581],
+       [   11],
+       [    1],
+       [  191],
+       [    1],
+       [  191],
+       [  195],
+       [   59],
+       [   11],
+       [    5],
+       [   59],
+       [  195]]))
+Validation data: [94 47  4 22 54 34 82 73 48 13 41 62 79 24 97 55]
+Number of training examples: 3840000
+Number of validation examples: 16
+... data loaded.
+Begin run ----------
+embeddings: Tensor("word2vec/strided_slice_1:0", shape=(128,), dtype=float32)
+norm: Tensor("word2vec/Sqrt:0", shape=(50000, 1), dtype=float32)
+normalized_embeddings: Tensor("word2vec/strided_slice_2:0", shape=(128,), dtype=float32)
+val_embeddings: Tensor("word2vec/strided_slice_3:0", shape=(128,), dtype=float32)
+-- variables initialized
+loss at iter 1000 : 146.23891552352904
+loss at iter 2000 : 82.07716538238526
+loss at iter 3000 : 61.136370287895204
+loss at iter 4000 : 46.14108979821205
+loss at iter 5000 : 37.46788596916199
+state: ['alabama', 'over', 'reasons', 'belonging', 'anselm', 'once', 'lady', 'bring']
+they: ['to', 'mount', 'borough', 'cargo', 'chiefs', 'aliens', 'complaining', 'el']
+one: ['zero', 'three', 'frankenstein', 'subclass', 'rockets', 'nine', 'two', 'ayers']
+six: ['zero', 'chloroplasts', 'rockets', 'combustion', 'corals', 'realization', 'emirates', 'one']
+been: ['aliens', 'awards', 'coalition', 'intellectually', 'grammarian', 'cargo', 'combustion', 'autonomous']
+which: ['dialects', 'inquiry', 'corals', 'coptic', 'atoms', 'guilty', 'subject', 'dostoevsky']
+states: ['coverage', 'verse', 'subclass', 'logo', 'lunches', 'google', 'awards', 'frankenstein']
+b: ['characteristics', 'founded', 'shown', 'pat', 'verse', 'jpg', 'abandoning', 'awards']
+some: ['hemispheres', 'rockets', 'hank', 'astronomers', 'hens', 'front', 'subclass', 'atheism']
+eight: ['subclass', 'one', 'ayers', 'rockets', 'inks', 'spying', 'molecules', 'federal']
+has: ['elsewhere', 'classified', 'verse', 'milestones', 'two', 'per', 'defeated', 'environment']
+when: ['differentiation', 'navarre', 'prince', 'liked', 'cargo', 'made', 'brunswick', 'held']
+about: ['overcoming', 'discouraged', 'corals', 'fao', 'spying', 'energy', 'sentiment', 'loop']
+with: ['coptic', 'alkane', 'gaza', 'cargo', 'and', 'council', 'radcliffe', 'verse']
+will: ['ecosystems', 'UNK', 'aligned', 'local', 'corals', 'aborigines', 'linguistics', 'patent']
+such: ['electrons', 'malay', 'meat', 'portable', 'agnosticism', 'earth', 'corals', 'alone']
+loss at iter 6000 : 30.179088335990905
+loss at iter 7000 : 26.479082141160966
+loss at iter 8000 : 22.788973023891447
+loss at iter 9000 : 19.3580964679718
+loss at iter 10000 : 16.26915669512749
+state: ['alabama', 'belonging', 'transylvania', 'reasons', 'induced', 'bring', 'terence', 'anselm']
+they: ['mount', 'borough', 'bald', 'cargo', 'gland', 'ba', 'complaining', 'and']
+one: ['two', 'victoriae', 'zero', 'basins', 'and', 'nine', 'ayers', 'three']
+six: ['zero', 'one', 'nine', 'rockets', 'victoriae', 'abjads', 'chloroplasts', 'two']
+been: ['aliens', 'gland', 'awards', 'coalition', 'autonomous', 'stylized', 'grammarian', 'cargo']
+which: ['infanticide', 'and', 'aikidoka', 'dialects', 'corals', 'coptic', 'guilty', 'atoms']
+states: ['in', 'coverage', 'verse', 'geological', 'subclass', 'mormons', 'junctions', 'UNK']
+b: ['abjads', 'dice', 'characteristics', 'vincennes', 'ba', 'founded', 'elbridge', 'pat']
+some: ['rockets', 'hemispheres', 'abjads', 'hank', 'ba', 'atheism', 'receiving', 'verse']
+eight: ['one', 'nine', 'subclass', 'potato', 'three', 'basins', 'ba', 'and']
+has: ['elsewhere', 'classified', 'milestones', 'basins', 'verse', 'ba', 'is', 'mysore']
+when: ['gland', 'navarre', 'differentiation', 'contraction', 'liked', 'basins', 'prince', 'cargo']
+about: ['pseudocode', 'overcoming', 'corals', 'anabaptist', 'discouraged', 'fearing', 'cu', 'humanoid']
+with: ['of', 'basins', 'and', 'UNK', 'gaza', 'victoriae', 'coptic', 'in']
+will: ['tarkovsky', 'lm', 'and', 'aligned', 'ecosystems', 'bangladesh', 'corals', 'wedding']
+such: ['electrons', 'and', 'malay', 'portable', 'agnosticism', 'meat', 'formations', 'alone']
+loss at iter 11000 : 16.582211938381196
+loss at iter 12000 : 14.983062055110931
+loss at iter 13000 : 13.08413049697876
+loss at iter 14000 : 12.109502133607865
+loss at iter 15000 : 10.711776273965835
+state: ['countable', 'eugenicists', 'belonging', 'alabama', 'transylvania', 'reasons', 'lady', 'bring']
+they: ['microscopy', 'and', 'alright', 'borough', 'mount', 'UNK', 'it', 'blonde']
+one: ['two', 'zero', 'nine', 'three', 'basins', 'rotate', 'victoriae', 'coke']
+six: ['zero', 'nine', 'coke', 'three', 'five', 'one', 'eight', 'two']
+been: ['aliens', 'gland', 'he', 'percussion', 'stylized', 'eminem', 'grammarian', 'coalition']
+which: ['and', 'infanticide', 'atrophy', 'corals', 'gimme', 'three', 'microscopy', 'coptic']
+states: ['birmingham', 'geological', 'in', 'verse', 'coverage', 'converging', 'rotate', 'scenarios']
+b: ['abjads', 'asexual', 'daimler', 'dice', 'biscuit', 'and', 'regimens', 'nine']
+some: ['rockets', 'hemispheres', 'atheism', 'and', 'coke', 'kearney', 'deism', 'hank']
+eight: ['nine', 'zero', 'three', 'one', 'coke', 'rotate', 'six', 'two']
+has: ['elsewhere', 'is', 'rotate', 'coke', 'in', 'verse', 'and', 'basins']
+when: ['navarre', 'gland', 'liked', 'rotate', 'inhibitor', 'differentiation', 'biscuit', 'contraction']
+about: ['percussion', 'pseudocode', 'corals', 'customers', 'anabaptist', 'overcoming', 'zero', 'fearing']
+with: ['and', 'of', 'basins', 'to', 'victoriae', 'in', 'by', 'coke']
+will: ['altenberg', 'tarkovsky', 'lm', 'to', 'coke', 'in', 'and', 'ignosticism']
+such: ['agnosticism', 'portable', 'malay', 'electrons', 'swamps', 'and', 'escarpment', 'molecules']
+loss at iter 16000 : 11.260569347858429
+loss at iter 17000 : 11.031403015375137
+loss at iter 18000 : 9.965482161045074
+loss at iter 19000 : 9.478428574323654
+loss at iter 20000 : 8.617789463281632
+state: ['eugenicists', 'countable', 'belonging', 'alabama', 'transylvania', 'reasons', 'schlesinger', 'lady']
+they: ['sx', 'that', 'it', 'to', 'microscopy', 'studd', 'and', 'alright']
+one: ['three', 'nine', 'two', 'zero', 'eight', 'six', 'five', 'seven']
+six: ['three', 'eight', 'nine', 'five', 'zero', 'two', 'four', 'one']
+been: ['aliens', 'gland', 'he', 'percussion', 'stylized', 'eminem', 'esteemed', 'grammarian']
+which: ['and', 'sx', 'corals', 'that', 'atrophy', 'three', 'infanticide', 'coke']
+states: ['geological', 'sx', 'casuistry', 'birmingham', 'in', 'coverage', 'converging', 'verse']
+b: ['abjads', 'biscuit', 'daimler', 'd', 'asexual', 'nine', 'four', 'characteristics']
+some: ['rockets', 'and', 'hemispheres', 'atheism', 'a', 'coke', 'deism', 'that']
+eight: ['nine', 'zero', 'three', 'six', 'one', 'seven', 'two', 'five']
+has: ['is', 'by', 'elsewhere', 'coke', 'have', 'rotate', 'verse', 'was']
+when: ['and', 'navarre', 'gland', 'rotate', 'to', 'two', 'inhibitor', 'biscuit']
+about: ['percussion', 'pseudocode', 'from', 'skier', 'corals', 'customers', 'anabaptist', 'three']
+with: ['and', 'of', 'basins', 'to', 'as', 'by', 'for', 'in']
+will: ['petrified', 'altenberg', 'lm', 'tarkovsky', 'in', 'and', 'schlesinger', 'coke']
+such: ['phi', 'portable', 'agnosticism', 'malay', 'or', 'electrons', 'swamps', 'identification']
+loss at iter 21000 : 8.734875530004501
+loss at iter 22000 : 8.217422720432282
+loss at iter 23000 : 7.692906105518341
+loss at iter 24000 : 7.79593206691742
+loss at iter 25000 : 7.492406979084015
+state: ['eugenicists', 'hbox', 'countable', 'belonging', 'UNK', 'and', 'transylvania', 'reasons']
+they: ['it', 'he', 'sx', 'and', 'that', 'studd', 'to', 'microscopy']
+one: ['two', 'five', 'nine', 'zero', 'three', 'eight', 'four', 'six']
+six: ['five', 'eight', 'three', 'four', 'nine', 'seven', 'zero', 'two']
+been: ['aliens', 'he', 'gland', 'percussion', 'a', 'are', 'elegans', 'esteemed']
+which: ['and', 'that', 'sx', 'hbox', 'atrophy', 'the', 'eugenicists', 'coke']
+states: ['geological', 'casuistry', 'converging', 'rho', 'sx', 'verse', 'coverage', 'birmingham']
+b: ['d', 'biscuit', 'abjads', 'asexual', 'daimler', 'solf', 'characteristics', 'dice']
+some: ['and', 'rockets', 'a', 'hemispheres', 'that', 'the', 'kearney', 'coke']
+eight: ['nine', 'three', 'zero', 'five', 'six', 'seven', 'four', 'two']
+has: ['is', 'have', 'was', 'by', 'coke', 'in', 'rotate', 'elsewhere']
+when: ['and', 'two', 'on', 'zero', 'navarre', 'rotate', 'three', 'that']
+about: ['in', 'percussion', 'pseudocode', 'three', 'corals', 'from', 'or', 'eight']
+with: ['and', 'by', 'basins', 'of', 'in', 'for', 'to', 'as']
+will: ['petrified', 'altenberg', 'lm', 'UNK', 'tarkovsky', 'coke', 'in', 'to']
+such: ['phi', 'and', 'or', 'portable', 'agnosticism', 'malay', 'identification', 'swamps']
+loss at iter 26000 : 7.774089040756226
+loss at iter 27000 : 7.20607519698143
+loss at iter 28000 : 7.302137221813202
+loss at iter 29000 : 7.096735210895538
+loss at iter 30000 : 6.957195729970932
+state: ['operatorname', 'eugenicists', 'countable', 'hbox', 'circ', 'belonging', 'absalom', 'transylvania']
+they: ['it', 'he', 'that', 'studd', 'to', 'not', 'sx', 'operatorname']
+one: ['two', 'six', 'five', 'dasyprocta', 'seven', 'operatorname', 'nine', 'eight']
+six: ['eight', 'seven', 'five', 'three', 'four', 'nine', 'two', 'zero']
+been: ['aliens', 'he', 'are', 'gland', 'be', 'was', 'percussion', 'elegans']
+which: ['that', 'operatorname', 'it', 'and', 'sx', 'agouti', 'hbox', 'eugenicists']
+states: ['circ', 'gemological', 'geological', 'converging', 'casuistry', 'sx', 'rho', 'acacia']
+b: ['d', 'dasyprocta', 'biscuit', 'UNK', 'vivaldi', 'one', 'operatorname', 'characteristics']
+some: ['and', 'agouti', 'rockets', 'that', 'operatorname', 'a', 'absalom', 'hemispheres']
+eight: ['six', 'seven', 'five', 'three', 'nine', 'four', 'zero', 'two']
+has: ['is', 'have', 'was', 'by', 'in', 'for', 'with', 'coke']
+when: ['that', 'on', 'and', 'acapulco', 'operatorname', 'two', 'in', 'rotate']
+about: ['three', 'five', 'in', 'seven', 'pseudocode', 'four', 'eight', 'percussion']
+with: ['and', 'of', 'for', 'operatorname', 'to', 'by', 'basins', 'on']
+will: ['petrified', 'and', 'altenberg', 'lm', 'tarkovsky', 'to', 'stellar', 'operatorname']
+such: ['phi', 'or', 'and', 'portable', 'agnosticism', 'operatorname', 'as', 'swamps']
+Run ended ----------
+Visualize embeddings?  Maybe later, dude.
