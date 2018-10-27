@@ -7,6 +7,8 @@ assignment_2/data
 assignment_2/short
 assignment_2/stanford-parser-full-2018-02-27
 assignment_2/stanford-postagger-2018-02-27
+
 assignment_2/p*/test
+assignment_2/p*/data
 
 packages
