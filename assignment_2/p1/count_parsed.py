@@ -113,17 +113,17 @@ def count_prepositions(text):
 	# parse tree, tag 'IN'
 	pt_IN = re_pt_IN.findall(text)
 	pt_IN_lc = [ s.lower() for s in pt_IN ]
-	
+
 	# parse tree, tag 'TO'
 	pt_TO = re_pt_TO.findall(text)
 	pt_TO_lc = [ s.lower() for s in pt_TO ]
-	
+
 	# compile counts and most frequent prepositions
 	count_total = len(pt_IN_lc) + len(pt_TO_lc)
 	fd_TO_IN = FreqDist(pt_TO_lc + pt_IN_lc)
 	count_unique = len(fd_TO_IN)
 	most_common_3 = fd_TO_IN.most_common(3)
-	
+
 	# return results and frequency distribution
 	return count_total, count_unique, most_common_3, fd_TO_IN
 
@@ -160,7 +160,7 @@ def write_counts(outPath, filePath, verb_counts, root_counts, prep_data):
 		f.write("    Total IN and TO : %8d\n" % prep_count_total)
 		f.write("   Unique IN and TO : %8d\n" % prep_count_unique)
 		f.write(" Top 3 prepositions : %s\n"  % prep_top_3)
-			
+
 def write_totals(outPath, total_roots, all_fd):
 	print("<--- %s %8d %s" % (outPath, total_roots, all_fd.most_common(3)))
 	with open(outPath, 'a') as f:
@@ -187,7 +187,7 @@ def write_counts_files(dirPath, outDir):
 			prep_data = count_prepositions(text)
 			write_counts(outPath, filePath, verb_counts, root_counts, prep_data)
 			pt_verb_counts, ts_verb_counts = verb_counts
-			
+
 
 			print("Tagged Verbs --------------")
 			print("       Parse trees :",pt_verb_counts)
@@ -203,10 +203,10 @@ def write_counts_files(dirPath, outDir):
 			print("    Tota; IN and TO : %8d" % prep_count_total)
 			print("   Unique IN and TO : %8d" % prep_count_unique)
 			print(" Top 3 prepositions : %s"  % prep_top_3)
-			
+
 			total_roots += pt_root_count
 			all_fd += prep_fd
-	
+
 	write_totals(outPath, total_roots, all_fd)
 
 	print("Total sentences parsed over all files: %8d" % total_roots)
@@ -221,9 +221,9 @@ if __name__ == '__main__':
 	nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S.%f %p")
 	print("====" + nowStr + "====")
 
-	dirPath = "output"
+	dirPath = "stanford-parser-output"
 	files = sorted(os.listdir(dirPath))
-	
+
 	filename = files[0]
 	filePath = os.path.join(dirPath, filename)
 	text = get_results(filePath)
@@ -233,10 +233,10 @@ if __name__ == '__main__':
 	pt_root_count, ts_root_count = root_counts
 	prep_data = count_prepositions(text)
 	prep_count_total, prep_count_unique, prep_top_3, prep_fd = prep_data
-	
+
 	nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S.%f %p")
 	print("====" + nowStr + "====")
-	
+
 	print("File: %s" % filePath)
 	print("%-10s: %8s %8s" % ('verb', 'trees', 'sents'))
 	print("%-10s--%8s-%8s" % (10*'-', 8*'-', 8*'-'))
@@ -254,7 +254,7 @@ if __name__ == '__main__':
 	print("   Unique IN and TO : %8d" % prep_count_unique)
 	print(" Top 3 prepositions : %s"  % prep_top_3)
 	print()
-	
+
 	nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S.%f %p")
 	print("====" + nowStr + "====")
 
@@ -264,6 +264,6 @@ if __name__ == '__main__':
 	write_counts(outPath, filePath, verb_counts, root_counts, prep_data)
 
 	write_counts_files(dirPath, outDir)
-	
+
 	nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S.%f %p")
 	print("====" + nowStr + "====")
