@@ -8,6 +8,7 @@ October 26, 2018
 
 import re
 import math
+import random
 from nltk import FreqDist
 
 VOCABULARY_SIZE = 10000
@@ -159,6 +160,34 @@ def tdIdf_vectors(review_data, vocabulary_size):
             review_tdIdfs[word_index] += idfs[word_index]
         review_data_tdIdfs.append(review_tdIdfs)
     return review_data_tdIdfs
+
+def split_data(review_data, review_labels):
+    """
+    Spit the data and labels into a training set, and a validation set.
+    """
+    # Shuffle the data and val_labels
+    seed = 123
+    random.seed(seed)
+    data = review_data.copy()
+    random.shuffle(data)
+    random.seed(seed)
+    labels = review_labels.copy()
+    random.shuffle(labels)
+
+    # Construct an index to the shuffled data:
+    # where did the original reviews end up?
+    shuffle_indices = list(range(len(review_labels)))
+    random.seed(seed)
+    random.shuffle(shuffle_indices)
+
+    # Select 9/10 of the data/labels for training, 1/10 for validation
+    train_count = 9 * (len(review_data) // 10)
+    train_data = data[:train_count]
+    train_labels = labels[:train_count]
+    val_data = data[train_count:]
+    val_labels = labels[train_count:]
+
+    return shuffle_indices, train_data, train_labels, val_data, val_labels
 
 def assemble_data(review_data, review_labels, \
         training_count, sets_count, batch_size):
@@ -314,6 +343,25 @@ if __name__ == '__main__':
     for i in range(9474, 9484):
         indices = [ (iX, c) for iX, c in enumerate(tdIdf_hots[i]) if c > 0 ]
         print("%4d: %s" % (i+1, indices))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    shuffle_indices, train_data, train_labels, val_data, val_labels = \
+        split_data(count_hots, review_labels)
+    print("Shuffle indices: %s ..., length=%d" % (shuffle_indices[:10], len(shuffle_indices)))
+    print((" Training data : %d " % len(train_data)).center(50, '-'))
+    for i in range(0, 5):
+        print(train_data[i][:10], '...' if len(train_data[i]) > 10 else '')
+    print((" Training labels : %d " % len(train_labels)).center(50, '-'))
+    for i in range(0, 5):
+        print(train_labels[i])
+    print((" Validation data : %d " % len(val_data)).center(50, '-'))
+    for i in range(0, 5):
+        print(val_data[i][:10], '...' if len(val_data[i]) > 10 else '')
+    print((" Validation labels : %d " % len(val_labels)).center(50, '-'))
+    for i in range(0, 5):
+        print(val_labels[i])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
