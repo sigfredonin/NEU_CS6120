@@ -101,6 +101,23 @@ def one_hot_vectors(review_data, vocabulary_size):
         review_data_one_hot.append(review_one_hot)
     return review_data_one_hot
 
+def one_hot_label_vectors(review_labels, number_of_classes):
+    """
+    Returns a vector for each label that has
+    a one for the rating (class label) that occurs in the label.
+    Returns:
+        review_labels_one_hots:
+            one list per review,
+            review list has zero or one for each possible rating (class label),
+            one if it is the rating in the label, zero if it is not.
+    """
+    review_labels_one_hots = []
+    for label in review_labels:
+        label_one_hot = [0] * number_of_classes  # zero per possible label
+        label_one_hot[label] = 1
+        review_labels_one_hots.append(label_one_hot)
+    return review_labels_one_hots
+
 def count_vectors(review_data, vocabulary_size):
     """
     Returns a vector for each review that has
@@ -165,8 +182,8 @@ def shuffle_data(review_data, review_labels):
     """
     Shuffle the reviews and labels.
     Return:
-        shuffle_index -     list of original indices, e.g.,
-                            review_data[shuffle_index[0]] == shuffled_data[0]
+        shuffled_indices -     list of original indices, e.g.,
+                            review_data[shuffled_indices[0]] == shuffled_data[0]
         shuffled_data -     list of shuffled sentences
         shuffled_labels -   list of shuffle ratings
     """
@@ -186,11 +203,11 @@ def shuffle_data(review_data, review_labels):
 
     # Construct an index to the shuffled data:
     # where did the original reviews end up?
-    shuffle_indices = list(range(len(review_labels)))
+    shuffled_indices = list(range(len(review_labels)))
     random.seed(seed)
-    random.shuffle(shuffle_indices)
+    random.shuffle(shuffled_indices)
 
-    return shuffle_indices, shuffled_data, shuffled_labels
+    return shuffled_indices, shuffled_data, shuffled_labels
 
 def split_data(review_data, review_labels):
     """
@@ -198,15 +215,15 @@ def split_data(review_data, review_labels):
     Shuffle the reviews, then select the first 9/10 for training and
     the remaining reviews for validation.
     Returns:
-        shuffle_index - list of original indices, e.g.,
-                        review_data[shuffle_index[0]] == train_data[0]
+        shuffled_indices - list of original indices, e.g.,
+                            review_data[shuffled_indices[0]] == train_data[0]
         train_data -    list of review sentences for training
         train_labels -  list of review ratings for training
         val_data -      list of review sentences for validation
         val_labels -    list of review ratings for validations
     """
     # Shuffle the data and labels
-    shuffle_indices, shuffled_data, shuffled_labels = \
+    shuffled_indices, shuffled_data, shuffled_labels = \
         shuffle_data(review_data, review_labels)
 
     # Select 9/10 of the data/labels for training, 1/10 for validation
@@ -216,12 +233,14 @@ def split_data(review_data, review_labels):
     val_data = shuffled_data[train_count:]
     val_labels = shuffled_labels[train_count:]
 
-    return shuffle_indices, train_data, train_labels, val_data, val_labels
+    return shuffled_indices, train_data, train_labels, val_data, val_labels
 
 def split_training_data_for_cross_validation(review_data, review_labels):
     """
     Spit the data and labels into 10 equal size sets, after shuffling.
     Return:
+        shuffled_indices - list of original indices, e.g.,
+                        review_data[shuffled_indices[0]] == data[0][0][0]
         data = [
                     ( training_data, validation_data )      # set 1
                     ( training_data, validation_data )      # set 2
@@ -231,19 +250,22 @@ def split_training_data_for_cross_validation(review_data, review_labels):
         where each set has a different 9/10 training and 1/10 validation data.
     """
     # Shuffle the data and labels
-    shuffle_indices, shuffled_data, shuffled_labels = \
+    shuffled_indices, shuffled_data, shuffled_labels = \
         shuffle_data(review_data, review_labels)
 
     # Subdivide the data and labels into 10 ~ equal size sets each
     set_count = len(shuffled_data) // 10
     data = []
     for iSet in range(9):
-        data[iSet] = [( shuffled_data[i], shuffled_labels[i] ) \
-                        for i in range(iSet * set_count, (iSet+1) * set_count)]
-    data[9] = [( shuffled_data[i], shuffled_labels[i] ) \
-                 for i in range(9 * set_count, len(shuffled_data))]
+        xD = iSet * set_count
+        data.append(( \
+            shuffled_data[xD : xD + set_count], \
+            shuffled_labels[xD : xD + set_count] ))
+    data.append(( \
+        shuffled_data[9 * set_count : len(shuffled_data)], \
+        shuffled_labels[9 * set_count : len(shuffled_data)] ))
 
-    return data
+    return shuffled_indices, data
 
 # ------------------------------------------------------------------------
 # Tests ---
@@ -284,11 +306,11 @@ if __name__ == '__main__':
 
     one_hots = one_hot_vectors(review_data, vocabulary_size)
     print("Count one hot vectors: %d" % len(one_hots))
-    print(" count_hots 1..10 ".center(50, '-'))
+    print(" one hot indices 1..10 ".center(50, '-'))
     for i in range(10):
         indices = [ iX for iX, c in enumerate(one_hots[i]) if c > 0 ]
         print("%4d: %s" % (i+1, indices))
-    print(" count_hots 101..110 ".center(50, '-'))
+    print(" one hot indices 101..110 ".center(50, '-'))
     for i in range(100, 110):
         indices = [ iX for iX, c in enumerate(one_hots[i]) if c > 0 ]
         print("%4d: %s" % (i+1, indices))
@@ -299,6 +321,29 @@ if __name__ == '__main__':
     print(" one hot indices 9475..9483 ".center(50, '-'))
     for i in range(9474, 9484):
         indices = [ iX for iX, c in enumerate(one_hots[i]) if c > 0 ]
+        print("%4d: %s" % (i+1, indices))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    number_of_classes = 5
+    one_hot_labels = one_hot_label_vectors(review_labels, number_of_classes)
+    print("Count one hot label vectors: %d" % len(one_hot_labels))
+    print(" one_hot_labels 1..10 ".center(50, '-'))
+    for i in range(10):
+        indices = [ iX for iX, c in enumerate(one_hot_labels[i]) if c > 0 ]
+        print("%4d: %s" % (i+1, indices))
+    print(" one_hot_labels 101..110 ".center(50, '-'))
+    for i in range(100, 110):
+        indices = [ iX for iX, c in enumerate(one_hot_labels[i]) if c > 0 ]
+        print("%4d: %s" % (i+1, indices))
+    print(" one_hot_labels 1001..1010 ".center(50, '-'))
+    for i in range(1000, 1010):
+        indices = [ iX for iX, c in enumerate(one_hot_labels[i]) if c > 0 ]
+        print("%4d: %s" % (i+1, indices))
+    print(" one_hot_labels 9475..9483 ".center(50, '-'))
+    for i in range(9474, 9484):
+        indices = [ iX for iX, c in enumerate(one_hot_labels[i]) if c > 0 ]
         print("%4d: %s" % (i+1, indices))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
@@ -366,9 +411,9 @@ if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    shuffle_indices, shuffled_data, shuffled_labels = \
+    shuffled_indices, shuffled_data, shuffled_labels = \
         shuffle_data(count_hots, review_labels)
-    print("Shuffle indices: %s ..., length=%d" % (shuffle_indices[:10], len(shuffle_indices)))
+    print("Shuffle indices: %s ..., length=%d" % (shuffled_indices[:10], len(shuffled_indices)))
     print((" Shuffled data : %d " % len(shuffled_data)).center(50, '-'))
     for i in range(0, 5):
         print(shuffled_data[i][:10], '...' if len(shuffled_data[i]) > 10 else '')
@@ -379,9 +424,9 @@ if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    shuffle_indices, train_data, train_labels, val_data, val_labels = \
+    shuffled_indices, train_data, train_labels, val_data, val_labels = \
         split_data(count_hots, review_labels)
-    print("Shuffle indices: %s ..., length=%d" % (shuffle_indices[:10], len(shuffle_indices)))
+    print("Shuffle indices: %s ..., length=%d" % (shuffled_indices[:10], len(shuffled_indices)))
     print((" Training data : %d " % len(train_data)).center(50, '-'))
     for i in range(0, 5):
         print(train_data[i][:10], '...' if len(train_data[i]) > 10 else '')
@@ -394,6 +439,19 @@ if __name__ == '__main__':
     print((" Validation labels : %d " % len(val_labels)).center(50, '-'))
     for i in range(0, 5):
         print(val_labels[i])
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    shuffled_indices, data = \
+        split_training_data_for_cross_validation(review_data, review_labels)
+    print("Shuffle indices: %s ..., length=%d" % (shuffled_indices[:10], len(shuffled_indices)))
+    print((" Set data and labels : %s " % str([len(s[0]) for s in data])).center(80, '-'))
+    for i in range(len(data)):
+        set_data, set_labels = data[i]
+        print(set_data[i][:10], '...' if len(set_data[i]) > 10 else '')
+        print(set_labels[i])
+        print(20*'-')
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
