@@ -161,18 +161,28 @@ def tdIdf_vectors(review_data, vocabulary_size):
         review_data_tdIdfs.append(review_tdIdfs)
     return review_data_tdIdfs
 
-def split_data(review_data, review_labels):
+def shuffle_data(review_data, review_labels):
     """
-    Spit the data and labels into a training set, and a validation set.
+    Shuffle the reviews and labels.
+    Return:
+        shuffle_index -     list of original indices, e.g.,
+                            review_data[shuffle_index[0]] == shuffled_data[0]
+        shuffled_data -     list of shuffled sentences
+        shuffled_labels -   list of shuffle ratings
     """
-    # Shuffle the data and val_labels
+    # Use the same seed for all the shuffles,
+    # so the data, labels, and indices are all shuffled the same way
     seed = 123
+
+    # Shuffle the data
     random.seed(seed)
-    data = review_data.copy()
-    random.shuffle(data)
+    shuffled_data = review_data.copy()
+    random.shuffle(shuffled_data)
+
+    # Shuffle the labels
     random.seed(seed)
-    labels = review_labels.copy()
-    random.shuffle(labels)
+    shuffled_labels = review_labels.copy()
+    random.shuffle(shuffled_labels)
 
     # Construct an index to the shuffled data:
     # where did the original reviews end up?
@@ -180,51 +190,60 @@ def split_data(review_data, review_labels):
     random.seed(seed)
     random.shuffle(shuffle_indices)
 
+    return shuffle_indices, shuffled_data, shuffled_labels
+
+def split_data(review_data, review_labels):
+    """
+    Spit the data and labels into a training set, and a validation set.
+    Shuffle the reviews, then select the first 9/10 for training and
+    the remaining reviews for validation.
+    Returns:
+        shuffle_index - list of original indices, e.g.,
+                        review_data[shuffle_index[0]] == train_data[0]
+        train_data -    list of review sentences for training
+        train_labels -  list of review ratings for training
+        val_data -      list of review sentences for validation
+        val_labels -    list of review ratings for validations
+    """
+    # Shuffle the data and labels
+    shuffle_indices, shuffled_data, shuffled_labels = \
+        shuffle_data(review_data, review_labels)
+
     # Select 9/10 of the data/labels for training, 1/10 for validation
     train_count = 9 * (len(review_data) // 10)
-    train_data = data[:train_count]
-    train_labels = labels[:train_count]
-    val_data = data[train_count:]
-    val_labels = labels[train_count:]
+    train_data = shuffled_data[:train_count]
+    train_labels = shuffled_labels[:train_count]
+    val_data = shuffled_data[train_count:]
+    val_labels = shuffled_labels[train_count:]
 
     return shuffle_indices, train_data, train_labels, val_data, val_labels
 
-def assemble_data(review_data, review_labels, \
-        training_count, sets_count, batch_size):
+def split_training_data_for_cross_validation(review_data, review_labels):
     """
-    Spit the data and labels into training/eval sets, and test set.
-    Both the data and the labels are to be split.
-        Training/eval:  training_count
-        Test:           len(data) - training count
-    The training data is to be further subdivided into sets for n-way
-    cross-validation.
-        Set:    set_size = training_count / sets_count
-                training_count % sets_count == 0
-    Each set will be further subdivided into batches.
-        Batch:  batch_count = set_size / batch_size
-                set_size % batch_size == 0
-    For problem 3,
-        len(review_data) == len(review_labels) == 9484 reviews
-        sets_count == 10
-        if training__count == 8000, then
-            len(test_data) == 9484 - 8000 == 1484 reviews
-            reviews_per_set == 8000 / 10 == 800 reviews
-        if batch_size == 80 reviews per batch, then
-            batch_count_per_set == 800 / 80 == 10 batches of 80 reviews
+    Spit the data and labels into 10 equal size sets, after shuffling.
     Return:
-        training_data = [
-                          [
-                            [ [ batch_data ], [ batch_labels] ]   # batch 1
-                            [ [ batch_data ], [ batch_labels] ]   # batch 2
-                            ... ] # set 1
-                          [
-                            [ [ batch_data ], [ batch_labels] ]   # batch 1
-                            [ [ batch_data ], [ batch_labels] ]   # batch 2
-                            ... ] # set 2
-                          ...
-                        ]
-        test_data = [ [ data ], [ labels ] ]    # just one batch
+        data = [
+                    ( training_data, validation_data )      # set 1
+                    ( training_data, validation_data )      # set 2
+                    ...
+                    ( training_data, validation_data )      # set 10
+                ]
+        where each set has a different 9/10 training and 1/10 validation data.
     """
+    # Shuffle the data and labels
+    shuffle_indices, shuffled_data, shuffled_labels = \
+        shuffle_data(review_data, review_labels)
+
+    # Subdivide the data and labels into 10 ~ equal size sets each
+    set_count = len(shuffled_data) // 10
+    data = []
+    for iSet in range(9):
+        data[iSet] = [( shuffled_data[i], shuffled_labels[i] ) \
+                        for i in range(iSet * set_count, (iSet+1) * set_count)]
+    data[9] = [( shuffled_data[i], shuffled_labels[i] ) \
+                 for i in range(9 * set_count, len(shuffled_data))]
+
+    return data
 
 # ------------------------------------------------------------------------
 # Tests ---
@@ -343,6 +362,19 @@ if __name__ == '__main__':
     for i in range(9474, 9484):
         indices = [ (iX, c) for iX, c in enumerate(tdIdf_hots[i]) if c > 0 ]
         print("%4d: %s" % (i+1, indices))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    shuffle_indices, shuffled_data, shuffled_labels = \
+        shuffle_data(count_hots, review_labels)
+    print("Shuffle indices: %s ..., length=%d" % (shuffle_indices[:10], len(shuffle_indices)))
+    print((" Shuffled data : %d " % len(shuffled_data)).center(50, '-'))
+    for i in range(0, 5):
+        print(shuffled_data[i][:10], '...' if len(shuffled_data[i]) > 10 else '')
+    print((" Shuffled labels : %d " % len(shuffled_labels)).center(50, '-'))
+    for i in range(0, 5):
+        print(shuffled_labels[i])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
