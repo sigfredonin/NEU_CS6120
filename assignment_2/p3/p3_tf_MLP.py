@@ -21,14 +21,21 @@ from tensorflow.python.keras.layers import Dropout
 import p3_utils
 
 def mlp_model(input_shape, h1_units, \
-              num_classes=5, dropout_rate=0.0):
+              num_classes=5, dropout_rate=0.0, input_dropout_rate=0.0):
     """
     Creates a TF Keras Multi-Layer Perceptron model,
     with an input layer, two hidden layers, and an output layer.
     """
+    input_dim = input_shape[0]
+    print("--- Model ---")
+    print("Input    : %d x %d" % (1, input_dim))
+    print("Layer h1 : %d x %d" % (input_dim, h1_units))
+    print("Layer h2 : %d x %d" % (h1_units, 10))
+    print("Output   : %d x %d" % (10, 5))
+    print("----------")
     model = models.Sequential()
     # input layer
-    model.add(Dropout(rate=dropout_rate, input_shape=input_shape))
+    model.add(Dropout(rate=input_dropout_rate, input_shape=input_shape))
     # h1: hidden layer 1
     model.add(Dense(units=h1_units, activation='relu'))
     model.add(Dropout(rate=dropout_rate))
@@ -50,7 +57,7 @@ def mlp_train(model, data):
     loss = 'sparse_categorical_crossentropy'
     learning_rate = 1e-3
     optimizer = tf.keras.optimizers.Adam(lr=learning_rate)
-    model.compile(optimizer=optimizer, loss= loss, metrics=['accuracy'])
+    model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
 
     callbacks = [ tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=2)]
 
@@ -109,7 +116,7 @@ if __name__ == '__main__':
 
     input_width = np_train_data.shape[1]
     model = mlp_model(input_shape=np_train_data.shape[1:],
-                      h1_units=120)
+                      h1_units=120, dropout_rate=0.5)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
