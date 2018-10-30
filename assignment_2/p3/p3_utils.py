@@ -332,19 +332,19 @@ if __name__ == '__main__':
     print(" one_hot_labels 1..10 ".center(50, '-'))
     for i in range(10):
         indices = [ iX for iX, c in enumerate(one_hot_labels[i]) if c > 0 ]
-        print("%4d: %s" % (i+1, indices))
+        print("%4d: %s %s" % (i+1, indices, one_hot_labels[i]) )
     print(" one_hot_labels 101..110 ".center(50, '-'))
     for i in range(100, 110):
         indices = [ iX for iX, c in enumerate(one_hot_labels[i]) if c > 0 ]
-        print("%4d: %s" % (i+1, indices))
+        print("%4d: %s %s" % (i+1, indices, one_hot_labels[i]) )
     print(" one_hot_labels 1001..1010 ".center(50, '-'))
     for i in range(1000, 1010):
         indices = [ iX for iX, c in enumerate(one_hot_labels[i]) if c > 0 ]
-        print("%4d: %s" % (i+1, indices))
+        print("%4d: %s %s" % (i+1, indices, one_hot_labels[i]) )
     print(" one_hot_labels 9475..9483 ".center(50, '-'))
     for i in range(9474, 9484):
         indices = [ iX for iX, c in enumerate(one_hot_labels[i]) if c > 0 ]
-        print("%4d: %s" % (i+1, indices))
+        print("%4d: %s %s" % (i+1, indices, one_hot_labels[i]) )
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
