@@ -21,7 +21,7 @@ from tensorflow.python.keras.layers import Dropout
 import p3_utils
 
 def mlp_model(input_shape, h1_units, \
-              num_classes=10, dropout_rate=0.0):
+              num_classes=5, dropout_rate=0.0):
     """
     Creates a TF Keras Multi-Layer Perceptron model,
     with an input layer, two hidden layers, and an output layer.
@@ -33,7 +33,7 @@ def mlp_model(input_shape, h1_units, \
     model.add(Dense(units=h1_units, activation='relu'))
     model.add(Dropout(rate=dropout_rate))
     # h2: hidden layer 2
-    model.add(Dense(units=num_classes, activation='relu'))
+    model.add(Dense(units=10, activation='relu'))
     model.add(Dropout(rate=dropout_rate))
     # output layer
     model.add(Dense(units=num_classes, activation='softmax'))
