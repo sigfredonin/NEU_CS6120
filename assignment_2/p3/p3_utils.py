@@ -255,19 +255,19 @@ def split_training_data_for_cross_validation(review_data, review_labels):
 
     # Subdivide the data and labels into 10 ~ equal size sets each
     set_count = len(shuffled_data) // 10
-    data = []
+    xval_sets = []
     for iSet in range(9):
         xD = iSet * set_count
-        data.append(( \
+        xval_sets.append(( \
             shuffled_data[xD : xD + set_count], \
             shuffled_labels[xD : xD + set_count] ))
-    data.append(( \
+    xval_sets.append(( \
         shuffled_data[9 * set_count : len(shuffled_data)], \
         shuffled_labels[9 * set_count : len(shuffled_data)] ))
 
-    return shuffled_indices, data
+    return shuffled_indices, xval_sets
 
-def assemble_cross_validation_data(data, index_val):
+def assemble_cross_validation_data(xval_sets, index_val):
     """
     Assemble training data and labels, and validation data and labels,
     for cross-validation trainingself.
@@ -279,10 +279,10 @@ def assemble_cross_validation_data(data, index_val):
             training_set -  ( training_data, training_labels)
             val_set -       ( val_data, val_labels )
     """
-    val_set = data[index_val]
+    val_set = xval_sets[index_val]
     training_data = []
     training_labels = []
-    for iSet, data_labels in enumerate(data):
+    for iSet, data_labels in enumerate(xval_sets):
         if iSet != index_val:
             _data_, _labels_ = data_labels
             training_data += _data_
