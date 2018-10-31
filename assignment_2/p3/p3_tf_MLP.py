@@ -46,7 +46,7 @@ def mlp_model(input_shape, h1_units, \
     model.add(Dense(units=num_classes, activation='softmax'))
     return model
 
-def mlp_train(model, data):
+def mlp_train(model, data, epochs=10):
     """
     Train the Multi-Layer Perceptron.
     Inputs:
@@ -62,10 +62,17 @@ def mlp_train(model, data):
     callbacks = [ tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=2)]
 
     history = model.fit(train_data, train_labels, \
-        epochs=10, batch_size=32)
+        epochs=epochs, batch_size=32)
 
     score = model.evaluate(val_data, val_labels, batch_size=32)
 
+    return history, score
+
+def train_and_eval(model, data):
+    """
+    Run a training and validation cycle for given training/evaluation set
+    of data and labels.
+    """
     return score
 
 # ------------------------------------------------------------------------
@@ -103,29 +110,68 @@ if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    shuffle_indices, train_data, train_labels, val_data, val_labels = \
-        p3_utils.split_data(count_hots, review_labels)
-
-    np_train_data = np.array(train_data)
-    np_train_labels = np.array(train_labels)
-    np_val_data = np.array(val_data)
-    np_val_labels = np.array(val_labels)
+    shuffle_indices, xval_sets = \
+        p3_utils.split_training_data_for_cross_validation(count_hots, review_labels)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    input_width = np_train_data.shape[1]
-    model = mlp_model(input_shape=np_train_data.shape[1:],
-                      h1_units=120, dropout_rate=0.5)
+    num_cross_validation_trials = len(xval_sets)
+    scores = []
+    for iTrial in range(num_cross_validation_trials):
 
-    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-    print("====" + nowStr + "====")
+        nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+        print("====" + nowStr + "====")
 
-    data = ((np_train_data, np_train_labels), (np_val_data, np_val_labels))
-    score = mlp_train(model, data)
-    print("Scores with validation data ---")
-    for i, item in enumerate(score):
-        print("%s: %s" % (model.metrics_names[i], str(score[i])))
+        print((" Trial %d of %d" % (iTrial+1, num_cross_validation_trials)).center(80, '-'))
+
+        (train_data, train_labels), (val_data, val_labels) = \
+            p3_utils.assemble_cross_validation_data(xval_sets, iTrial)
+
+        np_train_data = np.array(train_data)
+        np_train_labels = np.array(train_labels)
+        np_val_data = np.array(val_data)
+        np_val_labels = np.array(val_labels)
+        data = ((np_train_data, np_train_labels), (np_val_data, np_val_labels))
+
+        nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+        print("====" + nowStr + "====")
+
+        model = mlp_model(input_shape=np_train_data.shape[1:],
+                          h1_units=120, dropout_rate=0.5)
+
+        nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+        print("====" + nowStr + "====")
+
+        num_epochs_per_trial = 20
+        trial_scores = []
+        for iEpoch in range(num_epochs_per_trial):
+            print("==> EPOCH %d of %d <==" % (iEpoch+1, num_epochs_per_trial))
+            history, score = mlp_train(model, data, epochs=1)
+            trial_scores.append((history, score))
+            print("Scores with training data ---", end='')
+            for history_key in history.history:
+                print(" %s: %7.4f" % (history_key, history.history[history_key][0]), end='')
+            print()
+            print("Scores with validation data ---", end='')
+            for iMetric in range(len(score)):
+                print(" %s: %7.4f" % (model.metrics_names[iMetric], score[iMetric]), end='')
+            print()
+        scores.append(trial_scores)
+
+        nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+        print("====" + nowStr + "====")
+
+    for iTrial, trial_scores in enumerate(scores):
+        print("Trial %d ---" % iTrial)
+        for iEpoch, train_scores, val_scores in enumerate(trial_scores):
+            print("  %d:" % iEpoch, end='')
+            for history_key in train_scores.history:
+                print(" %s: %7.4f" % (history_key, train_scores.history[history_key][0]), end='')
+            print()
+            for iMetric in range(len(val_scores)):
+                print(" %s: %7.4f" % (model.metrics_names[iMetric], score[iMetric]), end='')
+            print()
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
