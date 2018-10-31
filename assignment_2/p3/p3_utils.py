@@ -267,6 +267,29 @@ def split_training_data_for_cross_validation(review_data, review_labels):
 
     return shuffled_indices, data
 
+def assemble_cross_validation_data(data, index_val):
+    """
+    Assemble training data and labels, and validation data and labels,
+    for cross-validation trainingself.
+    Inputs:
+        data-   sets of data and labels, one to be used for validation.
+        index-  whidh set to use for validation.
+    Returns:
+        cross_validation data and labels -
+            training_set -  ( training_data, training_labels)
+            val_set -       ( val_data, val_labels )
+    """
+    val_set = data[index_val]
+    training_data = []
+    training_labels = []
+    for iSet, data_labels in enumerate(data):
+        if iSet != index_val:
+            _data_, _labels_ = data_labels
+            training_data += _data_
+            training_labels += _labels_
+    training_set = ( training_data, training_labels)
+    return training_set, val_set
+
 # ------------------------------------------------------------------------
 # Tests ---
 # ------------------------------------------------------------------------
@@ -452,6 +475,20 @@ if __name__ == '__main__':
         print(set_data[i][:10], '...' if len(set_data[i]) > 10 else '')
         print(set_labels[i])
         print(20*'-')
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    a = [ \
+      ([1, 2, 3],    ['a', 'b', 'c']), \
+      ([4, 5, 6],    ['d', 'e', 'f']), \
+      ([7, 8, 9],    ['g', 'h', 'i']), \
+      ([10, 11, 12], ['j', 'k', 'l'])  \
+    ]
+    print("a: %s" % str(a))
+    for i in range(len((a))):
+        t, v = assemble_cross_validation_data(a, i)
+        print("%d: %s %s" % (i, str(t), str(v)))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
