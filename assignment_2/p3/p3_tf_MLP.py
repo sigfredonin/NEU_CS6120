@@ -31,7 +31,7 @@ def mlp_model(input_shape, h1_units, \
     print("--- Model ---")
     print("Input    : %d x %d" % (1, input_dim))
     print("Layer h1 : %d x %d SIGMOID" % (input_dim, h1_units))
-    print("Layer h2 : %d x %d RELU" % (h1_units, 10))
+    print("Layer h2 : %d x %d SIGMOID" % (h1_units, 10))
     print("Output   : %d x %d SOFTMAX" % (10, 5))
     print("----------")
     model = models.Sequential()
@@ -41,7 +41,7 @@ def mlp_model(input_shape, h1_units, \
     model.add(Dense(units=h1_units, activation='sigmoid'))
     model.add(Dropout(rate=dropout_rate))
     # h2: hidden layer 2
-    model.add(Dense(units=10, activation='relu'))
+    model.add(Dense(units=10, activation='sigmoid'))
     model.add(Dropout(rate=dropout_rate))
     # output layer
     model.add(Dense(units=num_classes, activation='softmax'))
