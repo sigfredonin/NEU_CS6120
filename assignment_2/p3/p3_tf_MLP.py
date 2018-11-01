@@ -30,9 +30,9 @@ def mlp_model(input_shape, h1_units, \
     input_dim = input_shape[0]
     print("--- Model ---")
     print("Input    : %d x %d" % (1, input_dim))
-    print("Layer h1 : %d x %d" % (input_dim, h1_units))
-    print("Layer h2 : %d x %d" % (h1_units, 10))
-    print("Output   : %d x %d" % (10, 5))
+    print("Layer h1 : %d x %d RELU" % (input_dim, h1_units))
+    print("Layer h2 : %d x %d RELU" % (h1_units, 10))
+    print("Output   : %d x %d SOFTMAX" % (10, 5))
     print("----------")
     model = models.Sequential()
     # input layer
@@ -138,7 +138,7 @@ if __name__ == '__main__':
         print("====" + nowStr + "====")
 
         model = mlp_model(input_shape=np_train_data.shape[1:],
-                          h1_units=120, dropout_rate=0.5)
+                          h1_units=240, dropout_rate=0.5)
 
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
