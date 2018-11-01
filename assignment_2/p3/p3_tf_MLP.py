@@ -114,7 +114,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     shuffle_indices, xval_sets = \
-        p3_utils.split_training_data_for_cross_validation(one_hots, review_labels)
+        p3_utils.split_training_data_for_cross_validation(review_data, review_labels)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
