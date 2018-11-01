@@ -13,6 +13,7 @@ October 29, 2018
 """
 import tensorflow as tf
 import numpy as np
+import matplotlib.pyplot as plt
 
 from tensorflow.python.keras import models
 from tensorflow.python.keras.layers import Dense
@@ -157,6 +158,36 @@ if __name__ == '__main__':
             for history_key in history.history:
                 print(" %s: %7.4f" % (history_key, history.history[history_key][iEpoch]), end='')
             print()
+
+    # Collect trial results: loss, accuracy for training and evaluation
+    train_loss = []
+    train_acc  = []
+    val_loss = []
+    val_acc =  []
+    for iTrial, history in enumerate(scores):
+        train_loss.append(history.history["loss"])
+        train_acc.append(history.history["acc"])
+        val_loss.append(history.history["val_loss"])
+        val_acc.append(history.history["val_acc"])
+
+    # Compute means over all trials
+    np_train_loss = np.array(train_loss).mean(axis=0)
+    bp_train_acc = np.array(train_acc).mean(axis=0)
+    np_val_loss = np.array(val_loss).mean(axis=0)
+    bp_val_acc = np.array(val_acc).mean(axis=0)
+
+    # Plot loss and accuracy over the trials
+    plt.figure(1)
+    plt.plot(np_train_loss, 'r--')
+    plt.plot(bp_train_acc, 'r')
+    plt.plot(np_val_loss, 'b--')
+    plt.plot(bp_val_acc, 'b')
+    plt.xlabel('Epoch')
+    plt.ylabel('Avg Loss / Avg Acc')
+    plt.legend(['Training Loss', 'Training Accuracy', \
+        'Validation Loss', 'Validation Accuracy'], loc='upper left')
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    plt.savefig('tests/p3_tf_MLP_test' + timestamp + '.png')
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
