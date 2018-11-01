@@ -104,6 +104,9 @@ if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
+    one_hots = p3_utils.one_hot_vectors(review_data, vocabulary_size)
+    print("Count count vectors: %d" % len(one_hots))
+
     count_hots = p3_utils.count_vectors(review_data, vocabulary_size)
     print("Count count vectors: %d" % len(count_hots))
 
@@ -111,7 +114,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     shuffle_indices, xval_sets = \
-        p3_utils.split_training_data_for_cross_validation(count_hots, review_labels)
+        p3_utils.split_training_data_for_cross_validation(one_hots, review_labels)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
