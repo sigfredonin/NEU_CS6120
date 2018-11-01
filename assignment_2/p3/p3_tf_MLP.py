@@ -141,7 +141,7 @@ if __name__ == '__main__':
         print("====" + nowStr + "====")
 
         model = mlp_model(input_shape=np_train_data.shape[1:],
-                          h1_units=60, dropout_rate=0.5)
+                          h1_units=240, dropout_rate=0.5)
 
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
