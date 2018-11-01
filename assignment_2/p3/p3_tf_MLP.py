@@ -62,11 +62,10 @@ def mlp_train(model, data, epochs=10):
     callbacks = [ tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=2)]
 
     history = model.fit(train_data, train_labels, \
+        validation_data = (val_data, val_labels), \
         epochs=epochs, batch_size=32)
 
-    score = model.evaluate(val_data, val_labels, batch_size=32)
-
-    return history, score
+    return history
 
 def train_and_eval(model, data):
     """
@@ -144,33 +143,19 @@ if __name__ == '__main__':
         print("====" + nowStr + "====")
 
         num_epochs_per_trial = 20
-        trial_scores = []
-        for iEpoch in range(num_epochs_per_trial):
-            print("==> EPOCH %d of %d <==" % (iEpoch+1, num_epochs_per_trial))
-            history, score = mlp_train(model, data, epochs=1)
-            trial_scores.append((history, score))
-            print("Scores with training data ---", end='')
-            for history_key in history.history:
-                print(" %s: %7.4f" % (history_key, history.history[history_key][0]), end='')
-            print()
-            print("Scores with validation data ---", end='')
-            for iMetric in range(len(score)):
-                print(" %s: %7.4f" % (model.metrics_names[iMetric], score[iMetric]), end='')
-            print()
-        scores.append(trial_scores)
+        history = mlp_train(model, data, epochs=num_epochs_per_trial)
+        scores.append(history)
 
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
 
-    for iTrial, trial_scores in enumerate(scores):
-        print("Trial %d ---" % iTrial)
-        for iEpoch, train_scores, val_scores in enumerate(trial_scores):
-            print("  %d:" % iEpoch, end='')
-            for history_key in train_scores.history:
-                print(" %s: %7.4f" % (history_key, train_scores.history[history_key][0]), end='')
-            print()
-            for iMetric in range(len(val_scores)):
-                print(" %s: %7.4f" % (model.metrics_names[iMetric], score[iMetric]), end='')
+    print(" Trial Results ".center(80, '='))
+    for iTrial, history in enumerate(scores):
+        print("Trial %d of %d ---" % (iTrial+1, len(scores)))
+        for iEpoch in range(num_epochs_per_trial):
+            print("%4d: " % (iEpoch+1), end='')
+            for history_key in history.history:
+                print(" %s: %7.4f" % (history_key, history.history[history_key][iEpoch]), end='')
             print()
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
