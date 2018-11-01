@@ -110,11 +110,14 @@ if __name__ == '__main__':
     count_hots = p3_utils.count_vectors(review_data, vocabulary_size)
     print("Count count vectors: %d" % len(count_hots))
 
+    tdIdf_hots = p3_utils.tdIdf_vectors(review_data, vocabulary_size)
+    print("Count tdIdf vectors: %d" % len(tdIdf_hots))
+
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
     shuffle_indices, xval_sets = \
-        p3_utils.split_training_data_for_cross_validation(review_data, review_labels)
+        p3_utils.split_training_data_for_cross_validation(tdIdf_hots, review_labels)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
@@ -141,7 +144,7 @@ if __name__ == '__main__':
         print("====" + nowStr + "====")
 
         model = mlp_model(input_shape=np_train_data.shape[1:],
-                          h1_units=240, dropout_rate=0.5)
+                          h1_units=60, dropout_rate=0.5)
 
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
