@@ -211,7 +211,7 @@ def tdIdf_vectors(review_data, vocabulary_size):
         review_data_tdIdfs.append(review_tdIdfs)
     return review_data_tdIdfs
 
-def load_embeddings(vocabulary):
+def load_embeddings(filePath, vocabulary):
     """
     Load embeddings for words in the vocabulary.
     Source: https://code.google.com/archive/p/word2vec/
@@ -227,8 +227,6 @@ def load_embeddings(vocabulary):
     EXPECTED_HEADER = b'3000000 300\n'
     COUNT_WORDS = 3000000
     VECTOR_DIMENSIONS = 300
-    FILE = "GoogleNews-vectors-negative300.bin"
-    filePath = os.path.join("data", FILE)
     embeddings = {}
     with open(filePath, 'rb') as f:
         header = f.read(len(EXPECTED_HEADER))   # skip over header
@@ -238,14 +236,15 @@ def load_embeddings(vocabulary):
         for i in range(COUNT_WORDS):
             word = ''
             while(True):
-                char = f.read()
+                aByte = f.read(1)
+                print(offset, ':', aByte)
                 offset += 1
-                if char != ' ':
-                    word += char
+                if aByte != b' ':
+                    word += aByte.decode()
                 else:
                     F = "%df" % VECTOR_DIMENSIONS
                     vectors = unpack(F, f.read(4 * VECTOR_DIMENSIONS))
-                    offset += LENGTH_VECTOR_DATA
+                    offset += 4 * VECTOR_DIMENSIONS
                     if word in vocabulary:
                         embeddings[word] = vectors    # save only vocabulary words
                     break
@@ -623,7 +622,12 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     print("Reading embeddings ...")
-    embeddings = load_embeddings(dictionary)
+    FILE = "GoogleNews-vectors-negative300.bin"
+    filePath = os.path.join("data", FILE)
+    test_words = set(["to", "the", "battlements", \
+        "mateys", ",", "into", "fight", "and", "devil", \
+        "take", "any", "cowards"])
+    embeddings = load_embeddings(filePath, test_words)
     print("Length embeddings: %d" % len(embeddings))
     first_word, first_embedding =list(embeddings.items)[0]
     print("First embedding: %s %s" % (first_word, first_embedding[:4]))
