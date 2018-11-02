@@ -187,7 +187,7 @@ def word_idfs(review_data, vocabulary_size):
     word_idfs = [ math.log(N / c) if c > 0 else 0 for c in word_doc_counts ]
     return word_idfs
 
-def tdIdf_vectors(review_data, vocabulary_size):
+def tdIdf_vectors(review_data, vocabulary_size, DEBUG=False):
     """
     Returns a vector for each review that has
     a td-idf weight for each word that occurs in the review.
@@ -234,19 +234,25 @@ def load_embeddings(filePath, vocabulary):
             raise InvalidFileException("Invalid header: ", header)
         offset = len(header)
         for i in range(COUNT_WORDS):
-            word = ''
+            wordBytes = b''
             while(True):
                 aByte = f.read(1)
-                print(offset, ':', aByte)
                 offset += 1
                 if aByte != b' ':
-                    word += aByte.decode()
+                    wordBytes += aByte
                 else:
                     F = "%df" % VECTOR_DIMENSIONS
                     vectors = unpack(F, f.read(4 * VECTOR_DIMENSIONS))
                     offset += 4 * VECTOR_DIMENSIONS
-                    if word in vocabulary:
-                        embeddings[word] = vectors    # save only vocabulary words
+                    try:
+                        word = wordBytes.decode()
+                        if word in vocabulary:
+                            if DEBUG: print("%d : %s" % (offset, word))
+                            embeddings[word] = vectors    # save only vocabulary words
+                    except UnicodeDecodeError as err:
+                        print("ERROR decoding", wordBytes, \
+                            "at offset ", offset)
+                        print(err)
                     break
     return embeddings
 
@@ -629,8 +635,8 @@ if __name__ == '__main__':
         "take", "any", "cowards"])
     embeddings = load_embeddings(filePath, test_words)
     print("Length embeddings: %d" % len(embeddings))
-    first_word, first_embedding =list(embeddings.items)[0]
-    print("First embedding: %s %s" % (first_word, first_embedding[:4]))
+    for word, vector in embeddings.items():
+        print("%10s : %s" % (word, vector[:4]))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
