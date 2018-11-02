@@ -9,6 +9,9 @@ October 26, 2018
 import re
 import math
 import random
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
 from nltk import FreqDist
 
 VOCABULARY_SIZE = 10000
@@ -267,6 +270,25 @@ def split_training_data_for_cross_validation(review_data, review_labels):
 
     return shuffled_indices, xval_sets
 
+def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
+        val_acc_min, val_acc_mean, val_acc_max, \
+        input_type, h1_units, h1_f, h2_f, epochs):
+    plt.figure(1)
+    plt.suptitle("Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
+        (input_type, h1_units, h1_f, h2_f, epochs))
+    plt.title("validation accuracy: %7.4f %7.4f %7.4f" % \
+        (val_acc_min, val_acc_mean, val_acc_max))
+    plt.plot(np_train_loss, 'r--')
+    plt.plot(np_train_acc, 'r')
+    plt.plot(np_val_loss, 'b--')
+    plt.plot(np_val_acc, 'b')
+    plt.xlabel('Epoch')
+    plt.ylabel('Avg Loss / Avg Acc')
+    plt.legend(['Training Loss', 'Training Accuracy', \
+        'Validation Loss', 'Validation Accuracy'], loc='upper left')
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    plt.savefig('tests/p3_tf_MLP_test' + timestamp + '.png')
+
 def assemble_cross_validation_data(xval_sets, index_val):
     """
     Assemble training data and labels, and validation data and labels,
@@ -489,6 +511,33 @@ if __name__ == '__main__':
     for i in range(len((a))):
         t, v = assemble_cross_validation_data(a, i)
         print("%d: %s %s" % (i, str(t), str(v)))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    train_loss = [[ math.exp(-(l/20.0))+(0.002*(random.random()-0.5)) \
+        for l in range(10) ] for i in range(20) ]
+    train_accuracy = [[ 0.8 * (1 - math.exp(-l/20.0)+(0.002*(random.random()-0.5))) \
+        for l in range(10) ] for i in range(20) ]
+    val_loss = [[ math.exp(-l/20.0)+(0.002*(random.random()-0.5)) \
+                + math.exp(0.5 * (l/20.0))+(0.002*(random.random()-0.5)) \
+        for l in range(10) ] for i in range(20) ]
+    val_accuracy = [[ 0.31 * (1 - math.exp(-l/20.0)+(0.001*(random.random()-0.5))) \
+        for l in range(10) ] for i in range(20) ]
+
+    np_train_loss = np.array(train_loss).mean(axis=0)
+    np_train_acc = np.array(train_accuracy).mean(axis=0)
+    np_val_loss = np.array(val_loss).mean(axis=0)
+    np_val_acc = np.array(val_accuracy).mean(axis=0)
+
+    np_val_acc_finals = np.array(val_accuracy)[:,-1] # last value from each trial
+    val_acc_min  = np_val_acc_finals.min()
+    val_acc_mean = np_val_acc_finals.mean()
+    val_acc_max  = np_val_acc_finals.max()
+
+    plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
+        val_acc_min, val_acc_mean, val_acc_max, \
+        input_type='td-idf-hot', h1_units=60, h1_f='relu', h2_f='relu', epochs=20)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")

@@ -13,7 +13,6 @@ October 29, 2018
 """
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
 
 from tensorflow.python.keras import models
 from tensorflow.python.keras.layers import Dense
@@ -30,18 +29,18 @@ def mlp_model(input_shape, h1_units, \
     input_dim = input_shape[0]
     print("--- Model ---")
     print("Input    : %d x %d" % (1, input_dim))
-    print("Layer h1 : %d x %d SIGMOID" % (input_dim, h1_units))
-    print("Layer h2 : %d x %d SIGMOID" % (h1_units, 10))
+    print("Layer h1 : %d x %d RELU" % (input_dim, h1_units))
+    print("Layer h2 : %d x %d RELU" % (h1_units, 10))
     print("Output   : %d x %d SOFTMAX" % (10, 5))
     print("----------")
     model = models.Sequential()
     # input layer
     model.add(Dropout(rate=input_dropout_rate, input_shape=input_shape))
     # h1: hidden layer 1
-    model.add(Dense(units=h1_units, activation='sigmoid'))
+    model.add(Dense(units=h1_units, activation='relu'))
     model.add(Dropout(rate=dropout_rate))
     # h2: hidden layer 2
-    model.add(Dense(units=10, activation='sigmoid'))
+    model.add(Dense(units=10, activation='relu'))
     model.add(Dropout(rate=dropout_rate))
     # output layer
     model.add(Dense(units=num_classes, activation='softmax'))
@@ -178,22 +177,26 @@ if __name__ == '__main__':
 
     # Compute means over all trials
     np_train_loss = np.array(train_loss).mean(axis=0)
-    bp_train_acc = np.array(train_acc).mean(axis=0)
+    np_train_acc = np.array(train_acc).mean(axis=0)
     np_val_loss = np.array(val_loss).mean(axis=0)
-    bp_val_acc = np.array(val_acc).mean(axis=0)
+    np_val_acc = np.array(val_acc).mean(axis=0)
+
+    # Compute overall min, max, mean for validation accuracy
+    np_val_acc_finals = np.array(val_acc)[:,-1] # last value from each trial
+    val_acc_min  = np_val_acc_finals.min()
+    val_acc_mean = np_val_acc_finals.mean()
+    val_acc_max  = np_val_acc_finals.max()
+    print()
+    print("> Validation Accuracy over all trials <".center(80, '='))
+    print("validation accuracy min:  %7.4f" % val_acc_min)
+    print("validation accuracy mean: %7.4f" % val_acc_mean)
+    print("validation accuracy max:  %7.4f" % val_acc_max)
+    print(80*'=')
 
     # Plot loss and accuracy over the trials
-    plt.figure(1)
-    plt.plot(np_train_loss, 'r--')
-    plt.plot(bp_train_acc, 'r')
-    plt.plot(np_val_loss, 'b--')
-    plt.plot(bp_val_acc, 'b')
-    plt.xlabel('Epoch')
-    plt.ylabel('Avg Loss / Avg Acc')
-    plt.legend(['Training Loss', 'Training Accuracy', \
-        'Validation Loss', 'Validation Accuracy'], loc='upper left')
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    plt.savefig('tests/p3_tf_MLP_test' + timestamp + '.png')
+    p3_utils.plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
+        val_acc_min, val_acc_mean, val_acc_max, \
+        input_type='td-idf-hot', h1_units=60, h1_f='relu', h2_f='relu', epochs=20)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
