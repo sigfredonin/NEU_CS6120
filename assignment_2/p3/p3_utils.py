@@ -6,13 +6,39 @@ Sig Nin
 October 26, 2018
 """
 
+import os
 import re
 import math
 import random
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
+from struct import unpack
 from nltk import FreqDist
+
+# ------------------------------------------------------------------------
+# Exceptions ---
+# ------------------------------------------------------------------------
+
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+class InvalidFileException(Error):
+    """Exception raised for errors in the input.
+
+    Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+
+    def __init__(self, expression, message):
+        self.expression = expression
+        self.message = message
+
+# ------------------------------------------------------------------------
+# Input review data ---
+# ------------------------------------------------------------------------
 
 VOCABULARY_SIZE = 10000
 
@@ -84,6 +110,10 @@ def get_words_and_ratings(text):
     # return the results
     return words, review_words, review_data, review_labels, \
         fd_words, vocabulary, dictionary, reverse_dictionary
+
+# ------------------------------------------------------------------------
+# Transform review representation ---
+# ------------------------------------------------------------------------
 
 def one_hot_vectors(review_data, vocabulary_size):
     """
@@ -181,6 +211,50 @@ def tdIdf_vectors(review_data, vocabulary_size):
         review_data_tdIdfs.append(review_tdIdfs)
     return review_data_tdIdfs
 
+def load_embeddings(vocabulary):
+    """
+    Load embeddings for words in the vocabulary.
+    Source: https://code.google.com/archive/p/word2vec/
+    Format:
+        <count> <dims>\n    - number of words, space, dimensions, newline
+        <word> [<dims>f]    - word, space, dimensions x 4-byte floats
+        ...
+        <word> [<dims>f]    - word, space, dimensions x 4-byte floats
+        NOTES: <count>, <dims>, and <word> are ascii strings
+    Returns:
+        embeddings - { word : tuple of floats, ... }
+    """
+    EXPECTED_HEADER = b'3000000 300\n'
+    COUNT_WORDS = 3000000
+    VECTOR_DIMENSIONS = 300
+    FILE = "GoogleNews-vectors-negative300.bin"
+    filePath = os.path.join("data", FILE)
+    embeddings = {}
+    with open(filePath, 'rb') as f:
+        header = f.read(len(EXPECTED_HEADER))   # skip over header
+        if header != EXPECTED_HEADER:
+            raise InvalidFileException("Invalid header: ", header)
+        offset = len(header)
+        for i in range(COUNT_WORDS):
+            word = ''
+            while(True):
+                char = f.read()
+                offset += 1
+                if char != ' ':
+                    word += char
+                else:
+                    F = "%df" % VECTOR_DIMENSIONS
+                    vectors = unpack(F, f.read(4 * VECTOR_DIMENSIONS))
+                    offset += LENGTH_VECTOR_DATA
+                    if word in vocabulary:
+                        embeddings[word] = vectors    # save only vocabulary words
+                    break
+    return embeddings
+
+# ------------------------------------------------------------------------
+# Prepare training and evaluation data ---
+# ------------------------------------------------------------------------
+
 def shuffle_data(review_data, review_labels):
     """
     Shuffle the reviews and labels.
@@ -270,26 +344,6 @@ def split_training_data_for_cross_validation(review_data, review_labels):
 
     return shuffled_indices, xval_sets
 
-def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
-        val_acc_min, val_acc_mean, val_acc_max, \
-        input_type, h1_units, h1_f, h2_f, epochs, \
-        plotName='tests/p3_tf_MLP_test'):
-    plt.figure(1)
-    plt.suptitle("Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
-        (input_type, h1_units, h1_f, h2_f, epochs))
-    plt.title("validation accuracy: %7.4f %7.4f %7.4f" % \
-        (val_acc_min, val_acc_mean, val_acc_max))
-    plt.plot(np_train_loss, 'r--')
-    plt.plot(np_train_acc, 'r')
-    plt.plot(np_val_loss, 'b--')
-    plt.plot(np_val_acc, 'b')
-    plt.xlabel('Epoch')
-    plt.ylabel('Avg Loss / Avg Acc')
-    plt.legend(['Training Loss', 'Training Accuracy', \
-        'Validation Loss', 'Validation Accuracy'], loc='upper left')
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    plt.savefig(plotName + timestamp + '.png')
-
 def assemble_cross_validation_data(xval_sets, index_val):
     """
     Assemble training data and labels, and validation data and labels,
@@ -312,6 +366,30 @@ def assemble_cross_validation_data(xval_sets, index_val):
             training_labels += _labels_
     training_set = ( training_data, training_labels)
     return training_set, val_set
+
+# ------------------------------------------------------------------------
+# Visualize results ---
+# ------------------------------------------------------------------------
+
+def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
+        val_acc_min, val_acc_mean, val_acc_max, \
+        input_type, h1_units, h1_f, h2_f, epochs, \
+        plotName='tests/p3_tf_MLP_test'):
+    plt.figure(1)
+    plt.suptitle("Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
+        (input_type, h1_units, h1_f, h2_f, epochs))
+    plt.title("validation accuracy: %7.4f %7.4f %7.4f" % \
+        (val_acc_min, val_acc_mean, val_acc_max))
+    plt.plot(np_train_loss, 'r--')
+    plt.plot(np_train_acc, 'r')
+    plt.plot(np_val_loss, 'b--')
+    plt.plot(np_val_acc, 'b')
+    plt.xlabel('Epoch')
+    plt.ylabel('Avg Loss / Avg Acc')
+    plt.legend(['Training Loss', 'Training Accuracy', \
+        'Validation Loss', 'Validation Accuracy'], loc='upper left')
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    plt.savefig(plotName + timestamp + '.png')
 
 # ------------------------------------------------------------------------
 # Tests ---
@@ -540,6 +618,15 @@ if __name__ == '__main__':
         val_acc_min, val_acc_mean, val_acc_max, \
         input_type='td-idf-hot', h1_units=60, h1_f='relu', h2_f='relu', epochs=20, \
         plotName='tests/p3_utils_test_')
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Reading embeddings ...")
+    embeddings = load_embeddings(dictionary)
+    print("Length embeddings: %d" % len(embeddings))
+    first_word, first_embedding =list(embeddings.items)[0]
+    print("First embedding: %s %s" % (first_word, first_embedding[:4]))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")

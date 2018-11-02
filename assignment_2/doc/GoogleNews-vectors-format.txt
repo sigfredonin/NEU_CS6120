@@ -1,0 +1,30 @@
+Google News word2vec embeddings
+  https://code.google.com/archive/p/word2vec/
+
+Word and phrase embeddings, pre-trained vectors trained on part
+of Google News dataset (about 100 billion words). The model contains
+300-dimensional vectors for 3 million words and phrases.
+
+File: GoogleNews-vectors-negative300.bin.gz
+  3,607,621,506 bytes .bin
+  1,630,536,823 bytes .gz
+
+Format
+  "3000000 300"     Header, number of words, space, vector dimensions, newline
+  "<\s> "           word, space
+  FFFFFFFF          300 4-byte floating point numbers
+  FFFFFFFF
+  ...
+  FFFFFFFF
+  "in "             word, space
+  FFFFFFFF          300 4-byte floating point numbers
+  FFFFFFFF
+  ...
+  FFFFFFFF
+  ...               ... for 2,999,998 more words
+
+Ways to deal with this file ...
+
+(1) Read the whole thing into memory (YUK!)
+(2) Make an index, then use f.seek(offset) to read an embedding vector
+(3) Load the vectors for the words in the vocabulary
