@@ -272,7 +272,8 @@ def split_training_data_for_cross_validation(review_data, review_labels):
 
 def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
         val_acc_min, val_acc_mean, val_acc_max, \
-        input_type, h1_units, h1_f, h2_f, epochs):
+        input_type, h1_units, h1_f, h2_f, epochs, \
+        plotName='tests/p3_tf_MLP_test'):
     plt.figure(1)
     plt.suptitle("Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
         (input_type, h1_units, h1_f, h2_f, epochs))
@@ -287,7 +288,7 @@ def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
     plt.legend(['Training Loss', 'Training Accuracy', \
         'Validation Loss', 'Validation Accuracy'], loc='upper left')
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    plt.savefig('tests/p3_tf_MLP_test' + timestamp + '.png')
+    plt.savefig(plotName + timestamp + '.png')
 
 def assemble_cross_validation_data(xval_sets, index_val):
     """
@@ -537,7 +538,8 @@ if __name__ == '__main__':
 
     plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
         val_acc_min, val_acc_mean, val_acc_max, \
-        input_type='td-idf-hot', h1_units=60, h1_f='relu', h2_f='relu', epochs=20)
+        input_type='td-idf-hot', h1_units=60, h1_f='relu', h2_f='relu', epochs=20, \
+        plotName='tests/p3_utils_test_')
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
