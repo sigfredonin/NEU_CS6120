@@ -122,6 +122,9 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     num_cross_validation_trials = len(xval_sets)
+    num_epochs_per_trial = 5
+    num_h1_units = 5
+    h1_h2_dropout_rate = 0.5
     scores = []
     for iTrial in range(num_cross_validation_trials):
 
@@ -143,12 +146,11 @@ if __name__ == '__main__':
         print("====" + nowStr + "====")
 
         model = mlp_model(input_shape=np_train_data.shape[1:],
-                          h1_units=60, dropout_rate=0.5)
+                          h1_units=num_h1_units, dropout_rate=h1_h2_dropout_rate)
 
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
 
-        num_epochs_per_trial = 20
         history = mlp_train(model, data, epochs=num_epochs_per_trial)
         scores.append(history)
 
@@ -196,7 +198,8 @@ if __name__ == '__main__':
     # Plot loss and accuracy over the trials
     p3_utils.plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
         val_acc_min, val_acc_mean, val_acc_max, \
-        input_type='td-idf-hot', h1_units=60, h1_f='relu', h2_f='relu', epochs=20)
+        input_type='td-idf-hot', h1_units=num_h1_units, h1_f='relu', h2_f='relu', \
+        epochs=num_epochs_per_trial)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
