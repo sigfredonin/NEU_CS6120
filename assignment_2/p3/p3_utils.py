@@ -15,6 +15,9 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from struct import unpack
 from nltk import FreqDist
+from gensim.models import KeyedVectors
+
+WORD_VECTORS_FILE = "data/GoogleNews-vectors-negative300.bin"
 
 # ------------------------------------------------------------------------
 # Exceptions ---
@@ -110,6 +113,63 @@ def get_words_and_ratings(text):
     # return the results
     return words, review_words, review_data, review_labels, \
         fd_words, vocabulary, dictionary, reverse_dictionary
+
+# ------------------------------------------------------------------------
+# Word vector embeddings ---
+# ------------------------------------------------------------------------
+
+def load_embeddings(filePath, vocabulary, DEBUG=False):
+    """
+    Load embeddings for words in the vocabulary.
+    Source: https://code.google.com/archive/p/word2vec/
+    Format:
+        <count> <dims>\n    - number of words, space, dimensions, newline
+        <word> [<dims>f]    - word, space, dimensions x 4-byte floats
+        ...
+        <word> [<dims>f]    - word, space, dimensions x 4-byte floats
+        NOTES: <count>, <dims>, and <word> are ascii strings
+    Returns:
+        embeddings - { word : tuple of floats, ... }
+    """
+    EXPECTED_HEADER = b'3000000 300\n'
+    COUNT_WORDS = 3000000
+    VECTOR_DIMENSIONS = 300
+    F = "%df" % VECTOR_DIMENSIONS
+    SEEK_CURR = 1
+    embeddings = {}
+    with open(filePath, 'rb') as f:
+        header = f.read(len(EXPECTED_HEADER))   # skip over header
+        if header != EXPECTED_HEADER:
+            raise InvalidFileException("Invalid header: ", header)
+        offset = len(header)
+        for i in range(COUNT_WORDS):
+            wordBytes = b''
+            while(True):
+                aByte = f.read(1)
+                offset += 1
+                if aByte != b' ':
+                    wordBytes += aByte
+                else:
+                    try:
+                        word = wordBytes.decode()
+                        if word in vocabulary:
+                            if DEBUG: print("%d : %s" % (offset, word))
+                            vectors = unpack(F, f.read(4 * VECTOR_DIMENSIONS))
+                            embeddings[word] = vectors    # save only vocabulary words
+                        else:
+                            f.seek(4 * VECTOR_DIMENSIONS, SEEK_CURR)
+                        offset += 4 * VECTOR_DIMENSIONS
+                    except UnicodeDecodeError as err:
+                        print("ERROR decoding", wordBytes, \
+                            "at offset ", offset)
+                        print(err)
+                    break
+        if DEBUG: print("Ending offset: %d: " % offset)
+    return embeddings
+
+def load_embeddings_gensim():
+    vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
+    return vectors
 
 # ------------------------------------------------------------------------
 # Transform review representation ---
@@ -210,55 +270,6 @@ def tdIdf_vectors(review_data, vocabulary_size):
             review_tdIdfs[word_index] += idfs[word_index]
         review_data_tdIdfs.append(review_tdIdfs)
     return review_data_tdIdfs
-
-def load_embeddings(filePath, vocabulary, DEBUG=False):
-    """
-    Load embeddings for words in the vocabulary.
-    Source: https://code.google.com/archive/p/word2vec/
-    Format:
-        <count> <dims>\n    - number of words, space, dimensions, newline
-        <word> [<dims>f]    - word, space, dimensions x 4-byte floats
-        ...
-        <word> [<dims>f]    - word, space, dimensions x 4-byte floats
-        NOTES: <count>, <dims>, and <word> are ascii strings
-    Returns:
-        embeddings - { word : tuple of floats, ... }
-    """
-    EXPECTED_HEADER = b'3000000 300\n'
-    COUNT_WORDS = 3000000
-    VECTOR_DIMENSIONS = 300
-    F = "%df" % VECTOR_DIMENSIONS
-    SEEK_CURR = 1
-    embeddings = {}
-    with open(filePath, 'rb') as f:
-        header = f.read(len(EXPECTED_HEADER))   # skip over header
-        if header != EXPECTED_HEADER:
-            raise InvalidFileException("Invalid header: ", header)
-        offset = len(header)
-        for i in range(COUNT_WORDS):
-            wordBytes = b''
-            while(True):
-                aByte = f.read(1)
-                offset += 1
-                if aByte != b' ':
-                    wordBytes += aByte
-                else:
-                    try:
-                        word = wordBytes.decode()
-                        if word in vocabulary:
-                            if DEBUG: print("%d : %s" % (offset, word))
-                            vectors = unpack(F, f.read(4 * VECTOR_DIMENSIONS))
-                            embeddings[word] = vectors    # save only vocabulary words
-                        else:
-                            f.seek(4 * VECTOR_DIMENSIONS, SEEK_CURR)
-                        offset += 4 * VECTOR_DIMENSIONS
-                    except UnicodeDecodeError as err:
-                        print("ERROR decoding", wordBytes, \
-                            "at offset ", offset)
-                        print(err)
-                    break
-        if DEBUG: print("Ending offset: %d: " % offset)
-    return embeddings
 
 # ------------------------------------------------------------------------
 # Prepare training and evaluation data ---
@@ -632,9 +643,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     print("Reading embeddings ...")
-    FILE = "GoogleNews-vectors-negative300.bin"
-    filePath = os.path.join("data", FILE)
-    embeddings = load_embeddings(filePath, fd_words)
+    embeddings = load_embeddings(WORD_VECTORS_FILE, fd_words)
     print("Length embeddings: %d" % len(embeddings))
     for word, vector in list(embeddings.items())[:10]:
         print("%10s : %s" % (word, vector[:4]))
