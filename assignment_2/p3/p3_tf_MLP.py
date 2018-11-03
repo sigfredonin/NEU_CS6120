@@ -122,7 +122,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     num_cross_validation_trials = len(xval_sets)
-    num_epochs_per_trial = 5
+    num_epochs_per_trial = 10
     num_h1_units = 5
     h1_h2_dropout_rate = 0.5
     scores = []

@@ -400,20 +400,31 @@ def assemble_cross_validation_data(xval_sets, index_val):
 def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
         val_acc_min, val_acc_mean, val_acc_max, \
         input_type, h1_units, h1_f, h2_f, epochs, \
-        plotName='tests/p3_tf_MLP_test'):
-    plt.figure(1)
+        plotName='tests/p3_tf_MLP_test_plot_'):
+
+    figure, axis_1 = plt.subplots()
+
     plt.suptitle("Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
-        (input_type, h1_units, h1_f, h2_f, epochs))
+        (input_type, h1_units, h1_f, h2_f, epochs), size=14)
     plt.title("validation accuracy: %7.4f %7.4f %7.4f" % \
-        (val_acc_min, val_acc_mean, val_acc_max))
-    plt.plot(np_train_loss, 'r--')
-    plt.plot(np_train_acc, 'r')
-    plt.plot(np_val_loss, 'b--')
-    plt.plot(np_val_acc, 'b')
-    plt.xlabel('Epoch')
-    plt.ylabel('Avg Loss / Avg Acc')
-    plt.legend(['Training Loss', 'Training Accuracy', \
-        'Validation Loss', 'Validation Accuracy'], loc='upper left')
+        (val_acc_min, val_acc_mean, val_acc_max), size=12)
+
+    # Plot loss for both training and validation
+    axis_1.plot(np_train_loss, 'r--')
+    axis_1.plot(np_val_loss, 'b--')
+    axis_1.set_xlabel('Epoch')
+    axis_1.set_ylabel('Avg Loss')
+    axis_1.legend(['Training Loss', 'Validation Loss'], loc='upper left')
+
+    # Plot accuracy for both training and validation
+    axis_2 = axis_1.twinx()
+    axis_2.plot(np_train_acc, 'r')
+    axis_2.plot(np_val_acc, 'b')
+    axis_2.set_ylabel('Avg Acc')
+    axis_2.legend(['Training Accuracy', 'Validation Accuracy'], loc='upper right')
+
+    figure.subplots_adjust(top=0.9)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     plt.savefig(plotName + timestamp + '.png')
 
