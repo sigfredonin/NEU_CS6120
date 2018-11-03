@@ -634,12 +634,11 @@ if __name__ == '__main__':
     print("Reading embeddings ...")
     FILE = "GoogleNews-vectors-negative300.bin"
     filePath = os.path.join("data", FILE)
-    test_words = set(["to", "the", "battlements", \
-        "mateys", ",", "into", "fight", "and", "devil", \
-        "take", "any", "cowards"])
     embeddings = load_embeddings(filePath, fd_words)
     print("Length embeddings: %d" % len(embeddings))
-    for word, vector in list(embeddings.items())[:20]:
+    for word, vector in list(embeddings.items())[:10]:
+        print("%10s : %s" % (word, vector[:4]))
+    for word, vector in list(embeddings.items())[-10:]:
         print("%10s : %s" % (word, vector[:4]))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
