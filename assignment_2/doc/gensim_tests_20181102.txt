@@ -1,0 +1,24 @@
+
+(base) C:\Users\Alice>venv
+
+(base) C:\Users\Alice>.\venv\Scripts\activate
+
+(venv) (base) C:\Users\Alice>python
+Python 3.6.5 |Anaconda, Inc.| (default, Mar 29 2018, 13:32:41) [MSC v.1900 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from gensim.models import KeyedVectors
+C:\Users\Alice\venv\lib\site-packages\gensim\utils.py:1212: UserWarning: detected Windows; aliasing chunkize to chunkize_serial
+  warnings.warn("detected Windows; aliasing chunkize to chunkize_serial")
+>>> import os
+>>> os.chdir("NLP/NEU_CS6120/assignment_2/p3")
+>>> v = KeyedVectors.load_word2vec_format("data/GoogleNews-vectors-negative300.bin", binary=True)
+>>> vector = v["battlements"]
+>>> print("Vector: %s ... " % vector[:4])
+Vector: [ 0.15527344  0.29882812 -0.265625   -0.02941895] ...
+>>> embedding_layer = v.get_keras_embedding()
+C:\Users\Alice\Anaconda3\lib\site-packages\h5py\__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+>>> embedding_layer
+<keras.layers.embeddings.Embedding object at 0x0000021D63EB0C88>
+>>> exit()
