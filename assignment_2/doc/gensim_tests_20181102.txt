@@ -22,3 +22,43 @@ Using TensorFlow backend.
 >>> embedding_layer
 <keras.layers.embeddings.Embedding object at 0x0000021D63EB0C88>
 >>> exit()
+
+>>> from gensim.models import KeyedVectors
+>>> import os
+>>> os.chdir("NLP/NEU_CS6120/assignment_2/p3")
+>>> v = KeyedVectors.load_word2vec_format("data/GoogleNews-vectors-negative300.bin", binary=True)
+>>> vector = v["battlements"]
+>>> print("Vector: %s ... ]" % vector[:4])
+>>> embedding_layer = v.get_keras_embedding()
+>>> print("embedding_layer")
+>>>
+>>> import p3_utils
+>>>
+>>> filePath = "data/a2_p3_train_data.txt"
+>>> text = p3_utils.get_text_from_file(filePath)
+>>> words, review_words, review_data, review_labels, \
+...     fd_words, vocabulary, dictionary, reverse_dictionary = \
+...     p3_utils.get_words_and_ratings(text)
+>>> review_wv_data = [ [ v.vocab[w].index for w in s if w in v.vocab ] for s in review_words ]
+>>> print(len(review_wv_data))
+9484
+>>> wv_diff = [ ( 1 if len(review_wv_data[i]) != len(review_data[i]) else 0 ) for i in range(len(review_data)) ]
+>>> wv_missing = [ w for s in review_words for w in s if w not in v.vocab ]
+>>> wv_missing_words = set(wv_missing)
+>>> print(len(wv_missing_words))
+3202
+>>> wv_freq = { w : fd_words[w] for w in wv_missing_words }
+>>> print(len(wv_freq))
+3202
+>>> wv_freq_words = {}
+>>> for w in wv_freq:
+...     c = wv_freq[w]
+...     csw = wv_freq_words.get(c, [])
+...     csw.append(w)
+...     wv_freq_words[c] = csw
+>>> print(len(wv_freq_words))
+43
+>>> with open("tests/words_missing_in_Google_News_vectors.txt", 'w') as f:
+...     for c in wv_freq_words:
+...             count_written = f.write("%5d : %s\n" % (c, wv_freq_words[c]))
+...
