@@ -168,6 +168,12 @@ def load_embeddings(filePath, vocabulary, DEBUG=False):
     return embeddings
 
 def load_embeddings_gensim():
+    """
+    Load pre-trained embeddings from Google News dataset.
+    Compile a dictionary of vector index -> word, for the words in the reviews.
+    Compile a reverse dictionary: vector index -> word
+    ?? What to do about words not in the vectors ??
+    """
     vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
     return vectors
 
