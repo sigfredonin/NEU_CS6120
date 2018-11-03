@@ -187,7 +187,7 @@ def word_idfs(review_data, vocabulary_size):
     word_idfs = [ math.log(N / c) if c > 0 else 0 for c in word_doc_counts ]
     return word_idfs
 
-def tdIdf_vectors(review_data, vocabulary_size, DEBUG=False):
+def tdIdf_vectors(review_data, vocabulary_size):
     """
     Returns a vector for each review that has
     a td-idf weight for each word that occurs in the review.
@@ -211,7 +211,7 @@ def tdIdf_vectors(review_data, vocabulary_size, DEBUG=False):
         review_data_tdIdfs.append(review_tdIdfs)
     return review_data_tdIdfs
 
-def load_embeddings(filePath, vocabulary):
+def load_embeddings(filePath, vocabulary, DEBUG=False):
     """
     Load embeddings for words in the vocabulary.
     Source: https://code.google.com/archive/p/word2vec/
@@ -227,6 +227,8 @@ def load_embeddings(filePath, vocabulary):
     EXPECTED_HEADER = b'3000000 300\n'
     COUNT_WORDS = 3000000
     VECTOR_DIMENSIONS = 300
+    F = "%df" % VECTOR_DIMENSIONS
+    SEEK_CURR = 1
     embeddings = {}
     with open(filePath, 'rb') as f:
         header = f.read(len(EXPECTED_HEADER))   # skip over header
@@ -241,19 +243,21 @@ def load_embeddings(filePath, vocabulary):
                 if aByte != b' ':
                     wordBytes += aByte
                 else:
-                    F = "%df" % VECTOR_DIMENSIONS
-                    vectors = unpack(F, f.read(4 * VECTOR_DIMENSIONS))
-                    offset += 4 * VECTOR_DIMENSIONS
                     try:
                         word = wordBytes.decode()
                         if word in vocabulary:
                             if DEBUG: print("%d : %s" % (offset, word))
+                            vectors = unpack(F, f.read(4 * VECTOR_DIMENSIONS))
                             embeddings[word] = vectors    # save only vocabulary words
+                        else:
+                            f.seek(4 * VECTOR_DIMENSIONS, SEEK_CURR)
+                        offset += 4 * VECTOR_DIMENSIONS
                     except UnicodeDecodeError as err:
                         print("ERROR decoding", wordBytes, \
                             "at offset ", offset)
                         print(err)
                     break
+        if DEBUG: print("Ending offset: %d: " % offset)
     return embeddings
 
 # ------------------------------------------------------------------------
@@ -633,7 +637,7 @@ if __name__ == '__main__':
     test_words = set(["to", "the", "battlements", \
         "mateys", ",", "into", "fight", "and", "devil", \
         "take", "any", "cowards"])
-    embeddings = load_embeddings(filePath, test_words)
+    embeddings = load_embeddings(filePath, fd_words)
     print("Length embeddings: %d" % len(embeddings))
     for word, vector in embeddings.items():
         print("%10s : %s" % (word, vector[:4]))
