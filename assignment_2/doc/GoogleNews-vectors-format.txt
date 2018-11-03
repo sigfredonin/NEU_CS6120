@@ -23,8 +23,14 @@ Format
   FFFFFFFF
   ...               ... for 2,999,998 more words
 
+Note: the words are UTF-8 encoded.  Python treats bytes differently from characters
+      in strings: bytes have to be decoded with byteString.decode() to make a string
+      that can be compared with vocabulary words and used as a key.  The file has
+      words with multi-byte characters in it, so you have to read a whole word as a
+      byte string before decoding it.
+
 Ways to deal with this file ...
 
-(1) Read the whole thing into memory (YUK!)
-(2) Make an index, then use f.seek(offset) to read an embedding vector
-(3) Load the vectors for the words in the vocabulary
+(1) Read the whole thing into memory (YUK!), but there may be a utility.
+(2) Make an index, then use f.seek(offset, 0) to read an embedding vector.
+(3) Scan the file once, loading the vectors for the words in the vocabulary.

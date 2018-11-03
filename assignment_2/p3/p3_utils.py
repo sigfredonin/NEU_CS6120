@@ -639,7 +639,7 @@ if __name__ == '__main__':
         "take", "any", "cowards"])
     embeddings = load_embeddings(filePath, fd_words)
     print("Length embeddings: %d" % len(embeddings))
-    for word, vector in embeddings.items():
+    for word, vector in list(embeddings.items())[:20]:
         print("%10s : %s" % (word, vector[:4]))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
