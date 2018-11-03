@@ -1,0 +1,38 @@
+(venv) C:\Users\Alice\NLP\NEU_CS6120\assignment_2\p3>pip install --upgrade gensim
+Collecting gensim
+  Downloading https://files.pythonhosted.org/packages/52/d8/1a966940585bdd828d6ca8bca37d1be81e3e7e2fa1f51098117f15c32a1b/gensim-3.6.0-cp36-cp36m-win_amd64.whl (23.6MB)
+    100% |████████████████████████████████| 23.6MB 259kB/s
+Collecting smart-open>=1.2.1 (from gensim)
+  Downloading https://files.pythonhosted.org/packages/4b/1f/6f27e3682124de63ac97a0a5876da6186de6c19410feab66c1543afab055/smart_open-1.7.1.tar.gz
+Requirement already satisfied, skipping upgrade: numpy>=1.11.3 in c:\users\alice\venv\lib\site-packages (from gensim) (1.15.3)
+Requirement already satisfied, skipping upgrade: scipy>=0.18.1 in c:\users\alice\anaconda3\lib\site-packages (from gensim) (1.1.0)
+Requirement already satisfied, skipping upgrade: six>=1.5.0 in c:\users\alice\anaconda3\lib\site-packages (from gensim) (1.11.0)
+Requirement already satisfied, skipping upgrade: boto>=2.32 in c:\users\alice\anaconda3\lib\site-packages (from smart-open>=1.2.1->gensim) (2.48.0)
+Collecting bz2file (from smart-open>=1.2.1->gensim)
+  Downloading https://files.pythonhosted.org/packages/61/39/122222b5e85cd41c391b68a99ee296584b2a2d1d233e7ee32b4532384f2d/bz2file-0.98.tar.gz
+Requirement already satisfied, skipping upgrade: requests in c:\users\alice\anaconda3\lib\site-packages (from smart-open>=1.2.1->gensim) (2.18.4)
+Collecting boto3 (from smart-open>=1.2.1->gensim)
+  Downloading https://files.pythonhosted.org/packages/7a/7e/fe8faa29e771a09c528ee70e1fd9b317006021c48311ecccc78c22ebe739/boto3-1.9.37-py2.py3-none-any.whl (128kB)
+    100% |████████████████████████████████| 133kB 419kB/s
+Requirement already satisfied, skipping upgrade: chardet<3.1.0,>=3.0.2 in c:\users\alice\anaconda3\lib\site-packages (from requests->smart-open>=1.2.1->gensim) (3.0.4)
+Requirement already satisfied, skipping upgrade: idna<2.7,>=2.5 in c:\users\alice\anaconda3\lib\site-packages (from requests->smart-open>=1.2.1->gensim) (2.6)
+Requirement already satisfied, skipping upgrade: urllib3<1.23,>=1.21.1 in c:\users\alice\anaconda3\lib\site-packages (from requests->smart-open>=1.2.1->gensim) (1.22)
+Requirement already satisfied, skipping upgrade: certifi>=2017.4.17 in c:\users\alice\anaconda3\lib\site-packages (from requests->smart-open>=1.2.1->gensim) (2018.4.16)
+Collecting jmespath<1.0.0,>=0.7.1 (from boto3->smart-open>=1.2.1->gensim)
+  Downloading https://files.pythonhosted.org/packages/b7/31/05c8d001f7f87f0f07289a5fc0fc3832e9a57f2dbd4d3b0fee70e0d51365/jmespath-0.9.3-py2.py3-none-any.whl
+Collecting botocore<1.13.0,>=1.12.37 (from boto3->smart-open>=1.2.1->gensim)
+  Downloading https://files.pythonhosted.org/packages/d0/35/1461771f778b67984a75a9853a2b3ed25e65a4345e669a81b50c67c930ab/botocore-1.12.37-py2.py3-none-any.whl (4.7MB)
+    100% |████████████████████████████████| 4.7MB 318kB/s
+Collecting s3transfer<0.2.0,>=0.1.10 (from boto3->smart-open>=1.2.1->gensim)
+  Downloading https://files.pythonhosted.org/packages/d7/14/2a0004d487464d120c9fb85313a75cd3d71a7506955be458eebfe19a6b1d/s3transfer-0.1.13-py2.py3-none-any.whl (59kB)
+    100% |████████████████████████████████| 61kB 174kB/s
+Requirement already satisfied, skipping upgrade: docutils>=0.10 in c:\users\alice\anaconda3\lib\site-packages (from botocore<1.13.0,>=1.12.37->boto3->smart-open>=1.2.1->gensim) (0.14)
+Requirement already satisfied, skipping upgrade: python-dateutil<3.0.0,>=2.1; python_version >= "2.7" in c:\users\alice\anaconda3\lib\site-packages (from botocore<1.13.0,>=1.12.37->boto3->smart-open>=1.2.1->gensim) (2.7.3)
+Building wheels for collected packages: smart-open, bz2file
+  Running setup.py bdist_wheel for smart-open ... done
+  Stored in directory: C:\Users\Alice\AppData\Local\pip\Cache\wheels\23\00\44\e5b939f7a80c04e32297dbd6d96fa3065af89ecf57e2b5f89f
+  Running setup.py bdist_wheel for bz2file ... done
+  Stored in directory: C:\Users\Alice\AppData\Local\pip\Cache\wheels\81\75\d6\e1317bf09bf1af5a30befc2a007869fa6e1f516b8f7c591cb9
+Successfully built smart-open bz2file
+Installing collected packages: bz2file, jmespath, botocore, s3transfer, boto3, smart-open, gensim
+Successfully installed boto3-1.9.37 botocore-1.12.37 bz2file-0.98 gensim-3.6.0 jmespath-0.9.3 s3transfer-0.1.13 smart-open-1.7.1

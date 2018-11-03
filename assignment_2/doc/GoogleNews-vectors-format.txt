@@ -34,3 +34,35 @@ Ways to deal with this file ...
 (1) Read the whole thing into memory (YUK!), but there may be a utility.
 (2) Make an index, then use f.seek(offset, 0) to read an embedding vector.
 (3) Scan the file once, loading the vectors for the words in the vocabulary.
+
+Gensim ---
+==========
+
+There is a utility!!!
+* can load word2vec embedding vectors from file
+* can access individual vectors as in a dictionary
+* can generate a Keras Embedding layer with the vectors in it
+  (have to learn how to use that, though)
+
+Installation
+============
+
+With venv active,
+
+    pip install --upgrade gensim
+
+Close and re-activate venv.
+cd NLP/NEU_CS6120/problem_2/p3
+python
+>>> from gensim.models import KeyedVectors
+>>> v = KeyedVectors.load_word2vec_format("data/GoogleNews-vectors-negative300.bin", binary=True)
+>>> vector = v["battlements"]
+>>> print("Vector: %s ... " % vector[:4])
+Vector: [ 0.15527344  0.29882812 -0.265625   -0.02941895] ...
+>>> embedding_layer = v.get_keras_embedding()
+C:\Users\Alice\Anaconda3\lib\site-packages\h5py\__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+>>> embedding_layer
+<keras.layers.embeddings.Embedding object at 0x0000021D63EB0C88>
+>>>
