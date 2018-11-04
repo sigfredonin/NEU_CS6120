@@ -167,15 +167,50 @@ def load_embeddings(filePath, vocabulary, DEBUG=False):
         if DEBUG: print("Ending offset: %d: " % offset)
     return embeddings
 
-def load_embeddings_gensim():
+def load_embeddings_gensim(fd_words, review_words):
     """
     Load pre-trained embeddings from Google News dataset.
     Compile a dictionary of vector index -> word, for the words in the reviews.
     Compile a reverse dictionary: vector index -> word
     ?? What to do about words not in the vectors ??
+    >> Filter them out?
+    Returns -
+        vectors - the KeyedVectors loaded from the Google News file.
+        wv_vocabulary - [ word, ... ] for review words included in vectors
+        wv_dictionary - { word : word vector index, ... }
+        wv_reverse_dictionary - { word vector index : word , ... }
+        vw_review_data - [
+                [ word vector index, word vector index, ...]    # sentence 1
+                [ word vector index, word vector index, ...]    # sentence 2
+                ...
+                [ word vector index, word vector index, ...]    # sentence N
+            ]
+        vw_review_vectors - [
+                [ word vector, word vector, ...]                # sentence 1
+                [ word vector, word vector, ...]                # sentence 2
+                ...
+                [ word vector, word vector, ...]                # sentence N
+            ]
+        vw_review_sentence_average_vectors = [
+                average word vector,                            # sentence 1
+                average word vector,                            # sentence 2
+                ...
+                average word vector,                            # sentence n
+            ]
     """
-    vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
-    return vectors
+    v = vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
+    wv_vocabulary = [ w for w in fd_words if w in v.vocab ]
+    wv_dictionary = { w : v.vocab[w].index for w in fd_words \
+        if w in v.vocab }
+    wv_reverse_dictionary = { v.vocab[w].index : w for w in fd_words \
+        if w in v.vocab }
+    wv_review_data = [ [ v.vocab[w].index for w in s if w in v.vocab ] \
+        for s in review_words ]
+    wv_review_vectors = [ np.array([ v[w] for w in s if w in v.vocab ]) \
+        for s in review_words ]
+    vw_review_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_review_vectors ]
+    return vectors, wv_dictionary, wv_reverse_dictionary, \
+        wv_review_vectors, vw_review_sentence_average_vectors
 
 # ------------------------------------------------------------------------
 # Transform review representation ---
