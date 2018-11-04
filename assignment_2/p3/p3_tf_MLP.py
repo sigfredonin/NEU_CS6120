@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     num_cross_validation_trials = len(xval_sets)
     num_epochs_per_trial = 20
-    num_h1_units = 5
+    num_h1_units = 10
     h1_h2_dropout_rate = 0.5
     scores = []
     for iTrial in range(num_cross_validation_trials):
