@@ -94,7 +94,7 @@ def get_data(filePath, input_type, num_cross_validation_trials):
     print("Number of reviews: %d" % len(review_words))
 
     # Load word vectors if going to use them
-    if input_type == 'avg embedding':
+    if input_type == 'avg wv':
         vectors, wv_dictionary, wv_reverse_dictionary, \
             wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors \
             = p3_utils.load_embeddings_gensim(fd_words, review_words)
@@ -112,7 +112,7 @@ def get_data(filePath, input_type, num_cross_validation_trials):
     elif input_type == 'word index':
         data = review_data
         print("Count word index vectors: %d" % len(data))
-    elif input_type == 'avg embedding':
+    elif input_type == 'avg wv':
         data = vw_review_sentence_average_vectors
         print("Count embedding vectors: %d" % len(data))
     else:
@@ -223,10 +223,10 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     # Set parameters for this set of trials
-    input_type = 'avg embedding'
+    input_type = 'avg wv'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 20
-    num_h1_units = 10
+    num_h1_units = 20
     h1_activation = 'relu'
     h2_activation = 'relu'
     h1_h2_dropout_rate = 0.5
