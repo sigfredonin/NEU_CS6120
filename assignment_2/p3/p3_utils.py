@@ -39,6 +39,18 @@ class InvalidFileException(Error):
         self.expression = expression
         self.message = message
 
+class InvalidArgumentException(ValueError):
+    """Exception raised for errors in the function arguments.
+
+    Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+
+    def __init__(self, expression, message):
+        self.expression = expression
+        self.message = message
+
 # ------------------------------------------------------------------------
 # Input review data ---
 # ------------------------------------------------------------------------
@@ -210,7 +222,7 @@ def load_embeddings_gensim(fd_words, review_words):
         for s in review_words ]
     vw_review_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_review_vectors ]
     return vectors, wv_dictionary, wv_reverse_dictionary, \
-        wv_review_vectors, vw_review_sentence_average_vectors
+        wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors
 
 # ------------------------------------------------------------------------
 # Transform review representation ---
@@ -347,10 +359,10 @@ def shuffle_data(review_data, review_labels):
 
     return shuffled_indices, shuffled_data, shuffled_labels
 
-def split_data(review_data, review_labels):
+def split_data(review_data, review_labels, number_of_trials):
     """
     Spit the data and labels into a training set, and a validation set.
-    Shuffle the reviews, then select the first 9/10 for training and
+    Shuffle the reviews, then select (N-1)/N for N training trials and
     the remaining reviews for validation.
     Returns:
         shuffled_indices - list of original indices, e.g.,
@@ -364,8 +376,9 @@ def split_data(review_data, review_labels):
     shuffled_indices, shuffled_data, shuffled_labels = \
         shuffle_data(review_data, review_labels)
 
-    # Select 9/10 of the data/labels for training, 1/10 for validation
-    train_count = 9 * (len(review_data) // 10)
+    # Select a portion of the data/labels for training, the remainder for validation
+    N = number_of_trials
+    train_count = (N-1) * (len(review_data) // N)
     train_data = shuffled_data[:train_count]
     train_labels = shuffled_labels[:train_count]
     val_data = shuffled_data[train_count:]
@@ -373,9 +386,9 @@ def split_data(review_data, review_labels):
 
     return shuffled_indices, train_data, train_labels, val_data, val_labels
 
-def split_training_data_for_cross_validation(review_data, review_labels):
+def split_training_data_for_cross_validation(review_data, review_labels, number_of_trials):
     """
-    Spit the data and labels into 10 equal size sets, after shuffling.
+    Spit the data and labels into N equal size sets, for N trials, after shuffling.
     Return:
         shuffled_indices - list of original indices, e.g.,
                         review_data[shuffled_indices[0]] == data[0][0][0]
@@ -383,25 +396,26 @@ def split_training_data_for_cross_validation(review_data, review_labels):
                     ( training_data, validation_data )      # set 1
                     ( training_data, validation_data )      # set 2
                     ...
-                    ( training_data, validation_data )      # set 10
+                    ( training_data, validation_data )      # set N
                 ]
-        where each set has a different 9/10 training and 1/10 validation data.
+        where each set has a different (N-1)/N training and 1/N validation data.
     """
     # Shuffle the data and labels
     shuffled_indices, shuffled_data, shuffled_labels = \
         shuffle_data(review_data, review_labels)
 
-    # Subdivide the data and labels into 10 ~ equal size sets each
-    set_count = len(shuffled_data) // 10
+    # Subdivide the data and labels into # NOTE:  ~ equal size sets each
+    N = number_of_trials
+    set_count = len(shuffled_data) // N
     xval_sets = []
-    for iSet in range(9):
+    for iSet in range(N-1):
         xD = iSet * set_count
         xval_sets.append(( \
             shuffled_data[xD : xD + set_count], \
             shuffled_labels[xD : xD + set_count] ))
     xval_sets.append(( \
-        shuffled_data[9 * set_count : len(shuffled_data)], \
-        shuffled_labels[9 * set_count : len(shuffled_data)] ))
+        shuffled_data[(N-1) * set_count : len(shuffled_data)], \
+        shuffled_labels[(N-1) * set_count : len(shuffled_data)] ))
 
     return shuffled_indices, xval_sets
 

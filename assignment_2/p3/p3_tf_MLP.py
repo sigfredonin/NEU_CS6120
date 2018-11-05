@@ -20,7 +20,7 @@ from tensorflow.python.keras.layers import Dropout
 
 import p3_utils
 
-def mlp_model(input_shape, h1_units, \
+def mlp_model(input_shape, h1_units, h1_activation='relu', h2_activation='relu', \
               num_classes=5, dropout_rate=0.0, input_dropout_rate=0.0):
     """
     Creates a TF Keras Multi-Layer Perceptron model,
@@ -29,18 +29,18 @@ def mlp_model(input_shape, h1_units, \
     input_dim = input_shape[0]
     print("--- Model ---")
     print("Input    : %d x %d" % (1, input_dim))
-    print("Layer h1 : %d x %d RELU" % (input_dim, h1_units))
-    print("Layer h2 : %d x %d RELU" % (h1_units, 10))
+    print("Layer h1 : %d x %d %s" % (input_dim, h1_units, h1_activation))
+    print("Layer h2 : %d x %d %s" % (h1_units, 10, h2_activation))
     print("Output   : %d x %d SOFTMAX" % (10, 5))
     print("----------")
     model = models.Sequential()
     # input layer
     model.add(Dropout(rate=input_dropout_rate, input_shape=input_shape))
     # h1: hidden layer 1
-    model.add(Dense(units=h1_units, activation='relu'))
+    model.add(Dense(units=h1_units, activation=h1_activation))
     model.add(Dropout(rate=dropout_rate))
     # h2: hidden layer 2
-    model.add(Dense(units=10, activation='relu'))
+    model.add(Dense(units=10, activation=h2_activation))
     model.add(Dropout(rate=dropout_rate))
     # output layer
     model.add(Dense(units=num_classes, activation='softmax'))
@@ -74,25 +74,18 @@ def train_and_eval(model, data):
     """
     return score
 
-# ------------------------------------------------------------------------
-# Tests ---
-# ------------------------------------------------------------------------
+def get_data(filePath, input_type, num_cross_validation_trials):
+    """
+    Load the data and select the correct format.
+    Return -
 
-if __name__ == '__main__':
-
-    from datetime import datetime
-
-    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-    print("====" + nowStr + "====")
-
-    filePath = "data/a2_p3_train_data.txt"
+    """
+    # Load the text
     text = p3_utils.get_text_from_file(filePath)
     print("Read %d bytes from '%s' as text" % (len(text), filePath))
     print("Text begins : '%s'" % text[:30])
 
-    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-    print("====" + nowStr + "====")
-
+    # Compile reviews and ratings, with word index encoding
     words, review_words, review_data, review_labels, \
         fd_words, vocabulary, dictionary, reverse_dictionary = \
         p3_utils.get_words_and_ratings(text)
@@ -100,31 +93,40 @@ if __name__ == '__main__':
     print("Vocabulary size: %d" % vocabulary_size)
     print("Number of reviews: %d" % len(review_words))
 
-    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-    print("====" + nowStr + "====")
+    # Load word vectors if going to use them
+    if input_type == 'avg embedding':
+        vectors, wv_dictionary, wv_reverse_dictionary, \
+            wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors \
+            = p3_utils.load_embeddings_gensim(fd_words, review_words)
 
-    one_hots = p3_utils.one_hot_vectors(review_data, vocabulary_size)
-    print("Count count vectors: %d" % len(one_hots))
-
-    count_hots = p3_utils.count_vectors(review_data, vocabulary_size)
-    print("Count count vectors: %d" % len(count_hots))
-
-    tdIdf_hots = p3_utils.tdIdf_vectors(review_data, vocabulary_size)
-    print("Count tdIdf vectors: %d" % len(tdIdf_hots))
-
-    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-    print("====" + nowStr + "====")
+    # Select the input type
+    if input_type == 'one hot':
+        data = p3_utils.one_hot_vectors(review_data, vocabulary_size)
+        print("Count one-hot vectors: %d" % len(data))
+    elif input_type == 'count-hot':
+        data = p3_utils.count_vectors(review_data, vocabulary_size)
+        print("Count count vectors: %d" % len(data))
+    elif input_type == 'td-idf hot':
+        data = p3_utils.tdIdf_vectors(review_data, vocabulary_size)
+        print("Count tdIdf vectors: %d" % len(data))
+    elif input_type == 'word index':
+        data = review_data
+        print("Count word index vectors: %d" % len(data))
+    elif input_type == 'avg embedding':
+        data = wv_review_data
+        print("Count embedding vectors: %d" % len(data))
+    else:
+        raise InvalidArgumentException("Unrecognized data input type: %s" % input_type)
 
     shuffle_indices, xval_sets = \
-        p3_utils.split_training_data_for_cross_validation(tdIdf_hots, review_labels)
+        p3_utils.split_training_data_for_cross_validation(data, review_labels, \
+            num_cross_validation_trials)
 
-    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-    print("====" + nowStr + "====")
+    return xval_sets
 
-    num_cross_validation_trials = len(xval_sets)
-    num_epochs_per_trial = 20
-    num_h1_units = 10
-    h1_h2_dropout_rate = 0.5
+def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
+        num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate):
+
     scores = []
     for iTrial in range(num_cross_validation_trials):
 
@@ -145,8 +147,9 @@ if __name__ == '__main__':
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
 
-        model = mlp_model(input_shape=np_train_data.shape[1:],
-                          h1_units=num_h1_units, dropout_rate=h1_h2_dropout_rate)
+        model = mlp_model(input_shape=np_train_data.shape[1:], \
+                          h1_units=num_h1_units, h1_activation=h1_activation, \
+                          h2_activation=h2_activation, dropout_rate=h1_h2_dropout_rate)
 
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
@@ -156,6 +159,10 @@ if __name__ == '__main__':
 
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
+
+    return scores
+
+def output_results_of_trials(scores, num_epochs_per_trial):
 
     print(" Trial Results ".center(80, '='))
     for iTrial, history in enumerate(scores):
@@ -198,8 +205,39 @@ if __name__ == '__main__':
     # Plot loss and accuracy over the trials
     p3_utils.plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
         val_acc_min, val_acc_mean, val_acc_max, \
-        input_type='td-idf-hot', h1_units=num_h1_units, h1_f='relu', h2_f='relu', \
+        input_type=input_type, h1_units=num_h1_units, \
+        h1_f=h1_activation, h2_f=h2_activation, \
         epochs=num_epochs_per_trial)
+
+# ------------------------------------------------------------------------
+# Tests ---
+# ------------------------------------------------------------------------
+
+if __name__ == '__main__':
+
+    from datetime import datetime
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    # Set parameters for this set of trials
+    input_type = 'td-idf hot'
+    num_cross_validation_trials = 10
+    num_epochs_per_trial = 20
+    num_h1_units = 10
+    h1_activation = 'relu'
+    h2_activation = 'relu'
+    h1_h2_dropout_rate = 0.5
+
+    inputPath = "data/a2_p3_train_data.txt"
+    xval_sets = get_data(inputPath, input_type, num_cross_validation_trials)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    scores = run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
+            num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+    output_results_of_trials(scores, num_epochs_per_trial)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
