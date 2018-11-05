@@ -113,7 +113,7 @@ def get_data(filePath, input_type, num_cross_validation_trials):
         data = review_data
         print("Count word index vectors: %d" % len(data))
     elif input_type == 'avg embedding':
-        data = wv_review_data
+        data = vw_review_sentence_average_vectors
         print("Count embedding vectors: %d" % len(data))
     else:
         raise InvalidArgumentException("Unrecognized data input type: %s" % input_type)
@@ -146,6 +146,8 @@ def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
 
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         print("====" + nowStr + "====")
+
+        print(">>>>> np_train_data.shape:", np_train_data.shape)
 
         model = mlp_model(input_shape=np_train_data.shape[1:], \
                           h1_units=num_h1_units, h1_activation=h1_activation, \
@@ -221,7 +223,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     # Set parameters for this set of trials
-    input_type = 'td-idf hot'
+    input_type = 'avg embedding'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 20
     num_h1_units = 10
@@ -229,8 +231,8 @@ if __name__ == '__main__':
     h2_activation = 'relu'
     h1_h2_dropout_rate = 0.5
 
-    inputPath = "data/a2_p3_train_data.txt"
-    xval_sets = get_data(inputPath, input_type, num_cross_validation_trials)
+    filePath = "data/a2_p3_train_data.txt"
+    xval_sets = get_data(filePath, input_type, num_cross_validation_trials)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")

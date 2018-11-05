@@ -209,16 +209,20 @@ def load_embeddings_gensim(fd_words, review_words):
                 ...
                 average word vector,                            # sentence n
             ]
+    NOTE: append '</s>' to each review to ensure all have at least one word
+          in the vocabulary of the word embeddings.
     """
     v = vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
-    wv_vocabulary = [ w for w in fd_words if w in v.vocab ]
+    wv_vocabulary = ['</s'] + [ w for w in fd_words if w in v.vocab ]
     wv_dictionary = { w : v.vocab[w].index for w in fd_words \
         if w in v.vocab }
+    wv_dictionary['</s>'] = v.vocab['</s>'].index
     wv_reverse_dictionary = { v.vocab[w].index : w for w in fd_words \
         if w in v.vocab }
-    wv_review_data = [ [ v.vocab[w].index for w in s if w in v.vocab ] \
+    wv_reverse_dictionary[v.vocab['</s>'].index] = '</s>'
+    wv_review_data = [ [ v.vocab[w].index for w in s+['</s>'] if w in v.vocab ] \
         for s in review_words ]
-    wv_review_vectors = [ np.array([ v[w] for w in s if w in v.vocab ]) \
+    wv_review_vectors = [ np.array([ v[w] for w in s+['</s>'] if w in v.vocab ]) \
         for s in review_words ]
     vw_review_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_review_vectors ]
     return vectors, wv_dictionary, wv_reverse_dictionary, \
