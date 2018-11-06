@@ -225,7 +225,7 @@ if __name__ == '__main__':
     # Set parameters for this set of trials
     input_type = 'avg wv'
     num_cross_validation_trials = 10
-    num_epochs_per_trial = 20
+    num_epochs_per_trial = 40
     num_h1_units = 300
     h1_activation = 'relu'
     h2_activation = 'relu'
