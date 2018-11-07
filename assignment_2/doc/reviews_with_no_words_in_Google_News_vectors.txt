@@ -1,0 +1,89 @@
+===================================================================================================
++ Transcript of empty sentences error after conversion to word vectors (typos edited out)
++ ... diagnosis of problem
++ ... test of a solution (append '</s>' token to each review sentence)
+===================================================================================================
+Lines in the training data with no words in the Google News word vectors vocabulary ...
+3034 : Renner ?|2
+4930 : Bond-inspired ?|2
+9030 : Spy-vs .|2
+9311 : One-of-a-kind near-masterpiece .|4
+9326 : TouchÃ© !|2
+9366 : A well-executed spy-thriller .|4
+9398 : ... bibbidy-bobbidi-bland .|0
+9471 : Wishy-washy .|1
+===================================================================================================
+
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\assignment_2\p3>python p3_tf_MLP.py > tests/p3_tf_MLP_test_3-3_20181105_0924
+C:\Users\Alice\Anaconda3\lib\site-packages\h5py\__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+C:\Users\Alice\venv\lib\site-packages\gensim\utils.py:1212: UserWarning: detected Windows; aliasing chunkize to chunkize_serial
+  warnings.warn("detected Windows; aliasing chunkize to chunkize_serial")
+C:\Users\Alice\venv\lib\site-packages\numpy\core\fromnumeric.py:2920: RuntimeWarning: Mean of empty slice.
+  out=out, **kwargs)
+C:\Users\Alice\venv\lib\site-packages\numpy\core\_methods.py:85: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+Traceback (most recent call last):
+  File "p3_tf_MLP.py", line 241, in <module>
+    num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+  File "p3_tf_MLP.py", line 154, in run_trials
+    h2_activation=h2_activation, dropout_rate=h1_h2_dropout_rate)
+  File "p3_tf_MLP.py", line 29, in mlp_model
+    input_dim = input_shape[0]
+IndexError: tuple index out of range
+
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\assignment_2\p3>python
+Python 3.6.5 |Anaconda, Inc.| (default, Mar 29 2018, 13:32:41) [MSC v.1900 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import p3_utils
+C:\Users\Alice\venv\lib\site-packages\gensim\utils.py:1212: UserWarning: detected Windows; aliasing chunkize to chunkize_serial
+  warnings.warn("detected Windows; aliasing chunkize to chunkize_serial")
+>>> filePath = "data/a2_p3_train_data.txt"
+>>> text = p3_utils.get_text_from_file(filePath)
+>>> words, review_words, review_data, review_labels, \
+...         fd_words, vocabulary, dictionary, reverse_dictionary = \
+...         p3_utils.get_words_and_ratings(text)
+>>> vocabulary_size = len(vocabulary)
+>>> from gensim.models import KeyedVectors
+>>> WORD_VECTORS_FILE = "data/GoogleNews-vectors-negative300.bin"
+>>> v = vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
+>>> wv_review_data = [ [ v.vocab[w].index for w in s if w in v.vocab ] \
+...         for s in review_words ]
+>>> len(wv_review_data)
+9484
+>>> len(wv_review_data[0])
+22
+>>> wv_review_data[0]
+[11, 2453, 4, 10929, 16, 11, 3343, 65, 831224, 3, 22, 125, 109, 13893, 155, 1462, 60, 910056, 2567993, 5040, 29, 318638]
+>>> import numpy as np
+>>> wv_review_vectors = [ np.array([ v[w] for w in s if w in v.vocab ]) \
+...         for s in review_words ]
+>>> len(wv_review_vectors)
+9484
+>>> len(wv_review_vectors[0])
+22
+>>> len(wv_review_vectors[0][0])
+300
+>>> vw_review_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_review_vectors ]
+C:\Users\Alice\venv\lib\site-packages\numpy\core\fromnumeric.py:2920: RuntimeWarning: Mean of empty slice.
+  out=out, **kwargs)
+C:\Users\Alice\venv\lib\site-packages\numpy\core\_methods.py:85: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+>>> [ i for i in range(len(wv_review_vectors)) if len(wv_review_vectors[i])==0 ]
+[3033, 4929, 9029, 9310, 9325, 9365, 9397, 9470]
+>>> wv_review_data[3033]
+[]
+>>> review_words[3033]
+['renner', '?']
+>>> review_words_eos = [ s + ['</s>'] for s in review_words ]
+>>> len(review_words_eos[0])
+38
+>>> wv_review_vectors = [ np.array([ v[w] for w in s if w in v.vocab ]) \
+...         for s in review_words_eos ]
+>>> vw_review_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_review_vectors ]
+>>> wv_dictionary = { w : v.vocab[w].index for w in fd_words \
+...         if w in v.vocab }
+>>> wv_dictionary['</s>']=v.vocab['</s>'].index
+>>> wv_dictionary['</s>']
+0
+>>> exit()
