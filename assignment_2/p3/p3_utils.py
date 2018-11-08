@@ -426,9 +426,9 @@ def split_training_data_for_cross_validation(review_data, review_labels, number_
 def assemble_cross_validation_data(xval_sets, index_val):
     """
     Assemble training data and labels, and validation data and labels,
-    for cross-validation trainingself.
+    for cross-validation training.
     Inputs:
-        data-   sets of data and labels, one to be used for validation.
+        xval_sets-   sets of data and labels, one to be used for validation.
         index-  whidh set to use for validation.
     Returns:
         cross_validation data and labels -
@@ -446,6 +446,24 @@ def assemble_cross_validation_data(xval_sets, index_val):
     training_set = ( training_data, training_labels)
     return training_set, val_set
 
+def assemble_full_training_data(xval_sets):
+    """
+    Assemble training data and labels for training with the full training set.
+    Inputs:
+        xval_sets-   sets of data and labels.
+    Returns:
+        full training data and labels -
+            training_set -  ( training_data, training_labels)
+    """
+    training_data = []
+    training_labels = []
+    for iSet, data_labels in enumerate(xval_sets):
+        _data_, _labels_ = data_labels
+        training_data += _data_
+        training_labels += _labels_
+    training_set = ( training_data, training_labels)
+    return training_set
+
 # ------------------------------------------------------------------------
 # Visualize results ---
 # ------------------------------------------------------------------------
@@ -459,8 +477,9 @@ def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
 
     plt.suptitle("Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
         (input_type, h1_units, h1_f, h2_f, epochs), size=14)
-    plt.title("validation accuracy: %7.4f %7.4f %7.4f" % \
-        (val_acc_min, val_acc_mean, val_acc_max), size=12)
+    if val_acc_min != None and val_acc_mean != None and val_acc_max != None:
+        plt.title("validation accuracy: %7.4f %7.4f %7.4f" % \
+            (val_acc_min, val_acc_mean, val_acc_max), size=12)
 
     # Plot loss for both training and validation
     axis_1.plot(np_train_loss, 'r--')

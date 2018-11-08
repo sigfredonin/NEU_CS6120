@@ -54,6 +54,11 @@ def mlp_train(model, data, epochs=10):
     """
     (train_data, train_labels), (val_data, val_labels) = data
 
+    if len(val_data) == 0 or len(val_labels) == 0:
+        validation_data = None
+    else:
+        validation_data = (val_data, val_labels)
+
     loss = 'sparse_categorical_crossentropy'
     learning_rate = 1e-3
     optimizer = tf.keras.optimizers.Adam(lr=learning_rate)
@@ -62,17 +67,10 @@ def mlp_train(model, data, epochs=10):
     callbacks = [ tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=2)]
 
     history = model.fit(train_data, train_labels, \
-        validation_data = (val_data, val_labels), \
+        validation_data = validation_data, \
         epochs=epochs, batch_size=32)
 
     return history
-
-def train_and_eval(model, data):
-    """
-    Run a training and validation cycle for given training/evaluation set
-    of data and labels.
-    """
-    return score
 
 def get_data(filePath, input_type, num_cross_validation_trials):
     """
@@ -124,6 +122,29 @@ def get_data(filePath, input_type, num_cross_validation_trials):
 
     return xval_sets
 
+def run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per_trial, \
+        num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate):
+
+    np_train_data = np.array(train_data)
+    np_train_labels = np.array(train_labels)
+    np_val_data = np.array(val_data)
+    np_val_labels = np.array(val_labels)
+    data = ((np_train_data, np_train_labels), (np_val_data, np_val_labels))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    model = mlp_model(input_shape=np_train_data.shape[1:], \
+                      h1_units=num_h1_units, h1_activation=h1_activation, \
+                      h2_activation=h2_activation, dropout_rate=h1_h2_dropout_rate)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    history = mlp_train(model, data, epochs=num_epochs_per_trial)
+
+    return history
+
 def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
         num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate):
 
@@ -138,25 +159,9 @@ def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
         (train_data, train_labels), (val_data, val_labels) = \
             p3_utils.assemble_cross_validation_data(xval_sets, iTrial)
 
-        np_train_data = np.array(train_data)
-        np_train_labels = np.array(train_labels)
-        np_val_data = np.array(val_data)
-        np_val_labels = np.array(val_labels)
-        data = ((np_train_data, np_train_labels), (np_val_data, np_val_labels))
+        history = run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per_trial, \
+                num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
 
-        nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-        print("====" + nowStr + "====")
-
-        print(">>>>> np_train_data.shape:", np_train_data.shape)
-
-        model = mlp_model(input_shape=np_train_data.shape[1:], \
-                          h1_units=num_h1_units, h1_activation=h1_activation, \
-                          h2_activation=h2_activation, dropout_rate=h1_h2_dropout_rate)
-
-        nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
-        print("====" + nowStr + "====")
-
-        history = mlp_train(model, data, epochs=num_epochs_per_trial)
         scores.append(history)
 
         nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
@@ -164,7 +169,7 @@ def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
 
     return scores
 
-def output_results_of_trials(scores, num_epochs_per_trial):
+def print_results_of_trials(scores, num_epochs_per_trial):
 
     print(" Trial Results ".center(80, '='))
     for iTrial, history in enumerate(scores):
@@ -183,26 +188,33 @@ def output_results_of_trials(scores, num_epochs_per_trial):
     for iTrial, history in enumerate(scores):
         train_loss.append(history.history["loss"])
         train_acc.append(history.history["acc"])
-        val_loss.append(history.history["val_loss"])
-        val_acc.append(history.history["val_acc"])
+        if "val_loss" in history.history:
+            val_loss.append(history.history["val_loss"])
+            val_acc.append(history.history["val_acc"])
 
     # Compute means over all trials
     np_train_loss = np.array(train_loss).mean(axis=0)
     np_train_acc = np.array(train_acc).mean(axis=0)
-    np_val_loss = np.array(val_loss).mean(axis=0)
-    np_val_acc = np.array(val_acc).mean(axis=0)
+    if len(val_loss) > 0:
+        np_val_loss = np.array(val_loss).mean(axis=0)
+        np_val_acc = np.array(val_acc).mean(axis=0)
+    else:
+        np_val_loss = np_val_acc = np.array([])
 
     # Compute overall min, max, mean for validation accuracy
-    np_val_acc_finals = np.array(val_acc)[:,-1] # last value from each trial
-    val_acc_min  = np_val_acc_finals.min()
-    val_acc_mean = np_val_acc_finals.mean()
-    val_acc_max  = np_val_acc_finals.max()
-    print()
-    print("> Validation Accuracy over all trials <".center(80, '='))
-    print("validation accuracy min:  %7.4f" % val_acc_min)
-    print("validation accuracy mean: %7.4f" % val_acc_mean)
-    print("validation accuracy max:  %7.4f" % val_acc_max)
-    print(80*'=')
+    if len(val_loss) > 0:
+        np_val_acc_finals = np.array(val_acc)[:,-1] # last value from each trial
+        val_acc_min  = np_val_acc_finals.min()
+        val_acc_mean = np_val_acc_finals.mean()
+        val_acc_max  = np_val_acc_finals.max()
+        print()
+        print("> Validation Accuracy over all trials <".center(80, '='))
+        print("validation accuracy min:  %7.4f" % val_acc_min)
+        print("validation accuracy mean: %7.4f" % val_acc_mean)
+        print("validation accuracy max:  %7.4f" % val_acc_max)
+        print(80*'=')
+    else:
+        val_acc_min = val_acc_mean = val_acc_max = None
 
     # Plot loss and accuracy over the trials
     p3_utils.plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
@@ -231,6 +243,8 @@ if __name__ == '__main__':
     h2_activation = 'relu'
     h1_h2_dropout_rate = 0.5
 
+    num_epochs_for_training = 20    # ... when training on full training set
+
     filePath = "data/a2_p3_train_data.txt"
     xval_sets = get_data(filePath, input_type, num_cross_validation_trials)
 
@@ -239,7 +253,13 @@ if __name__ == '__main__':
 
     scores = run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
             num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
-    output_results_of_trials(scores, num_epochs_per_trial)
+    print_results_of_trials(scores, num_epochs_per_trial)
+
+    train_data, train_labels = p3_utils.assemble_full_training_data(xval_sets)
+
+    history = run_one_trial(train_data, train_labels, [], [], num_epochs_for_training, \
+            num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+    print_results_of_trials([ history ], num_epochs_for_training)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
