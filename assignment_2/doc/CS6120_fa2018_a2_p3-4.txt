@@ -12,8 +12,17 @@ Append a vector, one per word in the sentence, in which each element is
      0.0 if the word is neutral or not a sentiment word
     -1.0 if the word is negative
 
+-----------------------------------------------------------------------------------------
 Lexicon 1 - Subjectivity Lexicon from U. Pittsburgh
   URL: http://mpqa.cs.pitt.edu/lexicons/subj_lexicon/
+-----------------------------------------------------------------------------------------
+
+  Riloff and Wiebe (2003). Learning extraction patterns for subjective
+    expressions. EMNLP-2003.
+
+  Theresa Wilson, Janyce Wiebe and Paul Hoffmann (2005). Recognizing Contextual
+    Polarity in Phrase-Level Sentiment Analysis. Proceedings of HLT/EMNLP 2005,
+    Vancouver, Canada.
 
 This is a collection of 8,222 words classified as positive(2718), negative(4913),
 neutral (570), or both positive and negative(21).  The format is described in
@@ -48,6 +57,8 @@ Exceptions:
 These are both weakly subjective negative words, but they don't follow the
 record format strictly.
 
+-----------------------------------------------------------------------------------------
+
 The following regular expressions retrieves the (word, POS) pairs ...
 
     re_positive = re.compile(r'word1=(.+) pos1=(.+) stemmed1=.* .*polarity=positive.*$', re.MULTILINE)
@@ -68,6 +79,8 @@ Checking that all words are accounted for ...
                             and (w,p) not in negative_words ]
 
 ... should return a list of length zero.
+
+-----------------------------------------------------------------------------------------
 
 In the training set, 8880 out of 9484 reviews contain words
 from the U Pitt Subjectivity Lexicon:
@@ -115,4 +128,159 @@ FreqDist({3: 1414, 2: 1348, 4: 1271, 1: 1119, 5: 1113, 6: 845, 7: 562, 8: 445, 9
                   18 : 1
                   20 : 1
                   22 : 1
+>>>
+
+-----------------------------------------------------------------------------------------
+Lexicon 2: Opinion lexicon from Ming Liu, U. Illinois at Chicago
+  URL: https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html#lexicon
+-----------------------------------------------------------------------------------------
+
+  Minqing Hu and Bing Liu. "Mining and Summarizing Customer Reviews."
+    Proceedings of the ACM SIGKDD International Conference on Knowledge
+    Discovery and Data Mining (KDD-2004), Aug 22-25, 2004, Seattle,
+    Washington, USA,
+  Bing Liu, Minqing Hu and Junsheng Cheng. "Opinion Observer: Analyzing
+    and Comparing Opinions on the Web." Proceedings of the 14th
+    International World Wide Web conference (WWW-2005), May 10-14,
+    2005, Chiba, Japan.
+  Bing Liu. "Sentiment Analysis and Subjectivity." An chapter in
+    Handbook of Natural Language Processing, Second Edition,
+    (editors: N. Indurkhya and F. J. Damerau), 2010.
+
+This is a collection of 2007 positive and 4783 negative opinion words,
+in text files positive-words.txt and negative-words.txt, one word per line,
+with an explanatory header at the top.  The header has ';' at the beginning
+of each line, and is followed by an empty line, then the words.
+
+-----------------------------------------------------------------------------------------
+
+This regular expressions skip past the file headers and pick up the words ...
+
+    re_liu_words = re.compile(r'^([^;].+)$', re.MULTILINE)
+
+... applied separately to the text of the positive and negative files.
+
+-----------------------------------------------------------------------------------------
+
+The training set contains -
+    5914 of 9484 reviews with positive words from the Liu Opinion Lexicon
+    5185 of 9484 reviews with negative words from the Liu Opinion Lexicon
+
+>>> f_liu_neg = "data/cs_uic_edu-liu_bing/negative-words.txt"
+>>> f_liu_pos = "data/cs_uic_edu-liu_bing/positive-words.txt"
+>>> with open(f_liu_neg) as f:
+...     liu_neg_text = f.read()
+...
+>>> with open(f_liu_pos) as f:
+...     liu_pos_text = f.read()
+...
+>>> re_liu_words = re.compile(r'^([^;].+)$', re.MULTILINE)
+>>> liu_neg_words = re_liu_words.findall(liu_neg_text)
+>>> len(liu_neg_words)
+4783
+>>> liu_neg_words[:10]
+['\n2-faced', '2-faces', 'abnormal', 'abolish', 'abominable', 'abominably', 'abominate', 'abomination', 'abort', 'aborted']
+>>> liu_neg_words[-10:]
+['wrongly', 'wrought', 'yawn', 'zap', 'zapped', 'zaps', 'zealot', 'zealous', 'zealously', 'zombie']
+>>> liu_pos_words = re_liu_words.findall(liu_pos_text)
+>>> len(liu_pos_words)
+2007
+>>> liu_pos_words[:10]
+['\na+', 'abound', 'abounds', 'abundance', 'abundant', 'accessable', 'accessible', 'acclaim', 'acclaimed', 'acclamation']
+>>> liu_pos_words[-10:]
+['wow', 'wowed', 'wowing', 'wows', 'yay', 'youthful', 'zeal', 'zenith', 'zest', 'zippy']
+>>> reviews_liu_pos = [ w for s in review_words for w in s if w in liu_pos_words ]
+>>> len(reviews_liu_pos)
+9862
+>>> reviews_liu_neg = [ w for s in review_words for w in s if w in liu_neg_words ]
+>>> len(reviews_liu_neg)
+8410
+>>> reviews_liu_pos_s = [ [ w for w in s if w in liu_pos_words ] for s in review_words ]
+>>> reviews_counts_liu_pos_s = [ len(s) for s in reviews_liu_pos_s ]
+>>> fd_counts_liu_pos_s = FreqDist(reviews_counts_liu_pos_s)
+>>> for liu_pos_words_in_review in sorted(fd_counts_liu_pos_s):
+...     print("%20s : %d" % (liu_pos_words_in_review, fd_counts_liu_pos_s[liu_pos_words_in_review]))
+...
+                   0 : 3570
+                   1 : 3274
+                   2 : 1704
+                   3 : 666
+                   4 : 196
+                   5 : 52
+                   6 : 17
+                   7 : 4
+                   8 : 1
+>>> liu_neg_words = re_liu_words.findall(liu_neg_text)
+>>> len(liu_neg_words)
+4783
+>>> reviews_liu_neg_s = [ [ w for w in s if w in liu_neg_words ] for s in review_words ]
+>>> reviews_counts_liu_neg_s = [ len(s) for s in reviews_liu_neg_s ]
+>>> fd_counts_liu_neg_s = FreqDist(reviews_counts_liu_neg_s)
+>>> for liu_neg_words_in_review in sorted(fd_counts_liu_neg_s):
+...     print("%20s : %d" % (liu_neg_words_in_review, fd_counts_liu_neg_s[liu_neg_words_in_review]))
+...
+                   0 : 4299
+                   1 : 3028
+                   2 : 1412
+                   3 : 516
+                   4 : 159
+                   5 : 52
+                   6 : 14
+                   7 : 2
+                   8 : 2
+>>>
+
+-----------------------------------------------------------------------------------------
+
+Checking words common to both lexicons ...
+
+Liu V Pitt >  Pos  Neg  Neu  Both     ALL
+Pos           1810   28   14    0     1852
+Neg             14 4512    4    0     4530
+
+Note the contradictory classification of a few words.
+
+>>> liu_pitt_pos = [ w for w,p,s in all_words if w in liu_pos_words ]
+>>> len(liu_pitt_pos)
+1852
+>>> liu_pitt_neg = [ w for w,p,s in all_words if w in liu_neg_words ]
+>>> len(liu_pitt_neg)
+4530
+>>> liu_pitt_pos_positive = [ w for w,s in positive_words if w in liu_pos_words ]
+>>> len(liu_pitt_pos_positive)
+1810
+>>> liu_pitt_neg_negative = [ w for w,s in negative_words if w in liu_neg_words ]
+>>> len(liu_pitt_neg_negative)
+4512
+>>> liu_pitt_neg_both = [ w for w,s in both_words if w in liu_neg_words ]
+>>> len(liu_pitt_neg_both)
+0
+>>> liu_pitt_pos_both = [ w for w,s in both_words if w in liu_pos_words ]
+>>> len(liu_pitt_pos_both)
+0
+>>> liu_pitt_neg_neutral = [ w for w,s in neutral_words if w in liu_neg_words ]
+>>> len(liu_pitt_neg_neutral)
+4
+>>> liu_pitt_pos_neutral = [ w for w,s in neutral_words if w in liu_pos_words ]
+>>> len(liu_pitt_pos_neutral)
+14
+>>> liu_pitt_pos_negative = [ w for w,s in negative_words if w in liu_pos_words ]
+>>> len(liu_pitt_pos_negative)
+28
+>>> liu_pitt_neg_positive = [ w for w,s in positive_words if w in liu_neg_words ]
+>>> len(liu_pitt_neg_positive)
+14
+>>> liu_pitt_pos_negative
+['affectation', 'cajole', 'charisma', 'defeat', 'defeat', 'dominate', 'dumbfounded',
+ 'empathize', 'empathy', 'envious', 'enviously', 'enviousness', 'envy', 'envy', 'fine',
+ 'flashy', 'formidable', 'fun', 'keen', 'keen', 'obsession', 'obsessions', 'sharp',
+ 'superiority', 'superiority', 'supremacy', 'supremacy', 'trivially']
+>>> liu_pitt_neg_positive
+['excuse', 'flair', 'funny', 'funny', 'giddy', 'joke', 'joke', 'resurgent', 'shimmer',
+ 'solicitude', 'tenderness', 'untouched', 'vulnerable', 'vulnerable']
+>>> liu_pitt_pos_neutral
+['destiny', 'destiny', 'effectively', 'enough', 'fast', 'immense', 'intimate', 'intrigue',
+ 'precious', 'quiet', 'rapid', 'regard', 'transparent', 'transparent']
+>>> liu_pitt_neg_neutral
+['hefty', 'intense', 'intense', 'invisible']
 >>>
