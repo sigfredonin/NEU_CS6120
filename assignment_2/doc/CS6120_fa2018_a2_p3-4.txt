@@ -1,0 +1,118 @@
+Assignment 2 Problem 3.4
+
+In addition to the word embeddings, add one type of features by your own design (e.g. POS
+tags distribution) to the model in 3.3. Then re-train this model on the whole training set,
+and report the accuracy on the training set.
+
+Presence of Positive, Negative, Neutral Words in the Review
+
+Append a vector, one per word in the sentence, in which each element is
+
+     1.0 if the word is positive
+     0.0 if the word is neutral or not a sentiment word
+    -1.0 if the word is negative
+
+Lexicon 1 - Subjectivity Lexicon from U. Pittsburgh
+  URL: http://mpqa.cs.pitt.edu/lexicons/subj_lexicon/
+
+This is a collection of 8,222 words classified as positive(2718), negative(4913),
+neutral (570), or both positive and negative(21).  The format is described in
+
+    subjclueslen1-HLTEMNLP05.README
+
+and the words are in
+
+    subjclueslen1-HLTEMNLP05.tff
+
+one word record per line.  Each record is of the form ...
+
+    type=strongsubj len=1 word1=abuse pos1=verb stemmed1=y priorpolarity=negative
+
+where
+
+    type = strongsubj | weaksubj
+    len = 1                       (all of the records have a one word sentiment)
+    word1 = <word>
+    pos1 = adj | adverb | anypos | noun | adverb
+    stemmed1 = y | n
+    priorpolarity = positive | negative | neutral | both
+
+Exceptions:
+
+    (1) type=weaksubj len=1 word1=impassive pos1=adj
+        stemmed1=n polarity=negative priorpolarity=weakneg
+
+    (2) type=weaksubj len=1 word1=stringently pos1=adverb
+        stemmed1=n priorpolarity=negative mpqapolarity=strongneg
+
+These are both weakly subjective negative words, but they don't follow the
+record format strictly.
+
+The following regular expressions retrieves the (word, POS) pairs ...
+
+    re_positive = re.compile(r'word1=(.+) pos1=(.+) stemmed1=.* .*polarity=positive.*$', re.MULTILINE)
+    re_negative = re.compile(r'word1=(.+) pos1=(.+) stemmed1=.* .*polarity=negative.*$', re.MULTILINE)
+    re_neutral = re.compile(r'word1=(.+) pos1=(.+) stemmed1=.* .*polarity=neutral.*$', re.MULTILINE)
+    re_both = re.compile(r'word1=(.+) pos1=(.+) stemmed1=.* .*polarity=both.*$', re.MULTILINE)
+
+This regular expression retrieves all of the (word, POS, polarity) tuples ...
+
+    re_all = re.compile(r'word1=(.+) pos1=(.+) stemmed1=.* .*polarity=(.+).*$', re.MULTILINE)
+
+Checking that all words are accounted for ...
+
+    missing_words = [ (w,p,s) for w,p,s in all_words \
+                            if (w,p) not in both_words \
+                            and (w,p) not in neutral_words \
+                            and (w,p) not in positive_words \
+                            and (w,p) not in negative_words ]
+
+... should return a list of length zero.
+
+In the training set, 8880 out of 9484 reviews contain words
+from the U Pitt Subjectivity Lexicon:
+
+>>> import p3_utils
+>>> text = p3_utils.get_text_from_file(filePath)
+>>> words, review_words, review_data, review_labels, \
+>>>         fd_words, vocabulary, dictionary, reverse_dictionary = \
+>>>         p3_utils.get_words_and_ratings(text)
+>>> len(review_words)
+9484
+>>> sentiment_words = [ [(w,p,s) for w,p,s in all_words if w in sent] for sent in review_words ]
+>>> sentiment_word_s = [ s for s in sentiment_words if len(s) != 0 ]
+>>> len(sentiment_word_s)
+8880
+>>> count_sentiment_words = [ len(s) for s in sentiment_word_s ]
+>>> count_sentiment_words[:10]
+[2, 4, 8, 1, 5, 4, 1, 4, 3, 2]
+>>> from nltk import FreqDist
+>>> fd_count_sentiment_words = FreqDist(count_sentiment_words)
+>>> len(fd_count_sentiment_words)
+20
+>>> fd_count_sentiment_words
+FreqDist({3: 1414, 2: 1348, 4: 1271, 1: 1119, 5: 1113, 6: 845, 7: 562, 8: 445, 9: 289, 10: 203, ...})
+>>> for count_sentiment_words_in_sentence in sorted(fd_count_sentiment_words):
+...     print("%20s : %d" % (count_sentiment_words_in_sentence, fd_count_sentiment_words[w]))
+...
+                   1 : 1119
+                   2 : 1348
+                   3 : 1414
+                   4 : 1271
+                   5 : 1113
+                   6 : 845
+                   7 : 562
+                   8 : 445
+                   9 : 289
+                  10 : 203
+                  11 : 115
+                  12 : 78
+                  13 : 31
+                  14 : 20
+                  15 : 17
+                  16 : 6
+                  17 : 1
+                  18 : 1
+                  20 : 1
+                  22 : 1
+>>>
