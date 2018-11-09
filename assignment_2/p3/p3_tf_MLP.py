@@ -98,8 +98,11 @@ def get_data(filePath, input_type, num_cross_validation_trials):
             = p3_utils.load_embeddings_gensim(fd_words, review_words)
 
     # Load sentiment vectors if going to use them
-    if input_type == 'awv+sv':
+    if input_type == 'rsv' or input_type == 'awv+sv':
         review_sentiment_vectors = p3_utils.load_sentiment_vectors(review_words)
+
+    # Prepare combined word vectors and sentiment vectors if going to use them
+    if input_type == 'awv+sv':
         review_sentence_awv_sv = []
         for i in range(len(review_words)):
             rsv = np.concatenate([vw_review_sentence_average_vectors[i], \
@@ -122,6 +125,9 @@ def get_data(filePath, input_type, num_cross_validation_trials):
     elif input_type == 'avg wv':
         data = vw_review_sentence_average_vectors
         print("Count embedding vectors: %d" % len(data))
+    elif input_type == 'rsv':
+        data = review_sentiment_vectors
+        print("Count sentiment vectors: %d" % len(data))
     elif input_type == 'awv+sv':
         data = review_sentence_awv_sv
         print("Count embedding + sentiment vectors: %d" % len(data))
@@ -250,7 +256,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     # Set parameters for this set of trials
-    input_type = 'awv+sv'
+    input_type = 'rsv'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 40
     num_h1_units = 60
