@@ -92,10 +92,19 @@ def get_data(filePath, input_type, num_cross_validation_trials):
     print("Number of reviews: %d" % len(review_words))
 
     # Load word vectors if going to use them
-    if input_type == 'avg wv':
+    if input_type == 'avg wv' or input_type == 'awv+sv':
         vectors, wv_dictionary, wv_reverse_dictionary, \
             wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors \
             = p3_utils.load_embeddings_gensim(fd_words, review_words)
+
+    # Load sentiment vectors if going to use them
+    if input_type == 'awv+sv':
+        review_sentiment_vectors = p3_utils.load_sentiment_vectors(review_words)
+        review_sentence_awv_sv = []
+        for i in range(len(review_words)):
+            rsv = np.concatenate([vw_review_sentence_average_vectors[i], \
+                                  review_sentiment_vectors[i]])
+            review_sentence_awv_sv.append(rsv)
 
     # Select the input type
     if input_type == 'one hot':
@@ -113,8 +122,14 @@ def get_data(filePath, input_type, num_cross_validation_trials):
     elif input_type == 'avg wv':
         data = vw_review_sentence_average_vectors
         print("Count embedding vectors: %d" % len(data))
+    elif input_type == 'awv+sv':
+        data = review_sentence_awv_sv
+        print("Count embedding + sentiment vectors: %d" % len(data))
     else:
         raise InvalidArgumentException("Unrecognized data input type: %s" % input_type)
+
+    assert(len(data) == len(review_words))
+    assert(len(data) == len(review_labels))
 
     shuffle_indices, xval_sets = \
         p3_utils.split_training_data_for_cross_validation(data, review_labels, \
@@ -235,7 +250,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     # Set parameters for this set of trials
-    input_type = 'avg wv'
+    input_type = 'awv+sv'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 40
     num_h1_units = 60

@@ -234,11 +234,16 @@ The training set contains -
 
 Checking words common to both lexicons ...
 
-Liu V Pitt >  Pos  Neg  Neu  Both     ALL
-Pos           1810   28   14    0     1852
-Neg             14 4512    4    0     4530
-
-Note the contradictory classification of a few words.
+--------------------------------------------------
+Liu V Pitt >  Pos  Neg  Neu  Both
+--------------------------------------------------
+Pos           1810   28   14    0     1852 of 2007
+Neg             14 4512    4    0     4530 of 4783
+--------------------------------------------------
+              1824 4540   28    0
+from Pitt     2718 4913  570   21
+--------------------------------------------------
+Note the contradictory classification of 28+14 words.
 
 >>> liu_pitt_pos = [ w for w,p,s in all_words if w in liu_pos_words ]
 >>> len(liu_pitt_pos)
@@ -283,4 +288,89 @@ Note the contradictory classification of a few words.
  'precious', 'quiet', 'rapid', 'regard', 'transparent', 'transparent']
 >>> liu_pitt_neg_neutral
 ['hefty', 'intense', 'intense', 'invisible']
+>>>
+
+-----------------------------------------------------------------------------------------
+Testing construction of review sentiment vectors
+- Use words from both lexicons, dropping contradictions
+- Generate vectors with 60 word positions, longer than longest review
+- Code words as -0.5 if negative, +0.5 if positive, 0.0 if neither or no word
+-----------------------------------------------------------------------------------------
+
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\assignment_2\p3>python
+Python 3.6.5 |Anaconda, Inc.| (default, Mar 29 2018, 13:32:41) [MSC v.1900 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import p3_utils
+C:\Users\Alice\venv\lib\site-packages\gensim\utils.py:1212: UserWarning: detected Windows; aliasing chunkize to chunkize_serial
+  warnings.warn("detected Windows; aliasing chunkize to chunkize_serial")
+>>> pitt_pos, pitt_neg = p3_utils.load_lexicon_u_pitt(p3_utils.PATH_PITT)
+>>> uic_pos, uic_neg = p3_utils.load_lexicon_uic(p3_utils.PATH_UIC_POS, p3_utils.PATH_UIC_NEG)
+>>> positive_words, negative_words = \
+...         p3_utils.sentiment_words(pitt_pos, pitt_neg, uic_pos, uic_neg)
+>>> len(positive_words)
+2728
+>>> len(negative_words)
+5082
+>>> filePath = "data/a2_p3_train_data.txt"
+>>> text = p3_utils.get_text_from_file(filePath)
+>>> words, review_words, review_data, review_labels, \
+...         fd_words, vocabulary, dictionary, reverse_dictionary = \
+...         p3_utils.get_words_and_ratings(text)
+>>> review_sentiment_pos = set([ w for s in review_words for w in s if w in positive_words ])
+>>> len(review_sentiment_pos)
+1456
+>>> list(review_sentiment_pos)[:10]
+['courageousness', 'quaint', 'pleasurably', 'originality', 'excellent', 'qualify', 'outstanding', 'advantage', 'smitten', 'led']
+>>> review_sentiment_neg = set([ w for s in review_words for w in s if w in negative_words ])
+>>> len(review_sentiment_neg)
+2044
+>>> list(review_sentiment_neg)[:10]
+['desultory', 'errant', 'abandon', 'foreboding', 'pity', 'melancholy', 'extortion', 'cheapen', 'careless', 'upsetting']
+>>> import importlib
+>>> importlib.reload(p3_utils)
+<module 'p3_utils' from 'C:\\Users\\Alice\\NLP\\NEU_CS6120\\assignment_2\\p3\\p3_utils.py'>
+>>> rsvs = p3_utils.sentiment_vectors(review_words, positive_words, negative_words)
+>>> len(rsvs)
+9484
+>>> rsvs_words_nz = [ [ x for x in s if x != 0.0 ] for s in rsvs ]
+>>> rsvs_non_zero_word_counts = [ len(s) for s in rsvs_words_nz ]
+>>> rsvs_non_zero_word_counts[:10]
+[2, 1, 6, 0, 2, 4, 0, 1, 2, 1]
+>>> rsvs_count_non_empty = len( [ c for c in rsvs_non_zero_word_counts if c > 0 ] )
+>>> rsvs_count_non_empty
+8678
+>>> from nltk import FreqDist
+>>> fd_rsvs_nz_counts = FreqDist(rsvs_non_zero_word_counts)
+>>> for count in sorted(fd_rsvs_nz_counts):
+...     print("%4s : %d" % (count, fd_rsvs_nz_counts[count]))
+...
+   0 : 806
+   1 : 1872
+   2 : 2153
+   3 : 1831
+   4 : 1297
+   5 : 776
+   6 : 399
+   7 : 205
+   8 : 87
+   9 : 29
+  10 : 21
+  11 : 8
+  >>> review_labels[:10]
+  [3, 4, 2, 4, 3, 3, 3, 3, 4, 3]
+  >>> rsvs[0]
+  [0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  >>> rsvs[1]
+  [0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  >>> rsvs[2]
+  [0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, -0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5,
+   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, -0.5, 0.0, 0.0, 0.0, 0.0, 0.0,
+   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 >>>

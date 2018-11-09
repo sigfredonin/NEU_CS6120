@@ -229,6 +229,93 @@ def load_embeddings_gensim(fd_words, review_words):
         wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors
 
 # ------------------------------------------------------------------------
+# Sentiment Lexicons ---
+# ------------------------------------------------------------------------
+
+PATH_PITT = "data/subjectivity_clues_hltemnlp05/subjclueslen1-HLTEMNLP05.tff"
+
+rx_pitt_pos = r'word1=(.+) pos1=.+ stemmed1=.* .*polarity=positive.*$'
+rx_pitt_neg = r'word1=(.+) pos1=.+ stemmed1=.* .*polarity=negative.*$'
+re_positive = re.compile(rx_pitt_pos, re.MULTILINE)
+re_negative = re.compile(rx_pitt_neg, re.MULTILINE)
+
+def load_lexicon_u_pitt(filePath):
+    """
+    Load the subjectivity lexicon from U Pittsburgh.
+    """
+    with open(filePath) as f:
+        pitt_text = f.read()
+    pitt_pos = re_positive.findall(pitt_text)
+    pitt_neg = re_negative.findall(pitt_text)
+    return set(pitt_pos), set(pitt_neg)
+
+PATH_UIC_POS = "data/cs_uic_edu-liu_bing/positive-words.txt"
+PATH_UIC_NEG = "data/cs_uic_edu-liu_bing/negative-words.txt"
+
+rx_uic = r'^([^;].+)$'
+re_uic = re.compile(rx_uic, re.MULTILINE)
+
+def load_words_uic(filePath):
+    """
+    Load the opinion lexicon from Ming Liu, U Illinois at Chicago,
+    either the positive or the negative words.
+    """
+    with open(filePath) as f:
+        uic_text = f.read()
+    uic_words = re_uic.findall(uic_text)
+    return set(uic_words)
+
+def load_lexicon_uic(posPath, negPath):
+    """
+    Load the opinion lexicon from Ming Liu, U Illinois at Chicago.
+    """
+    uic_pos = load_words_uic(posPath)
+    uic_neg = load_words_uic(negPath)
+    return set(uic_pos), set(uic_neg)
+
+def sentiment_words(pitt_pos, pitt_neg, uic_pos, uic_neg):
+    """
+    Merge the U Pittsburg and U Illinois sentiment words,
+    removing any words classified positive in one and negative in the other.
+    """
+    positive_words = [ w for w in pitt_pos if w not in uic_neg ]
+    positive_words += [ w for w in uic_pos if w not in pitt_neg ]
+    negative_words = [ w for w in pitt_neg if w not in uic_pos ]
+    negative_words += [ w for w in uic_neg if w not in pitt_pos ]
+    return set(positive_words), set(negative_words)
+
+def sentiment_vectors(review_words, positive_words, negative_words):
+    """
+    Get a sentiment vector for each sentence, a vector containing:
+        -0.5 if word is negative
+         0.0 if word is neither negative nor positive, or there is no word
+         0.5 if word is positive
+    """
+    review_sentiment_vectors = []
+    for review in review_words:
+        rsvs = [ 0.0 ] * 60
+        for i, word in enumerate(review):
+            if word in positive_words:
+                rsvs[i] = 0.5
+            elif word in negative_words:
+                rsvs[i] = -0.5
+        review_sentiment_vectors.append(rsvs)
+    return review_sentiment_vectors
+
+def load_sentiment_vectors(review_words):
+    """
+    Load words from U Pitt and U Illinois lexicons,
+    then create sentiment word vectors.
+    """
+    pitt_pos, pitt_neg = load_lexicon_u_pitt(PATH_PITT)
+    uic_pos, uic_neg = load_lexicon_uic(PATH_UIC_POS, PATH_UIC_NEG)
+    positive_words, negative_words = \
+        sentiment_words(pitt_pos, pitt_neg, uic_pos, uic_neg)
+    review_sentiment_vectors = \
+        sentiment_vectors(review_words, positive_words, negative_words)
+    return review_sentiment_vectors
+
+# ------------------------------------------------------------------------
 # Transform review representation ---
 # ------------------------------------------------------------------------
 
@@ -658,7 +745,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     shuffled_indices, train_data, train_labels, val_data, val_labels = \
-        split_data(count_hots, review_labels)
+        split_data(count_hots, review_labels, 10)
     print("Shuffle indices: %s ..., length=%d" % (shuffled_indices[:10], len(shuffled_indices)))
     print((" Training data : %d " % len(train_data)).center(50, '-'))
     for i in range(0, 5):
@@ -677,7 +764,7 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     shuffled_indices, data = \
-        split_training_data_for_cross_validation(review_data, review_labels)
+        split_training_data_for_cross_validation(review_data, review_labels, 10)
     print("Shuffle indices: %s ..., length=%d" % (shuffled_indices[:10], len(shuffled_indices)))
     print((" Set data and labels : %s " % str([len(s[0]) for s in data])).center(80, '-'))
     for i in range(len(data)):
@@ -738,6 +825,16 @@ if __name__ == '__main__':
         print("%10s : %s" % (word, vector[:4]))
     for word, vector in list(embeddings.items())[-10:]:
         print("%10s : %s" % (word, vector[:4]))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Reading sentiment lexicons ...")
+    review_sentiment_vectors = load_sentiment_vectors(review_words)
+    print("Length sentiment vectors: %d" % len(review_sentiment_vectors))
+    rsv_count_nonzero = len([len(rsv) for rsv in review_sentiment_vectors \
+        if len([x for x in rsv if x != 0.0]) != 0 ])
+    print("Count non-zero sentiment vectors: %d" % rsv_count_nonzero)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
