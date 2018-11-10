@@ -27,6 +27,10 @@ October 26, 2018
 import os
 import re
 import numpy as np
+import nltk
+
+from nltk import FreqDist
+from gensim.models import KeyedVectors
 
 # ------------------------------------------------------------------------
 # Input summary data ---
@@ -57,3 +61,128 @@ def get_summary_training_data(text):
     np_non_redundancies_float = np.array(non_redundancies).astype(np.float)
     np_fluencies_float = np.array(fluencies).astype(np.float)
     return summaries, np_non_redundancies_float, np_fluencies_float
+
+# ------------------------------------------------------------------------
+# Data preprocessing ---
+# ------------------------------------------------------------------------
+
+from nltk.corpus import stopwords
+STOPWORDS = set(stopwords.words('english'))
+PUNCTUATION = { ',', '.', '?', '!', ';', ':' }
+
+def get_ngrams_words(words, N):
+    grams = [tuple(words[i:i+N]) for i in range(len(words)-N+1)]
+    return grams
+
+def get_words_summary(summary, NO_STOPS=True, NO_PUNCT=True):
+    """
+    Get the words in a summary, with stop words and punctuation filtered out.
+    """
+    sents = nltk.sent_tokenize(summary)
+    words_in_sents = [ [ w for w in nltk.word_tokenize(s) ] for s in sents ]
+    words = [ w for s in words_in_sents for w in s ]
+    if NO_STOPS:
+        words = [ w for w in words if w not in STOPWORDS ]
+    if NO_PUNCT:
+        words = [ w for w in words if w not in PUNCTUATION ]
+    return words
+
+def get_bigrams_summary(summary, NO_STOPS=False, NO_PUNCT=False):
+    """
+    Get the bigrams in a summary, with stop words filtered out
+    """
+    words = get_words_summary(summary, NO_STOPS=NO_STOPS, NO_PUNCT=NO_PUNCT)
+    bigrams = get_ngrams_words(words, 2)
+    return bigrams
+
+def get_most_frequent(items):
+    """
+    Get the most frequent item and its count from the items.
+    Each item must be hashable, such as a word, string, or tuple.
+    A list is not hashable, so items cannot be a list of lists.
+    """
+    fd = FreqDist(items)
+    most_freq = fd.most_common(1)
+    item, count = most_freq[0]
+    return item, count
+
+# ------------------------------------------------------------------------
+# Word vector embeddings ---
+# ------------------------------------------------------------------------
+
+WORD_VECTORS_FILE = "../p3/data/GoogleNews-vectors-negative300.bin"
+
+def load_embeddings_gensim():
+    """
+    Load pre-trained word embeddings from the Google News dataset.
+    Returns -
+        vectors - the KeyedVectors object loaded from the Google News file.
+    """
+    vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
+    return vectors
+
+def get_vocabulary(vectors, fd_words):
+    """
+    Compile a dictionary of vector index -> word, for the words given.
+    Compile a reverse dictionary: vector index -> word
+    Filter out words not in the vectors.
+    Input:
+        vectors - a gensim KeyedVectors object containing the word embeddings
+        fd_words - vocabulary words in an NLTK frequency distribution
+    Returns -
+        wv_vocabulary - [ word, ... ] for review words included in vectors
+        wv_dictionary - { word : word vector index, ... }
+        wv_reverse_dictionary - { word vector index : word , ... }
+    """
+    v = vectors
+    wv_vocabulary = ['</s'] + [ w for w in fd_words if w in v.vocab ]
+    wv_dictionary = { w : v.vocab[w].index for w in fd_words \
+        if w in v.vocab }
+    wv_dictionary['</s>'] = v.vocab['</s>'].index
+    wv_reverse_dictionary = { v.vocab[w].index : w for w in fd_words \
+        if w in v.vocab }
+    wv_reverse_dictionary[v.vocab['</s>'].index] = '</s>'
+    return wv_vocabulary, wv_dictionary, wv_reverse_dictionary
+
+def get_embeddings(vectors, words_in_sents):
+    """
+    Convert words to pre-trained embedding vectors from the Google News dataset.
+    Filter out words not in the vectors.
+    Inputs -
+        vectors - a gensim KeyedVectors object containing the word embeddings
+        words_in_sents - list of words, grouped by sentence
+            [
+                [ word, word, ...]    # sentence 1
+                [ word, word, ...]    # sentence 2
+                ...
+                [ word, word, ...]    # sentence N
+            ]
+    Returns -
+        vw_data - [
+                [ word vector index, word vector index, ...]    # sentence 1
+                [ word vector index, word vector index, ...]    # sentence 2
+                ...
+                [ word vector index, word vector index, ...]    # sentence N
+            ]
+        vw_vectors - [
+                [ word vector, word vector, ...]                # sentence 1
+                [ word vector, word vector, ...]                # sentence 2
+                ...
+                [ word vector, word vector, ...]                # sentence N
+            ]
+        vw_sentence_average_vectors = [
+                average word vector,                            # sentence 1
+                average word vector,                            # sentence 2
+                ...
+                average word vector,                            # sentence n
+            ]
+    NOTE: append '</s>' to each review to ensure all have at least one word
+          in the vocabulary of the word embeddings.
+    """
+    v = vectors
+    wv_data = [ [ v.vocab[w].index for w in s+['</s>'] if w in v.vocab ] \
+        for s in words_in_sents ]
+    wv_vectors = [ np.array([ v[w] for w in s+['</s>'] if w in v.vocab ]) \
+        for s in words_in_sents ]
+    vw_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_vectors ]
+    return wv_data, wv_vectors, vw_sentence_average_vectors
