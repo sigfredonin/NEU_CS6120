@@ -75,17 +75,21 @@ def get_ngrams_words(words, N):
     grams = [tuple(words[i:i+N]) for i in range(len(words)-N+1)]
     return grams
 
+def get_words_in_sents_summary(summary, NO_STOPS=False, NO_PUNCT=False):
+    sents = nltk.sent_tokenize(summary)
+    words_in_sents = [ [ w for w in nltk.word_tokenize(s) \
+                            if not (NO_STOPS and w in STOPWORDS) and \
+                               not (NO_PUNCT and w in PUNCTUATION) \
+                       ] for s in sents ]
+    return words_in_sents
+
 def get_words_summary(summary, NO_STOPS=True, NO_PUNCT=True):
     """
     Get the words in a summary, with stop words and punctuation filtered out.
     """
-    sents = nltk.sent_tokenize(summary)
-    words_in_sents = [ [ w for w in nltk.word_tokenize(s) ] for s in sents ]
+    words_in_sents = \
+        get_words_in_sents_summary(summary, NO_STOPS=NO_STOPS, NO_PUNCT=NO_PUNCT)
     words = [ w for s in words_in_sents for w in s ]
-    if NO_STOPS:
-        words = [ w for w in words if w not in STOPWORDS ]
-    if NO_PUNCT:
-        words = [ w for w in words if w not in PUNCTUATION ]
     return words
 
 def get_bigrams_summary(summary, NO_STOPS=False, NO_PUNCT=False):
@@ -179,6 +183,10 @@ def get_embeddings(vectors, words_in_sents):
             ]
     NOTE: append '</s>' to each review to ensure all have at least one word
           in the vocabulary of the word embeddings.
+    NOTE: the word embeddings include the NLTK English stop words, except:
+            'a', 'and', 'mightn', "mightn't", 'mustn', "mustn't",
+            "needn't", 'of', "shan't", 'to'
+          The word embeddings do not include punctuation marks.
     """
     v = vectors
     wv_data = [ [ v.vocab[w].index for w in s+['</s>'] if w in v.vocab ] \
@@ -205,3 +213,33 @@ def max_cosine_similarity(wva_sents):
                 max_similarity = similarity
                 max_similarity_indices = (i, j)
     return max_similarity, max_similarity_indices
+
+# ------------------------------------------------------------------------
+# Non-redundancy features (for problem 4.1) ---
+# ------------------------------------------------------------------------
+
+def get_non_redundancy_features(vectors, summary, DEBUG=False):
+    """
+    Get the non-redundancy features for a summary.
+    Returns -
+        - max unigram frequency (int)
+            with stop words and punctuation removed
+        - max bigram frequency (int)
+            with stop words and punctuation still present
+        - max sentence similarity (float in 0.0 ... 0.1)
+            between average word embeddings
+    """
+    words = get_words_summary(summary)
+    mf_unigram, mf_unigram_count = get_most_frequent(words)
+    if DEBUG:
+        print("Most frequent unigram: %s : %d" % (mf_unigram, mf_unigram_count))
+    bigrams = get_bigrams_summary(summary)
+    mf_bigram, mf_bigram_count = get_most_frequent(bigrams)
+    if DEBUG:
+        print("Most frequent bigram: %s : %d" % (mf_bigram, mf_bigram_count))
+    words_in_sents = get_words_in_sents_summary(summary)
+    _data, _vectors, wva_sents = get_embeddings(vectors, words_in_sents)
+    max_similarity, (s1, s2) = max_cosine_similarity(wva_sents)
+    if DEBUG:
+        print("Max cosine similarity: %7.4f : (%d,%d)" % (max_similarity, s1, s2))
+    return mf_unigram_count, mf_bigram_count, max_similarity
