@@ -31,6 +31,7 @@ import nltk
 
 from nltk import FreqDist
 from gensim.models import KeyedVectors
+from scipy import spatial
 
 # ------------------------------------------------------------------------
 # Input summary data ---
@@ -184,5 +185,23 @@ def get_embeddings(vectors, words_in_sents):
         for s in words_in_sents ]
     wv_vectors = [ np.array([ v[w] for w in s+['</s>'] if w in v.vocab ]) \
         for s in words_in_sents ]
-    vw_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_vectors ]
-    return wv_data, wv_vectors, vw_sentence_average_vectors
+    wv_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_vectors ]
+    return wv_data, wv_vectors, wv_sentence_average_vectors
+
+def max_cosine_similarity(wva_sents):
+    """
+    Find the maximum pairwise cosine similarity between the sentences
+    listed, which are represented as the average of embedding vectors
+    of the words in them.
+    """
+    max_similarity = 0.0
+    max_similarity_indices = (None, None, 0.0)
+    for i, s1 in enumerate(wva_sents):
+        for j in range(i+1, len(wva_sents)):
+            print("Trying %d:%d" % (i, j))
+            s2 = wva_sents[j]
+            similarity = 1 - spatial.distance.cosine(s1, s2)
+            if similarity > max_similarity:
+                max_similarity = similarity
+                max_similarity_indices = (i, j)
+    return max_similarity, max_similarity_indices
