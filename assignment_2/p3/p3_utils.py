@@ -17,6 +17,8 @@ from struct import unpack
 from nltk import FreqDist
 from gensim.models import KeyedVectors
 
+PATH_TRAIN = "data/a2_p3_train_data.txt"
+PATH_TEST = "data/a2_p3_test_data.txt"
 WORD_VECTORS_FILE = "data/GoogleNews-vectors-negative300.bin"
 
 # ------------------------------------------------------------------------
@@ -70,6 +72,37 @@ def get_text_from_file(filePath):
         text = f.read()
     return text
 
+def compile_vocabulary(words, vocabulary_size):
+    # compile vocabulary
+    fd_words = FreqDist(words)
+    frequents = [ ('UNK', 0) ] + fd_words.most_common(VOCABULARY_SIZE)
+    # set the count of the unknown words (not in top VOCABULARY_SIZE)
+    count_UNK = 0
+    for word in fd_words:
+        if word not in frequents:
+            count_UNK += 1
+    frequents[0] = ( 'UNK', count_UNK )
+    # compile the dictionary and reverse dictionary
+    vocabulary, word_counts = zip(*frequents)
+    dictionary = {}
+    reverse_dictionary = {}
+    for iWord, word in enumerate(vocabulary):
+        dictionary[word] = iWord
+        reverse_dictionary[iWord] = word
+    return fd_words, vocabulary, dictionary, reverse_dictionary
+
+def get_review_data(review_words, dictionary):
+    # compile review data as the indices of the words into the vocabulary
+    review_data = []
+    max_len = max(len(review) for review in review_words)
+    len_review_vector = ((max_len + 9) // 10) * 10  # multiple of 10
+    for review in review_words:
+        words_in_review = [0] * len_review_vector
+        for i, word in enumerate(review):
+            words_in_review[i] = dictionary.get(word, 0)
+        review_data.append(words_in_review)
+    return review_data
+
 def get_words_and_ratings(text):
     """
     Get the words and ratings in the reviews.
@@ -97,34 +130,37 @@ def get_words_and_ratings(text):
     review_words = [ s.split() for s, r in reviews ]
     review_labels = [int(r) for s, r in reviews ]
     words = [ w for ws in review_words for w in ws ]
-    # compile vocabulary
-    fd_words = FreqDist(words)
-    frequents = [ ('UNK', 0) ] + fd_words.most_common(VOCABULARY_SIZE)
-    # set the count of the unknown words (not in top VOCABULARY_SIZE)
-    count_UNK = 0
-    for word in fd_words:
-        if word not in frequents:
-            count_UNK += 1
-    frequents[0] = ( 'UNK', count_UNK )
-    # compile the dictionary and reverse dictionary
-    vocabulary, word_counts = zip(*frequents)
-    dictionary = {}
-    reverse_dictionary = {}
-    for iWord, word in enumerate(vocabulary):
-        dictionary[word] = iWord
-        reverse_dictionary[iWord] = word
-    # compile review data as the indices of the words into the vocabulary
-    review_data = []
-    max_len = max(len(review) for review in review_words)
-    len_review_vector = ((max_len + 9) // 10) * 10  # multiple of 10
-    for review in review_words:
-        words_in_review = [0] * len_review_vector
-        for i, word in enumerate(review):
-            words_in_review[i] = dictionary.get(word, 0)
-        review_data.append(words_in_review)
+    # compile the vocabulary and the review data as word indices
+    fd_words, vocabulary, dictionary, reverse_dictionary = \
+        compile_vocabulary(words, vocabulary_size=VOCABULARY_SIZE)
+    review_data = get_review_data(review_words, dictionary)
     # return the results
     return words, review_words, review_data, review_labels, \
         fd_words, vocabulary, dictionary, reverse_dictionary
+
+def load_test_set(text, dictionary):
+    """
+    Get the words and vocabulary from the reviews in a test sest.
+    The test set has one review sentence per line and does not have any ratings.
+    """
+    # separate the review sentences
+    re_test_reviews = re.compile(r'^(.+)$',  re.MULTILINE)
+    reviews = re_test_reviews.findall(text)
+    # tokenize the review sentences and compile a list of words
+    review_words = [ s.split() for s in reviews ]
+    words = [ w for ws in review_words for w in ws ]
+    review_data = get_review_data(review_words, dictionary)
+    # return the test set reviews
+    return reviews, words, review_words, review_data
+
+def write_test_set_with_ratings(outDir, outFilename, reviews, labels):
+    assert(len(reviews) == len(labels))
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    outPath = os.path.join(outDir, outFilename + "_" + timestamp + ".txt")
+    with open(outPath, 'w') as f:
+        for iReview, review in enumerate(reviews):
+            rating = labels[iReview]
+            f.write("%s|%d\n" % (review, rating))
 
 # ------------------------------------------------------------------------
 # Word vector embeddings ---
@@ -598,10 +634,10 @@ if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    filePath = "data/a2_p3_train_data.txt"
-    text = get_text_from_file(filePath)
-    print("Read %d bytes from '%s' as text" % (len(text), filePath))
+    text = get_text_from_file(PATH_TRAIN)
+    print("Read %d bytes from '%s' as text" % (len(text), PATH_TRAIN))
     print("Text begins : '%s'" % text[:30])
+    print("Text ends : '%s'" % text[-30:])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
@@ -835,6 +871,34 @@ if __name__ == '__main__':
     rsv_count_nonzero = len([len(rsv) for rsv in review_sentiment_vectors \
         if len([x for x in rsv if x != 0.0]) != 0 ])
     print("Count non-zero sentiment vectors: %d" % rsv_count_nonzero)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Reading test data ...")
+    text = get_text_from_file(PATH_TEST)
+    print("Read %d bytes from '%s' as text" % (len(text), PATH_TEST))
+    print("Text begins : '%s'" % text[:30])
+    print("Text ends : '%s'" % text[-30:])
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Loading test reviews and data ...")
+    reviews, words, review_words, review_data = \
+        load_test_set(text, dictionary)
+    print("Number of reviews: %d" % len(reviews))
+    assert(len(review_words) == len(reviews))
+    assert(len(review_data) == len(reviews))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Writing mock results ...")
+    labels = np.random.randint(5, size=len(reviews))
+    outDir = "tests"
+    outFilename = "p3_utils_mock_test_labels"
+    write_test_set_with_ratings(outDir, outFilename, reviews, labels)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
