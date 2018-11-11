@@ -29,9 +29,12 @@ import re
 import numpy as np
 import nltk
 
+from datetime import datetime
 from nltk import FreqDist
 from gensim.models import KeyedVectors
 from scipy import spatial
+
+import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------------------
 # Input summary data ---
@@ -196,17 +199,21 @@ def get_embeddings(vectors, words_in_sents):
     wv_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_vectors ]
     return wv_data, wv_vectors, wv_sentence_average_vectors
 
-def max_cosine_similarity(wva_sents):
+def max_cosine_similarity(wva_sents, DEBUG=False):
     """
     Find the maximum pairwise cosine similarity between the sentences
     listed, which are represented as the average of embedding vectors
     of the words in them.
+    Note:
+    If there is only one sentence, returns max_similarity = 0,
+    which is probably the most favorable value for a summary.
     """
     max_similarity = 0.0
-    max_similarity_indices = (None, None, 0.0)
+    max_similarity_indices = (0, 0)
     for i, s1 in enumerate(wva_sents):
         for j in range(i+1, len(wva_sents)):
-            print("Trying %d:%d" % (i, j))
+            if DEBUG:
+                print("Trying %d:%d" % (i, j))
             s2 = wva_sents[j]
             similarity = 1 - spatial.distance.cosine(s1, s2)
             if similarity > max_similarity:
@@ -243,3 +250,13 @@ def get_non_redundancy_features(vectors, summary, DEBUG=False):
     if DEBUG:
         print("Max cosine similarity: %7.4f : (%d,%d)" % (max_similarity, s1, s2))
     return mf_unigram_count, mf_bigram_count, max_similarity
+
+def plot_similarity_hist(similarities):
+    plt.figure()
+    plt.hist(similarities, bins=51)
+    plt.title("Max Sentence Cosine Similarity")
+    plt.xlabel("Similarity")
+    plt.ylabel("Count")
+    plotName = "tests/p4_utils_max_sent_cos_sim_"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    plt.savefig(plotName + timestamp + '.png')
