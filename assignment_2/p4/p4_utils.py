@@ -21,7 +21,7 @@ is followed by the scores, with commas between, as in ...
  first to retain a bowl game, the 2009 little caesars pizza bowl in Detroit.",-1,0
 
 Sig Nin
-October 26, 2018
+November 9, 2018
 """
 
 import os
@@ -59,12 +59,20 @@ def get_text_from_file(filePath):
 
 re_summary = re.compile(r'^\"(.+)\",(.+),(.+)$', re.MULTILINE)
 
-def get_summary_training_data(text):
+def get_summary_data(text):
     records = re_summary.findall(text)
     summaries, non_redundancies, fluencies = zip(*records)
     np_non_redundancies_float = np.array(non_redundancies).astype(np.float)
     np_fluencies_float = np.array(fluencies).astype(np.float)
     return summaries, np_non_redundancies_float, np_fluencies_float
+
+def load_summary_training_data():
+    text = get_text_from_file(PATH_TRAIN)
+    return get_summary_data(text)
+
+def load_summary_test_data():
+    text = get_text_from_file(PATH_TEST)
+    return get_summary_data(text)
 
 # ------------------------------------------------------------------------
 # Data preprocessing ---
