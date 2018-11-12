@@ -211,40 +211,27 @@ def load_embeddings(filePath, vocabulary, DEBUG=False):
         if DEBUG: print("Ending offset: %d: " % offset)
     return embeddings
 
-def load_embeddings_gensim(fd_words, review_words):
+def load_embeddings_gensim():
     """
-    Load pre-trained embeddings from Google News dataset.
+    Load pre-trained word embeddings from the Google News dataset.
+    Returns -
+        vectors - the KeyedVectors object loaded from the Google News file.
+    """
+    vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
+    return vectors
+
+def get_embeddings_vocabulary(vectors, fd_words):
+    """
     Compile a dictionary of vector index -> word, for the words in the reviews.
     Compile a reverse dictionary: vector index -> word
-    ?? What to do about words not in the vectors ??
-    >> Filter them out?
     Returns -
-        vectors - the KeyedVectors loaded from the Google News file.
         wv_vocabulary - [ word, ... ] for review words included in vectors
         wv_dictionary - { word : word vector index, ... }
         wv_reverse_dictionary - { word vector index : word , ... }
-        vw_review_data - [
-                [ word vector index, word vector index, ...]    # sentence 1
-                [ word vector index, word vector index, ...]    # sentence 2
-                ...
-                [ word vector index, word vector index, ...]    # sentence N
-            ]
-        vw_review_vectors - [
-                [ word vector, word vector, ...]                # sentence 1
-                [ word vector, word vector, ...]                # sentence 2
-                ...
-                [ word vector, word vector, ...]                # sentence N
-            ]
-        vw_review_sentence_average_vectors = [
-                average word vector,                            # sentence 1
-                average word vector,                            # sentence 2
-                ...
-                average word vector,                            # sentence n
-            ]
     NOTE: append '</s>' to each review to ensure all have at least one word
           in the vocabulary of the word embeddings.
     """
-    v = vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
+    v = vectors
     wv_vocabulary = ['</s'] + [ w for w in fd_words if w in v.vocab ]
     wv_dictionary = { w : v.vocab[w].index for w in fd_words \
         if w in v.vocab }
@@ -252,13 +239,54 @@ def load_embeddings_gensim(fd_words, review_words):
     wv_reverse_dictionary = { v.vocab[w].index : w for w in fd_words \
         if w in v.vocab }
     wv_reverse_dictionary[v.vocab['</s>'].index] = '</s>'
-    wv_review_data = [ [ v.vocab[w].index for w in s+['</s>'] if w in v.vocab ] \
-        for s in review_words ]
-    wv_review_vectors = [ np.array([ v[w] for w in s+['</s>'] if w in v.vocab ]) \
-        for s in review_words ]
-    vw_review_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_review_vectors ]
-    return vectors, wv_dictionary, wv_reverse_dictionary, \
-        wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors
+    return wv_vocabulary, wv_dictionary, wv_reverse_dictionary
+
+def get_embeddings(vectors, words_in_sents):
+    """
+    Convert words to pre-trained embedding vectors from the Google News dataset.
+    Filter out words not in the vectors.
+    Inputs -
+        vectors - a gensim KeyedVectors object containing the word embeddings
+        words_in_sents - list of words, grouped by sentence
+            [
+                [ word, word, ...]    # sentence 1
+                [ word, word, ...]    # sentence 2
+                ...
+                [ word, word, ...]    # sentence N
+            ]
+    Returns -
+        vw_data - [
+                [ word vector index, word vector index, ...]    # sentence 1
+                [ word vector index, word vector index, ...]    # sentence 2
+                ...
+                [ word vector index, word vector index, ...]    # sentence N
+            ]
+        vw_vectors - [
+                [ word vector, word vector, ...]                # sentence 1
+                [ word vector, word vector, ...]                # sentence 2
+                ...
+                [ word vector, word vector, ...]                # sentence N
+            ]
+        vw_sentence_average_vectors = [
+                average word vector,                            # sentence 1
+                average word vector,                            # sentence 2
+                ...
+                average word vector,                            # sentence n
+            ]
+    NOTE: append '</s>' to each review to ensure all have at least one word
+          in the vocabulary of the word embeddings.
+    NOTE: the word embeddings include the NLTK English stop words, except:
+            'a', 'and', 'mightn', "mightn't", 'mustn', "mustn't",
+            "needn't", 'of', "shan't", 'to'
+          The word embeddings do not include punctuation marks.
+    """
+    v = vectors
+    wv_data = [ [ v.vocab[w].index for w in s+['</s>'] if w in v.vocab ] \
+        for s in words_in_sents ]
+    wv_vectors = [ np.array([ v[w] for w in s+['</s>'] if w in v.vocab ]) \
+        for s in words_in_sents ]
+    wv_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_vectors ]
+    return wv_data, wv_vectors, wv_sentence_average_vectors
 
 # ------------------------------------------------------------------------
 # Sentiment Lexicons ---
@@ -854,9 +882,46 @@ if __name__ == '__main__':
     embeddings = load_embeddings(WORD_VECTORS_FILE, fd_words)
     print("Length embeddings: %d" % len(embeddings))
     for word, vector in list(embeddings.items())[:10]:
-        print("%10s : %s" % (word, vector[:4]))
+        print("%20s : %s" % (word, vector[:4]))
     for word, vector in list(embeddings.items())[-10:]:
-        print("%10s : %s" % (word, vector[:4]))
+        print("%20s : %s" % (word, vector[:4]))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Reading embeddings with gensim ...")
+    vectors = load_embeddings_gensim()
+    print("Length embeddings: %d" % len(vectors.vocab))
+    for word, vector in list(vectors.vocab.items())[:10]:
+        print("%20s : %s" % (word, vector.index))
+    for word, vector in list(vectors.vocab.items())[-10:]:
+        print("%20s : %s" % (word, vector.index))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Generating embeddings vocabulary")
+    wv_vocabulary, wv_dictionary, wv_reverse_dictionary = \
+        get_embeddings_vocabulary(vectors, fd_words)
+    print("Count words in embeddings vocabulary: %d" % len(wv_vocabulary))
+    print("--- %s .. %s" % (wv_vocabulary[:4], wv_vocabulary[-4:]))
+    print("Length word->index dictionary: %d" % len(wv_dictionary))
+    print("Length index->word dictionary: %d" % len(wv_reverse_dictionary))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Generating review sentence word vectors")
+    wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors \
+        = get_embeddings(vectors, review_words)
+    print("Shape of review data: %s" % \
+        str(np.array(wv_review_data).shape))
+    print("  %s" % str([(wv_review_data[i][:3], wv_review_data[i][-3:]) for i in range(3)]))
+    print("Shape of review vectors: %s" % \
+        str(np.array(wv_review_vectors).shape))
+    print("  %s" % str([(wv_review_vectors[i][0][:3], wv_review_vectors[i][0][:3]) for i in range(3)]))
+    print("Shape of review avg sentence vectors: %s" % \
+        str(np.array(vw_review_sentence_average_vectors).shape))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
