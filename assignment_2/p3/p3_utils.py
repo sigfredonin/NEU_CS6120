@@ -73,15 +73,11 @@ def get_text_from_file(filePath):
     return text
 
 def compile_vocabulary(words, vocabulary_size):
-    # compile vocabulary
+    # compile vocabulary, with a UNK entry at index 0 for the words left out
     fd_words = FreqDist(words)
-    frequents = [ ('UNK', 0) ] + fd_words.most_common(VOCABULARY_SIZE)
-    # set the count of the unknown words (not in top VOCABULARY_SIZE)
-    count_UNK = 0
-    for word in fd_words:
-        if word not in frequents:
-            count_UNK += 1
-    frequents[0] = ( 'UNK', count_UNK )
+    frequents = fd_words.most_common(VOCABULARY_SIZE)
+    count_UNK = len(fd_words) - len(frequents)
+    frequents = [( 'UNK', count_UNK )] + frequents
     # compile the dictionary and reverse dictionary
     vocabulary, word_counts = zip(*frequents)
     dictionary = {}
@@ -127,9 +123,9 @@ def get_words_and_ratings(text):
     # collect words and ratings from the reviews
     re_reviews = re.compile(r'^(.+)\|(.+)$', re.MULTILINE)
     reviews = re_reviews.findall(text.lower())
-    review_words = [ s.split() for s, r in reviews ]
-    review_labels = [int(r) for s, r in reviews ]
-    words = [ w for ws in review_words for w in ws ]
+    review_words = [ review.split() for review, rating in reviews ]
+    review_labels = [int(rating) for review, rating in reviews ]
+    words = [ word for words_in_sent in review_words for word in words_in_sent ]
     # compile the vocabulary and the review data as word indices
     fd_words, vocabulary, dictionary, reverse_dictionary = \
         compile_vocabulary(words, vocabulary_size=VOCABULARY_SIZE)
@@ -144,11 +140,11 @@ def load_test_set(text, dictionary):
     The test set has one review sentence per line and does not have any ratings.
     """
     # separate the review sentences
-    re_test_reviews = re.compile(r'^(.+)$',  re.MULTILINE)
+    re_test_reviews = re.compile(r'^(.+)$', re.MULTILINE)
     reviews = re_test_reviews.findall(text)
     # tokenize the review sentences and compile a list of words
-    review_words = [ s.split() for s in reviews ]
-    words = [ w for ws in review_words for w in ws ]
+    review_words = [ review.split() for review in reviews ]
+    words = [ word for words_in_sent in review_words for word in words_in_sent ]
     review_data = get_review_data(review_words, dictionary)
     # return the test set reviews
     return reviews, words, review_words, review_data
