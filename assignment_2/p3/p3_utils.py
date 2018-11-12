@@ -232,7 +232,7 @@ def get_embeddings_vocabulary(vectors, fd_words):
           in the vocabulary of the word embeddings.
     """
     v = vectors
-    wv_vocabulary = ['</s'] + [ w for w in fd_words if w in v.vocab ]
+    wv_vocabulary = ['</s>'] + [ w for w in fd_words if w in v.vocab ]
     wv_dictionary = { w : v.vocab[w].index for w in fd_words \
         if w in v.vocab }
     wv_dictionary['</s>'] = v.vocab['</s>'].index
@@ -255,19 +255,19 @@ def get_embeddings(vectors, words_in_sents):
                 [ word, word, ...]    # sentence N
             ]
     Returns -
-        vw_data - [
+        wv_data - [
                 [ word vector index, word vector index, ...]    # sentence 1
                 [ word vector index, word vector index, ...]    # sentence 2
                 ...
                 [ word vector index, word vector index, ...]    # sentence N
             ]
-        vw_vectors - [
+        wv_vectors - [
                 [ word vector, word vector, ...]                # sentence 1
                 [ word vector, word vector, ...]                # sentence 2
                 ...
                 [ word vector, word vector, ...]                # sentence N
             ]
-        vw_sentence_average_vectors = [
+        wv_sentence_average_vectors = [
                 average word vector,                            # sentence 1
                 average word vector,                            # sentence 2
                 ...
@@ -278,6 +278,7 @@ def get_embeddings(vectors, words_in_sents):
     NOTE: the word embeddings include the NLTK English stop words, except:
             'a', 'and', 'mightn', "mightn't", 'mustn', "mustn't",
             "needn't", 'of', "shan't", 'to'
+          Of these, the words 'a', 'and', 'of', and 'to' are used in the training data.
           The word embeddings do not include punctuation marks.
     """
     v = vectors
@@ -912,16 +913,19 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     print("Generating review sentence word vectors")
-    wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors \
+    wv_review_data, wv_review_vectors, wv_review_sentence_average_vectors \
         = get_embeddings(vectors, review_words)
     print("Shape of review data: %s" % \
         str(np.array(wv_review_data).shape))
     print("  %s" % str([(wv_review_data[i][:3], wv_review_data[i][-3:]) for i in range(3)]))
     print("Shape of review vectors: %s" % \
         str(np.array(wv_review_vectors).shape))
-    print("  %s" % str([(wv_review_vectors[i][0][:3], wv_review_vectors[i][0][:3]) for i in range(3)]))
+    for i in range(3):
+        print("  %s .. %s" % (wv_review_vectors[i][1][:3], wv_review_vectors[i][-2][:3]))
     print("Shape of review avg sentence vectors: %s" % \
-        str(np.array(vw_review_sentence_average_vectors).shape))
+        str(np.array(wv_review_sentence_average_vectors).shape))
+    for i in range(3):
+        print("  %s" % wv_review_sentence_average_vectors[i][:3])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
@@ -946,20 +950,38 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     print("Loading test reviews and data ...")
-    reviews, words, review_words, review_data = \
+    test_reviews, test_words, test_review_words, test_review_data = \
         load_test_set(text, dictionary)
-    print("Number of reviews: %d" % len(reviews))
-    assert(len(review_words) == len(reviews))
-    assert(len(review_data) == len(reviews))
+    print("Number of reviews: %d" % len(test_reviews))
+    assert(len(test_review_words) == len(test_reviews))
+    assert(len(test_review_data) == len(test_reviews))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    print("Generating review sentence word vectors")
+    wv_test_review_data, wv_test_review_vectors, wv_test_review_sentence_average_vectors \
+        = get_embeddings(vectors, test_review_words)
+    print("Shape of review data: %s" % \
+        str(np.array(wv_test_review_data).shape))
+    print("  %s" % str([(wv_test_review_data[i][:3], wv_test_review_data[i][-3:]) for i in range(3)]))
+    print("Shape of review vectors: %s" % \
+        str(np.array(wv_test_review_vectors).shape))
+    for i in range(3):
+        print("  %s .. %s" % (wv_test_review_vectors[i][1][:3], wv_test_review_vectors[i][-2][:3]))
+    print("Shape of review avg sentence vectors: %s" % \
+        str(np.array(wv_review_sentence_average_vectors).shape))
+    for i in range(3):
+        print("  %s" % wv_review_sentence_average_vectors[i][:3])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
     print("Writing mock results ...")
-    labels = np.random.randint(5, size=len(reviews))
+    test_labels_random = np.random.randint(5, size=len(test_reviews))
     outDir = "tests"
     outFilename = "p3_utils_mock_test_labels"
-    write_test_set_with_ratings(outDir, outFilename, reviews, labels)
+    write_test_set_with_ratings(outDir, outFilename, test_reviews, test_labels_random)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")

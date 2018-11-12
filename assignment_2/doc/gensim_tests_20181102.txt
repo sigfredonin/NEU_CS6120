@@ -39,10 +39,14 @@ Using TensorFlow backend.
 >>> words, review_words, review_data, review_labels, \
 ...     fd_words, vocabulary, dictionary, reverse_dictionary = \
 ...     p3_utils.get_words_and_ratings(text)
->>> review_wv_data = [ [ v.vocab[w].index for w in s if w in v.vocab ] for s in review_words ]
->>> print(len(review_wv_data))
+>>> wv_review_data = [ [ v.vocab[w].index for w in s if w in v.vocab ] for s in review_words ]
+>>> print(len(wv_review_data))
 9484
->>> wv_diff = [ ( 1 if len(review_wv_data[i]) != len(review_data[i]) else 0 ) for i in range(len(review_data)) ]
+>>> [ wv_review_data[i][:4] for i in range(3) ]
+[[11, 2453, 4, 10929], [11, 99319, 6725, 11137], [11, 692, 851, 78]]
+>>> v.index2word[11]
+'the'
+>>> wv_diff = [ ( 1 if len(wv_review_data[i]) != len(review_data[i]) else 0 ) for i in range(len(review_data)) ]
 >>> wv_missing = [ w for s in review_words for w in s if w not in v.vocab ]
 >>> wv_missing_words = set(wv_missing)
 >>> print(len(wv_missing_words))
