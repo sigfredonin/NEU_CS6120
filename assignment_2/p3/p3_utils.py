@@ -404,7 +404,7 @@ def sentiment_vectors(review_words, positive_words, negative_words):
     """
     review_sentiment_vectors = []
     for review in review_words:
-        rsvs = [ 0.0 ] * 60
+        rsvs = [ 0.0 ] * len(review)
         for i, word in enumerate(review):
             if word in positive_words:
                 rsvs[i] = 0.5
@@ -424,7 +424,7 @@ def load_sentiment_vectors(review_words):
         sentiment_words(pitt_pos, pitt_neg, uic_pos, uic_neg)
     review_sentiment_vectors = \
         sentiment_vectors(review_words, positive_words, negative_words)
-    return review_sentiment_vectors
+    return np.array(review_sentiment_vectors)
 
 # ------------------------------------------------------------------------
 # Hot Vectors ---

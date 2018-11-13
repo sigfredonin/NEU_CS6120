@@ -109,8 +109,6 @@ def get_data(input_type, num_cross_validation_trials):
     # Load word vectors if going to use them
     if input_type == 'avg wv' or input_type == 'awv+sv' or input_type == 'awv+pos':
         vectors = p3_utils.load_embeddings_gensim()
-        wv_vocabulary, wv_dictionary, wv_reverse_dictionary \
-            = p3_utils.get_embeddings_vocabulary(vectors, fd_words)
         wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors \
             = p3_utils.get_embeddings(vectors, review_words)
         wv_test_data, wv_test_vectors, vw_test_sentence_average_vectors \
@@ -160,21 +158,21 @@ def get_data(input_type, num_cross_validation_trials):
     # Select the input type
     if input_type == 'one hot':
         train_data = p3_utils.one_hot_vectors(review_data, vocabulary_size)
-        test_data = p3_utils.one_hot_vectors(test_data, vocabulary_size)
+        test_data = p3_utils.one_hot_vectors(test_review_data, vocabulary_size)
         print("Count one-hot vectors: %d" % len(train_data))
     elif input_type == 'count-hot':
         train_data = p3_utils.count_vectors(review_data, vocabulary_size)
-        test_data = p3_utils.count_vectors(test_data, vocabulary_size)
+        test_data = p3_utils.count_vectors(test_review_data, vocabulary_size)
         print("Count count vectors: %d" % len(train_data))
     elif input_type == 'td-idf hot':
         train_data = p3_utils.tdIdf_vectors(review_data, vocabulary_size)
-        test_data = p3_utils.tdIdf_vectors(test_data, vocabulary_size)
+        test_data = p3_utils.tdIdf_vectors(test_review_data, vocabulary_size)
         print("Count tdIdf vectors: %d" % len(train_data))
     elif input_type == 'word index':
         train_data = review_data
-        test_data = test_data
+        test_data = test_review_data
         print("Count word index vectors: %d" % len(train_data))
-    elif input_type == 'avg wv':
+    elif input_type == 'awv':
         train_data = vw_review_sentence_average_vectors
         test_data = vw_test_sentence_average_vectors
         print("Count embedding vectors: %d" % len(train_data))
@@ -182,7 +180,7 @@ def get_data(input_type, num_cross_validation_trials):
         train_data = review_sentiment_vectors
         test_data = test_sentiment_vectors
         print("Count sentiment vectors: %d" % len(train_data))
-    elif input_type == 'awv+sv':
+    elif input_type == 'awv+rsv':
         train_data = review_sentence_awv_sv
         test_data = test_sentence_awv_sv
         print("Count embedding + sentiment vectors: %d" % len(train_data))
@@ -215,6 +213,11 @@ def run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per
     np_val_data = np.array(val_data)
     np_val_labels = np.array(val_labels)
     train_data = ((np_train_data, np_train_labels), (np_val_data, np_val_labels))
+
+    print("Train data shape:   %s" % str(np_train_data.shape))
+    print("Train labels shape: %s" % str(np_train_data.shape))
+    print("Test data shape:    %s" % str(np_train_data.shape))
+    print("Test labels shape:  %s" % str(np_train_data.shape))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
@@ -327,7 +330,9 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     # Set parameters for this set of trials
-    input_type = 'awv+pos'
+    # input types:  'one hot', 'count-hot', 'td-idf hot', 'word index',
+    #               'awv', 'rsv', 'awv+rsv', 'pos', 'awv+pos'
+    input_type = 'awv'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 40
     num_h1_units = 60
@@ -336,6 +341,17 @@ if __name__ == '__main__':
     h1_h2_dropout_rate = 0.5
 
     num_epochs_for_training = 20    # ... when training on full training set
+
+    print("Input type: %s" %s input_type)
+    print("Number of cross-validation trials: %d" % num_cross_validation_trials)
+    print("Number of epochs per trial: %d" % num_epochs_per_trial)
+    print("Number of units in first hidden layer: %d" % num_h1_units)
+    print("Activation function for first hidden layer: %s" % h1_activation)
+    print("Activation function for second hidden layer: %s" % h2_activation)
+    print("Dropout rate for hidden layers: %f" % h1_h2_dropout_rate)
+    print()
+    print("Number of epochs for full training set: %d" % num_epochs_for_training)
+    print()
 
     xval_sets, test_reviews, test_data = get_data(input_type, num_cross_validation_trials)
 
