@@ -12,9 +12,10 @@ import math
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import nltk
+
 from datetime import datetime
 from struct import unpack
-from nltk import FreqDist
 from gensim.models import KeyedVectors
 
 PATH_TRAIN = "data/a2_p3_train_data.txt"
@@ -74,7 +75,7 @@ def get_text_from_file(filePath):
 
 def compile_vocabulary(words, vocabulary_size):
     # compile vocabulary, with a UNK entry at index 0 for the words left out
-    fd_words = FreqDist(words)
+    fd_words = nltk.FreqDist(words)
     frequents = fd_words.most_common(VOCABULARY_SIZE)
     count_UNK = len(fd_words) - len(frequents)
     frequents = [( 'UNK', count_UNK )] + frequents
@@ -288,6 +289,49 @@ def get_embeddings(vectors, words_in_sents):
         for s in words_in_sents ]
     wv_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_vectors ]
     return wv_data, wv_vectors, wv_sentence_average_vectors
+
+# ------------------------------------------------------------------------
+# POS tagging ---
+# ------------------------------------------------------------------------
+
+# tagset from nltk.help.upenn_tagset(), plus:
+#   '#', which occurs in the training data
+#   'UNK', in case the tagger returns something not in this tag set
+TAGSET = {
+        'UNK', '$', "''", '(', ')', ',', '--', '.', ':', 'CC', 'CD', \
+        'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', \
+        'NN', 'NNP', 'NNPS', 'NNS', 'PDT', 'POS', 'PRP', 'PRP$', \
+        'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', \
+        'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB', \
+        '``', '#'
+    }
+tags_dictionary = { list(TAGSET)[i] : i for i in range(len(TAGSET)) }
+reverse_tags_dictionary = { i: list(TAGSET)[i] for i in range(len(TAGSET)) }
+
+def get_pos_tags_reviews(text, HAS_RATINGS=True):
+    """
+    Get a vector of POS tags for each review sentence.
+    Return -
+        reviews_tag_vectors - [ [ tag index, tag index, ... ] ... ]
+    """
+    PAD = -1
+    if (HAS_RATINGS):
+        re_reviews = re.compile(r'^(.+)\|(.+)$', re.MULTILINE)
+    else:
+        re_reviews = re.compile(r'^(.+)$', re.MULTILINE)
+    reviews_w_caps = re_reviews.findall(text)
+    if (HAS_RATINGS):
+        review_words_w_caps = [ review.split() for review, rating in reviews_w_caps ]
+    else:
+        review_words_w_caps = [ review.split() for review in reviews_w_caps ]
+    review_pos_tags_w_caps = [ nltk.pos_tag(s) for s in review_words_w_caps ]
+    _reviews_tag_vectors = [ [ tags_dictionary.get(tag, 0) for word, tag in s ] \
+        for s in review_pos_tags_w_caps ]
+    max_len = max(len(s) for s in _reviews_tag_vectors)
+    vector_len = ((max_len + 9) // 10) * 10
+    reviews_tag_vectors = [ s + [PAD] * (vector_len - len(s))\
+        for s in _reviews_tag_vectors ]
+    return np.array(reviews_tag_vectors)
 
 # ------------------------------------------------------------------------
 # Sentiment Lexicons ---
@@ -617,17 +661,12 @@ def assemble_full_training_data(xval_sets):
 # ------------------------------------------------------------------------
 
 def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
-        val_acc_min, val_acc_mean, val_acc_max, \
-        input_type, h1_units, h1_f, h2_f, epochs, \
-        plotName='tests/p3_tf_MLP_test_plot_'):
+        heading, subheading, plotName='tests/p3_tf_MLP_test_plot_'):
 
     figure, axis_1 = plt.subplots()
 
-    plt.suptitle("Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
-        (input_type, h1_units, h1_f, h2_f, epochs), size=14)
-    if val_acc_min != None and val_acc_mean != None and val_acc_max != None:
-        plt.title("validation accuracy: %7.4f %7.4f %7.4f" % \
-            (val_acc_min, val_acc_mean, val_acc_max), size=12)
+    plt.suptitle(heading, size=12)
+    plt.title(subheading, size=10)
 
     # Plot loss for both training and validation
     axis_1.plot(np_train_loss, 'r--')
