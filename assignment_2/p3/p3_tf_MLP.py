@@ -107,7 +107,7 @@ def get_data(input_type, num_cross_validation_trials):
     print("Number of test reviews: %d" % len(test_review_words))
 
     # Load word vectors if going to use them
-    if input_type == 'avg wv' or input_type == 'awv+sv' or input_type == 'awv+pos':
+    if input_type == 'awv' or input_type == 'awv+sv' or input_type == 'awv+pos':
         vectors = p3_utils.load_embeddings_gensim()
         wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors \
             = p3_utils.get_embeddings(vectors, review_words)
@@ -342,7 +342,7 @@ if __name__ == '__main__':
 
     num_epochs_for_training = 20    # ... when training on full training set
 
-    print("Input type: %s" %s input_type)
+    print("Input type: %s" % input_type)
     print("Number of cross-validation trials: %d" % num_cross_validation_trials)
     print("Number of epochs per trial: %d" % num_epochs_per_trial)
     print("Number of units in first hidden layer: %d" % num_h1_units)
