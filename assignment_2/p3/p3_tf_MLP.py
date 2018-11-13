@@ -98,11 +98,12 @@ def get_data(input_type, num_cross_validation_trials):
     vocabulary_size = len(vocabulary)
     print("Training vocabulary size: %d" % vocabulary_size)
     print("Number of training reviews: %d" % len(review_words))
+    print("Length of review_data vectors: %d" % len(review_data[0]))
 
     # Compile reviews, with word index encoding
     #... for the test data ...
     test_reviews, test_words, test_review_words, test_review_data = \
-        p3_utils.load_test_set(test_text, dictionary)
+        p3_utils.load_test_set(test_text, dictionary, VECTOR_LEN=len(review_data[0]))
     print("Number of test reviews: %d" % len(test_review_words))
 
     # Load word vectors if going to use them
@@ -118,7 +119,8 @@ def get_data(input_type, num_cross_validation_trials):
     # Get POS vectors if going to use them
     if input_type == 'pos' or input_type == 'awv+pos':
         review_pos_vectors = p3_utils.get_pos_tags_reviews(train_text)
-        test_pos_vectors = p3_utils.get_pos_tags_reviews(test_text, HAS_RATINGS=False)
+        test_pos_vectors = p3_utils.get_pos_tags_reviews(test_text, \
+            HAS_RATINGS=False, VECTOR_LEN=len(review_pos_vectors[0]))
 
     # Prepare combined word vectors and pos vectors if going to use them
     if input_type == 'awv+pos':
@@ -203,7 +205,7 @@ def get_data(input_type, num_cross_validation_trials):
         p3_utils.split_training_data_for_cross_validation(train_data, review_labels, \
             num_cross_validation_trials)
 
-    return xval_sets, test_data
+    return xval_sets, test_reviews, test_data
 
 def run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per_trial, \
         num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate):
@@ -335,7 +337,7 @@ if __name__ == '__main__':
 
     num_epochs_for_training = 20    # ... when training on full training set
 
-    xval_sets, test_data = get_data(input_type, num_cross_validation_trials)
+    xval_sets, test_reviews, test_data = get_data(input_type, num_cross_validation_trials)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
@@ -360,6 +362,7 @@ if __name__ == '__main__':
     np_test_data = np.array(test_data)
     print("Test data shape: %s" % str(np_test_data.shape))
     test_labels = model.predict(np_test_data)
+    test_ratings = [ np.argmax(predictions) for predictions in test_labels  ]
     print("Test labels shape: %s" % str(test_labels.shape))
     print("Test labels: %s" % test_labels[:5])
 
@@ -370,7 +373,7 @@ if __name__ == '__main__':
     outFilename = "test_data_%s_%d-%s_%d-%s_%d-%s" % \
         (input_type, num_h1_units, h1_activation, 10, h2_activation, 5, "SOFTMAX")
     p3_utils.write_test_set_with_ratings(outDir, outFilename, \
-        test_reviews, test_labels)
+        test_reviews, test_ratings)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")

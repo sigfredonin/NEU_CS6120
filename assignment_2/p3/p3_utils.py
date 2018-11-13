@@ -88,11 +88,14 @@ def compile_vocabulary(words, vocabulary_size):
         reverse_dictionary[iWord] = word
     return fd_words, vocabulary, dictionary, reverse_dictionary
 
-def get_review_data(review_words, dictionary):
+def get_review_data(review_words, dictionary, VECTOR_LEN=None):
     # compile review data as the indices of the words into the vocabulary
     review_data = []
-    max_len = max(len(review) for review in review_words)
-    len_review_vector = ((max_len + 9) // 10) * 10  # multiple of 10
+    if VECTOR_LEN == None:
+        max_len = max(len(review) for review in review_words)
+        len_review_vector = ((max_len + 9) // 10) * 10  # multiple of 10
+    else:
+        len_review_vector = VECTOR_LEN
     for review in review_words:
         words_in_review = [0] * len_review_vector
         for i, word in enumerate(review):
@@ -135,7 +138,7 @@ def get_words_and_ratings(text):
     return words, review_words, review_data, review_labels, \
         fd_words, vocabulary, dictionary, reverse_dictionary
 
-def load_test_set(text, dictionary):
+def load_test_set(text, dictionary, VECTOR_LEN):
     """
     Get the words and vocabulary from the reviews in a test sest.
     The test set has one review sentence per line and does not have any ratings.
@@ -146,7 +149,7 @@ def load_test_set(text, dictionary):
     # tokenize the review sentences and compile a list of words
     review_words = [ review.split() for review in reviews ]
     words = [ word for words_in_sent in review_words for word in words_in_sent ]
-    review_data = get_review_data(review_words, dictionary)
+    review_data = get_review_data(review_words, dictionary, VECTOR_LEN)
     # return the test set reviews
     return reviews, words, review_words, review_data
 
@@ -308,7 +311,7 @@ TAGSET = {
 tags_dictionary = { list(TAGSET)[i] : i for i in range(len(TAGSET)) }
 reverse_tags_dictionary = { i: list(TAGSET)[i] for i in range(len(TAGSET)) }
 
-def get_pos_tags_reviews(text, HAS_RATINGS=True):
+def get_pos_tags_reviews(text, HAS_RATINGS=True, VECTOR_LEN=None):
     """
     Get a vector of POS tags for each review sentence.
     Return -
@@ -327,8 +330,11 @@ def get_pos_tags_reviews(text, HAS_RATINGS=True):
     review_pos_tags_w_caps = [ nltk.pos_tag(s) for s in review_words_w_caps ]
     _reviews_tag_vectors = [ [ tags_dictionary.get(tag, 0) for word, tag in s ] \
         for s in review_pos_tags_w_caps ]
-    max_len = max(len(s) for s in _reviews_tag_vectors)
-    vector_len = ((max_len + 9) // 10) * 10
+    if VECTOR_LEN == None:
+        max_len = max(len(s) for s in _reviews_tag_vectors)
+        vector_len = ((max_len + 9) // 10) * 10
+    else:
+        vector_len = VECTOR_LEN
     reviews_tag_vectors = [ s + [PAD] * (vector_len - len(s))\
         for s in _reviews_tag_vectors ]
     return np.array(reviews_tag_vectors)
@@ -421,7 +427,7 @@ def load_sentiment_vectors(review_words):
     return review_sentiment_vectors
 
 # ------------------------------------------------------------------------
-# Transform review representation ---
+# Hot Vectors ---
 # ------------------------------------------------------------------------
 
 def one_hot_vectors(review_data, vocabulary_size):
