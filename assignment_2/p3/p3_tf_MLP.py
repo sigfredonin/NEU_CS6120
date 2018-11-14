@@ -336,13 +336,13 @@ if __name__ == '__main__':
     #               'awv', 'rsv', 'awv+rsv', 'pos', 'awv+pos'
     input_type = 'pos'
     num_cross_validation_trials = 10
-    num_epochs_per_trial = 40
-    num_h1_units = 5
+    num_epochs_per_trial = 60
+    num_h1_units = 300
     h1_activation = 'relu'
     h2_activation = 'relu'
     h1_h2_dropout_rate = 0.5
 
-    num_epochs_for_training = 5    # ... when training on full training set
+    num_epochs_for_training = 40    # ... when training on full training set
 
     print("Input type: %s" % input_type)
     print("Number of cross-validation trials: %d" % num_cross_validation_trials)
