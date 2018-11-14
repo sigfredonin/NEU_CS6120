@@ -404,7 +404,7 @@ def sentiment_vectors(review_words, positive_words, negative_words):
     """
     review_sentiment_vectors = []
     for review in review_words:
-        rsvs = [ 0.0 ] * len(review)
+        rsvs = [ 0.0 ] * 60
         for i, word in enumerate(review):
             if word in positive_words:
                 rsvs[i] = 0.5
@@ -688,7 +688,7 @@ def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
     axis_2.set_ylabel('Avg Acc')
     axis_2.legend(['Training Accuracy', 'Validation Accuracy'], loc='upper right')
 
-    figure.subplots_adjust(top=0.9)
+    figure.subplots_adjust(top=0.9, right=0.9)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     plt.savefig(plotName + timestamp + '.png')
@@ -696,6 +696,40 @@ def plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
 # ------------------------------------------------------------------------
 # Tests ---
 # ------------------------------------------------------------------------
+
+def test_plot():
+    train_loss = [[ math.exp(-(l/20.0))+(0.002*(random.random()-0.5)) \
+        for l in range(10) ] for i in range(20) ]
+    train_accuracy = [[ 0.8 * (1 - math.exp(-l/20.0)+(0.002*(random.random()-0.5))) \
+        for l in range(10) ] for i in range(20) ]
+    val_loss = [[ math.exp(-l/20.0)+(0.002*(random.random()-0.5)) \
+                + math.exp(0.5 * (l/20.0))+(0.002*(random.random()-0.5)) \
+        for l in range(10) ] for i in range(20) ]
+    val_accuracy = [[ 0.31 * (1 - math.exp(-l/20.0)+(0.001*(random.random()-0.5))) \
+        for l in range(10) ] for i in range(20) ]
+
+    np_train_loss = np.array(train_loss).mean(axis=0)
+    np_train_acc = np.array(train_accuracy).mean(axis=0)
+    np_val_loss = np.array(val_loss).mean(axis=0)
+    np_val_acc = np.array(val_accuracy).mean(axis=0)
+
+    np_val_acc_finals = np.array(val_accuracy)[:,-1] # last value from each trial
+    val_acc_min  = np_val_acc_finals.min()
+    val_acc_mean = np_val_acc_finals.mean()
+    val_acc_max  = np_val_acc_finals.max()
+
+    input_type = 'aws'
+    num_h1_units = 60
+    h1_activation = h2_activation = 'relu'
+    num_epochs_per_trial = 20
+
+    heading = "Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
+        (input_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial)
+    subheading = "validation accuracy: %7.4f %7.4f %7.4f" % \
+        (val_acc_min, val_acc_mean, val_acc_max)
+
+    plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
+        heading, subheading, plotName='tests/p3_utils_test_')
 
 if __name__ == '__main__':
 
@@ -896,30 +930,7 @@ if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    train_loss = [[ math.exp(-(l/20.0))+(0.002*(random.random()-0.5)) \
-        for l in range(10) ] for i in range(20) ]
-    train_accuracy = [[ 0.8 * (1 - math.exp(-l/20.0)+(0.002*(random.random()-0.5))) \
-        for l in range(10) ] for i in range(20) ]
-    val_loss = [[ math.exp(-l/20.0)+(0.002*(random.random()-0.5)) \
-                + math.exp(0.5 * (l/20.0))+(0.002*(random.random()-0.5)) \
-        for l in range(10) ] for i in range(20) ]
-    val_accuracy = [[ 0.31 * (1 - math.exp(-l/20.0)+(0.001*(random.random()-0.5))) \
-        for l in range(10) ] for i in range(20) ]
-
-    np_train_loss = np.array(train_loss).mean(axis=0)
-    np_train_acc = np.array(train_accuracy).mean(axis=0)
-    np_val_loss = np.array(val_loss).mean(axis=0)
-    np_val_acc = np.array(val_accuracy).mean(axis=0)
-
-    np_val_acc_finals = np.array(val_accuracy)[:,-1] # last value from each trial
-    val_acc_min  = np_val_acc_finals.min()
-    val_acc_mean = np_val_acc_finals.mean()
-    val_acc_max  = np_val_acc_finals.max()
-
-    plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
-        val_acc_min, val_acc_mean, val_acc_max, \
-        input_type='td-idf-hot', h1_units=60, h1_f='relu', h2_f='relu', epochs=20, \
-        plotName='tests/p3_utils_test_')
+    test_plot()
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")

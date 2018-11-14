@@ -107,7 +107,7 @@ def get_data(input_type, num_cross_validation_trials):
     print("Number of test reviews: %d" % len(test_review_words))
 
     # Load word vectors if going to use them
-    if input_type == 'awv' or input_type == 'awv+sv' or input_type == 'awv+pos':
+    if input_type == 'awv' or input_type == 'awv+rsv' or input_type == 'awv+pos':
         vectors = p3_utils.load_embeddings_gensim()
         wv_review_data, wv_review_vectors, vw_review_sentence_average_vectors \
             = p3_utils.get_embeddings(vectors, review_words)
@@ -136,12 +136,12 @@ def get_data(input_type, num_cross_validation_trials):
             test_sentence_awv_pos.append(rsv)
 
     # Load sentiment vectors if going to use them
-    if input_type == 'rsv' or input_type == 'awv+sv':
+    if input_type == 'rsv' or input_type == 'awv+rsv':
         review_sentiment_vectors = p3_utils.load_sentiment_vectors(review_words)
         test_sentiment_vectors = p3_utils.load_sentiment_vectors(test_review_words)
 
     # Prepare combined word vectors and sentiment vectors if going to use them
-    if input_type == 'awv+sv':
+    if input_type == 'awv+rsv':
         # ... for training data ...
         review_sentence_awv_sv = []
         for i in range(len(review_words)):
@@ -332,7 +332,7 @@ if __name__ == '__main__':
     # Set parameters for this set of trials
     # input types:  'one hot', 'count-hot', 'td-idf hot', 'word index',
     #               'awv', 'rsv', 'awv+rsv', 'pos', 'awv+pos'
-    input_type = 'awv'
+    input_type = 'awv+rsv'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 40
     num_h1_units = 60
@@ -358,11 +358,11 @@ if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    trial_parameters = (input_type, num_h1_units, \
-        h1_activation, h2_activation, num_epochs_for_training)
-
     scores = run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
             num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+
+    trial_parameters = (input_type, num_h1_units, \
+        h1_activation, h2_activation, num_epochs_per_trial)
     print_results_of_trials(scores, trial_parameters)
 
     train_data, train_labels = p3_utils.assemble_full_training_data(xval_sets)
@@ -370,6 +370,9 @@ if __name__ == '__main__':
     model, history = \
         run_one_trial(train_data, train_labels, [], [], num_epochs_for_training, \
             num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+
+    trial_parameters = (input_type, num_h1_units, \
+        h1_activation, h2_activation, num_epochs_for_training)
     print_results_of_trials([ history ], trial_parameters)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
