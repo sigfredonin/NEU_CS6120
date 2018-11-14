@@ -18,6 +18,8 @@ from tensorflow.python.keras import models
 from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import Dropout
 
+from datetime import datetime
+
 import p3_utils
 
 def mlp_model(input_shape, num_h1_units, h1_activation='relu', h2_activation='relu', \
@@ -332,15 +334,15 @@ if __name__ == '__main__':
     # Set parameters for this set of trials
     # input types:  'one hot', 'count-hot', 'td-idf hot', 'word index',
     #               'awv', 'rsv', 'awv+rsv', 'pos', 'awv+pos'
-    input_type = 'awv+pos'
+    input_type = 'pos'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 40
-    num_h1_units = 60
+    num_h1_units = 5
     h1_activation = 'relu'
     h2_activation = 'relu'
     h1_h2_dropout_rate = 0.5
 
-    num_epochs_for_training = 20    # ... when training on full training set
+    num_epochs_for_training = 5    # ... when training on full training set
 
     print("Input type: %s" % input_type)
     print("Number of cross-validation trials: %d" % num_cross_validation_trials)
@@ -383,7 +385,15 @@ if __name__ == '__main__':
     test_labels = model.predict(np_test_data)
     test_ratings = [ np.argmax(predictions) for predictions in test_labels  ]
     print("Test labels shape: %s" % str(test_labels.shape))
-    print("Test labels: %s" % test_labels[:5])
+    for i, predictions in enumerate(test_labels[:5]):
+        print("%4d %d %s %s" % (i, np.argmax(predictions), predictions, test_reviews[i]))
+
+    outname = "p3_tf_MLP_test_predictions_%s_%d-%s_%d-%s_%d-%s_" % \
+        (input_type, num_h1_units, h1_activation, 10, h2_activation, 5, "SOFTMAX")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    with open("tests/" + outname + timestamp, 'w') as f:
+        for i, predictions in enumerate(test_labels):
+            f.write("%4d %d %s %s\n" % (i, np.argmax(predictions), predictions, test_reviews[i]))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")

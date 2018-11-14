@@ -308,8 +308,8 @@ TAGSET = {
         'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB', \
         '``', '#'
     }
-tags_dictionary = { list(TAGSET)[i] : i for i in range(len(TAGSET)) }
-reverse_tags_dictionary = { i: list(TAGSET)[i] for i in range(len(TAGSET)) }
+tags_dictionary = { list(TAGSET)[i] : (0.01*i) for i in range(len(TAGSET)) }
+reverse_tags_dictionary = { (0.01*i): list(TAGSET)[i] for i in range(len(TAGSET)) }
 
 def get_pos_tags_reviews(text, HAS_RATINGS=True, VECTOR_LEN=None):
     """
@@ -317,7 +317,7 @@ def get_pos_tags_reviews(text, HAS_RATINGS=True, VECTOR_LEN=None):
     Return -
         reviews_tag_vectors - [ [ tag index, tag index, ... ] ... ]
     """
-    PAD = -1
+    PAD = -0.01
     if (HAS_RATINGS):
         re_reviews = re.compile(r'^(.+)\|(.+)$', re.MULTILINE)
     else:
@@ -337,7 +337,7 @@ def get_pos_tags_reviews(text, HAS_RATINGS=True, VECTOR_LEN=None):
         vector_len = VECTOR_LEN
     reviews_tag_vectors = [ s + [PAD] * (vector_len - len(s))\
         for s in _reviews_tag_vectors ]
-    return np.array(reviews_tag_vectors)
+    return reviews_tag_vectors
 
 # ------------------------------------------------------------------------
 # Sentiment Lexicons ---
