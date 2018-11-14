@@ -332,7 +332,7 @@ if __name__ == '__main__':
     # Set parameters for this set of trials
     # input types:  'one hot', 'count-hot', 'td-idf hot', 'word index',
     #               'awv', 'rsv', 'awv+rsv', 'pos', 'awv+pos'
-    input_type = 'awv+rsv'
+    input_type = 'awv+pos'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 40
     num_h1_units = 60
