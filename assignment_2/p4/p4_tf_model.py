@@ -163,9 +163,11 @@ def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
 
     return scores
 
-def save_results_of_trials(scores, num_epochs_per_trial):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    outFilePath = "tests/p4_tf_model_trials_" + timestamp
+def save_results_of_trials(scores, trial_parameters, trial_ID, timestamp):
+
+    input_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial = trial_parameters
+
+    outFilePath = "tests/p4_tf_model_trials" + trial_ID + timestamp
     with open(outFilePath, 'w') as f:
         f.write(" Trial Results ".center(80, '=')+"\n")
         for iTrial, history in enumerate(scores):
@@ -213,11 +215,15 @@ def save_results_of_trials(scores, num_epochs_per_trial):
             val_mse_min = val_mse_mean = val_mse_max = None
 
     # Plot loss and mean squared error over the trials
-    p4_utils.plot_results(np_train_loss, np_train_mse, np_val_loss, np_val_mse, \
-        val_mse_min, val_mse_mean, val_mse_max, \
-        input_type=input_type, h1_units=num_h1_units, \
-        h1_f=h1_activation, h2_f=h2_activation, \
-        epochs=num_epochs_per_trial)
+    heading = "Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
+        (input_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial)
+    if val_acc_min != None and val_acc_mean != None and val_acc_max != None:
+        subheading = "validation accuracy: %7.4f %7.4f %7.4f" % \
+            (val_acc_min, val_acc_mean, val_acc_max)
+    else:
+        subheading = ""
+    p4_utils.plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
+        heading, subheading)
 
 # ------------------------------------------------------------------------
 # Tests ---
@@ -249,17 +255,25 @@ if __name__ == '__main__':
 
     scores = run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
             num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
-    save_results_of_trials(scores, num_epochs_per_trial)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    trial_parameters = (input_type, num_h1_units, \
+        h1_activation, h2_activation, num_epochs_per_trial)
+    trial_ID = "_%s_%d-%s_10-%s_1-tanh_epochs_%s_" % trial_parameters
+    save_results_of_trials(scores, trial_parameters, trial_IID, timestamp)
 
     train_data, train_labels = p4_utils.assemble_full_training_data(xval_sets)
 
     model, history = \
         run_one_trial(train_data, train_labels, [], [], num_epochs_for_training, \
             num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
-    print_results_of_trials([ history ], num_epochs_for_training)
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    model.save("data/p3_tf_MLP_model_" + timestamp + ".h5")
+    trial_parameters = (input_type, num_h1_units, \
+        h1_activation, h2_activation, num_epochs_for_training)
+    trial_ID = "_%s_%d-%s_10-%s_1-tanh_epochs_%s_" % trial_parameters
+    save_results_of_trials([ history ], trial_parameters, trial_ID, timestamp)
+
+    model.save("data/p4_tf_MLP_model_" + trial_ID + timestamp + ".h5")
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
