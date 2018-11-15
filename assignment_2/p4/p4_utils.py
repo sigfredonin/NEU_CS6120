@@ -29,6 +29,7 @@ import re
 import numpy as np
 import random
 import nltk
+import csv
 
 from datetime import datetime
 from nltk import FreqDist
@@ -47,36 +48,42 @@ import matplotlib.pyplot as plt
 PATH_TRAIN = "data/a2_p4_train_set.csv"
 PATH_TEST = "data/a2_p4_test_set.csv"
 
-def get_text_from_file(filePath):
+def remove_extra_whitespace(token_str):
+   no_new_line = re.sub(r'\n', " ", token_str)
+   no_dup_spaces = re.sub(r'  +', " ", no_new_line)
+   return no_dup_spaces
+
+def get_summary_data(filePath):
     """
-    Read all of the text from a file.
-    This is expected to be a file containing the summaries,
-    one quoted sentence per line, with non-redundancy and fluency
+    Read all of the records from the training file.
+    This is a csv file containing the summaries,
+    one sentence per line, with non-redundancy and fluency
     scores at the end, separated by commas from the sentence and
     each other.
-    Example:
-      "The movie really stunk ! The movie proved bad bad .",-1,0
+    The sentence is quoted if it contains quotation marks.
+    Examples:
+        The movie really stunk ! The movie proved bad bad .,-1,0
+        "Mary's new movie is a real showcase of her talents . Hurrah !",-1,0.5
+    Note:
+        Drop the first and second records from the training data.
+        The first record is a heading ...
+            Summary,Non-Redundancy,Fluency
+        The second record has no ratings at the end, so is useless for training ...
+            "Nepalese, ▃, sustained severe injuries ... facing in the. .",,null
     """
     with open(filePath) as f:
-        text = f.read()
-    return text
-
-re_summary = re.compile(r'^\"(.+)\",(.+),(.+)$', re.MULTILINE)
-
-def get_summary_data(text):
-    records = re_summary.findall(text)
+        records = list(csv.reader(f))[2:]
     summaries, non_redundancies, fluencies = zip(*records)
+    summaries = [ remove_extra_whitespace(s) for s in summaries ]
     np_non_redundancies_float = np.array(non_redundancies).astype(np.float)
     np_fluencies_float = np.array(fluencies).astype(np.float)
     return summaries, np_non_redundancies_float, np_fluencies_float
 
 def load_summary_training_data():
-    text = get_text_from_file(PATH_TRAIN)
-    return get_summary_data(text)
+    return get_summary_data(PATH_TRAIN)
 
 def load_summary_test_data():
-    text = get_text_from_file(PATH_TEST)
-    return get_summary_data(text)
+    return get_summary_data(PATH_TEST)
 
 # ------------------------------------------------------------------------
 # Data preprocessing ---
