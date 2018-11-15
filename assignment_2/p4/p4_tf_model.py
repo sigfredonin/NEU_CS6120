@@ -14,14 +14,55 @@ November 10, 2018
 import tensorflow as tf
 import numpy as np
 
+from datetime import datetime
+
 from tensorflow.python.keras import models
 from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import Dropout
 
 import p4_utils
 
+def get_data(output_type, num_cross_validation_trials):
+    """
+    Load the datasets, training and testing.
+    Load the Google News word embedding vectors.
+    Preprocess the data to calculate the feature vectors.
+    """
+    train_dataset = p4_utils.load_summary_training_data()
+    test_dataset  = p4_utils.load_summary_test_data()
+
+    train_summaries, train_non_redundancies, train_fluencies = train_dataset
+    test_summaries, test_non_redundancies, test_fluencies = test_dataset
+
+    assert(len(train_summaries) == len(train_non_redundancies))
+    assert(len(train_summaries) == len(train_fluencies))
+    assert(len(test_summaries) == len(test_non_redundancies))
+    assert(len(test_summaries) == len(test_fluencies))
+
+    v = vectors = p4_utils.load_embeddings_gensim()
+
+    train_features = [ p4_utils.get_non_redundancy_features(v, s) \
+                       for s in train_summaries ]
+    test_features  = [ p4_utils.get_non_redundancy_features(v, s) \
+                       for s in test_summaries ]
+
+    assert(len(train_summaries) == len(train_features))
+    assert(len(test_summaries) == len(test_features))
+
+    data = train_features
+    if output_type == 'nonrep':
+        labels = train_non_redundancies
+    elif output_type == 'fluency':
+        labels = train_fluencies
+
+    shuffle_indices, xval_sets = \
+        p4_utils.split_training_data_for_cross_validation(data, labels, \
+            num_cross_validation_trials)
+
+    return xval_sets, v, train_dataset, train_features, test_dataset, test_features
+
 def mlp_model(input_shape, h1_units, h1_activation='relu', h2_activation='relu', \
-              output_activation='sigmoid', dropout_rate=0.0, input_dropout_rate=0.0):
+              output_activation='tanh', dropout_rate=0.0, input_dropout_rate=0.0):
     """
     Creates a TF Keras Multi-Layer Perceptron model,
     with an input layer, two hidden layers, and an output layer.
@@ -70,23 +111,155 @@ def mlp_train(model, data, epochs=10):
         validation_data = validation_data, \
         epochs=epochs, batch_size=32)
 
+    # TODO: Add model.evaluate()
+
     return history
 
-def get_data():
-    """
-    Load the datasets, training and testing.
-    Load the Google News word embedding vectors.
-    Preprocess the data to calculate the feature vectors.
-    """
-    ds_train = p4_utils.load_summary_training_data()
-    ds_test  = p4_utils.load_summary_test_data()
+def run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per_trial, \
+        num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate):
 
-    train_summmaries, train_non_redundancies, train_fluencies = ds_train
-    test_summmaries, test_non_redundancies, test_fluencies = ds_test
+    np_train_data = np.array(train_data)
+    np_train_labels = np.array(train_labels)
+    np_val_data = np.array(val_data)
+    np_val_labels = np.array(val_labels)
+    data = ((np_train_data, np_train_labels), (np_val_data, np_val_labels))
 
-    v = vectors = p4_utils.load_embeddings_gensim()
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
 
-    train_features = [ p4_utils.get_non_redundancy_features(v, s) \
-                       for s in train_summaries ]
-    test_features  = [ p4_utils.get_non_redundancy_features(v, s) \
-                       for s in test_summaries ]
+    model = mlp_model(input_shape=np_train_data.shape[1:], \
+                      h1_units=num_h1_units, h1_activation=h1_activation, \
+                      h2_activation=h2_activation, dropout_rate=h1_h2_dropout_rate)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    history = mlp_train(model, data, epochs=num_epochs_per_trial)
+
+    return model, history
+
+def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
+        num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate):
+
+    scores = []
+    for iTrial in range(num_cross_validation_trials):
+
+        nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+        print("====" + nowStr + "====")
+
+        print((" Trial %d of %d" % (iTrial+1, num_cross_validation_trials)).center(80, '-'))
+
+        (train_data, train_labels), (val_data, val_labels) = \
+            p4_utils.assemble_cross_validation_data(xval_sets, iTrial)
+
+        model, history = \
+            run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per_trial, \
+                num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+
+        scores.append(history)
+
+        nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+        print("====" + nowStr + "====")
+
+    return scores
+
+def save_results_of_trials(scores, num_epochs_per_trial):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    outFilePath = "tests/p4_tf_model_trials_" + timestamp
+    with open(outFilePath, 'w') as f:
+        f.write(" Trial Results ".center(80, '=')+"\n")
+        for iTrial, history in enumerate(scores):
+            f.write("Trial %d of %d ---\n" % (iTrial+1, len(scores)))
+            for iEpoch in range(num_epochs_per_trial):
+                f.write("%4d: " % (iEpoch+1))
+                for history_key in history.history:
+                    f.write(" %s: %7.4f" % (history_key, history.history[history_key][iEpoch]))
+                f.write("\n")
+
+        # Collect trial results: loss, mean squared error for training and evaluation
+        train_loss = []
+        train_mse  = []
+        val_loss = []
+        val_mse =  []
+        for iTrial, history in enumerate(scores):
+            train_loss.append(history.history["loss"])
+            train_mse.append(history.history["mean_squared_error"])
+            if "val_loss" in history.history:
+                val_loss.append(history.history["val_loss"])
+                val_mse.append(history.history["val_mean_squared_error"])
+
+        # Compute means over all trials
+        np_train_loss = np.array(train_loss).mean(axis=0)
+        np_train_mse = np.array(train_mse).mean(axis=0)
+        if len(val_loss) > 0:
+            np_val_loss = np.array(val_loss).mean(axis=0)
+            np_val_mse = np.array(val_mse).mean(axis=0)
+        else:
+            np_val_loss = np_val_mse = np.array([])
+
+        # Compute overall min, max, mean for validation mean squared error
+        if len(val_loss) > 0:
+            np_val_mse_finals = np.array(val_mse)[:,-1] # last value from each trial
+            val_mse_min  = np_val_mse_finals.min()
+            val_mse_mean = np_val_mse_finals.mean()
+            val_mse_max  = np_val_mse_finals.max()
+            f.write("\n")
+            f.write("> Validation mean squared error over all trials <".center(80, '=')+"\n")
+            f.write("validation mean squared error min:  %7.4f\n" % val_mse_min)
+            f.write("validation mean squared error mean: %7.4f\n" % val_mse_mean)
+            f.write("validation mean squared error max:  %7.4f\n" % val_mse_max)
+            f.write(80*'='+"\n")
+        else:
+            val_mse_min = val_mse_mean = val_mse_max = None
+
+    # Plot loss and mean squared error over the trials
+    p4_utils.plot_results(np_train_loss, np_train_mse, np_val_loss, np_val_mse, \
+        val_mse_min, val_mse_mean, val_mse_max, \
+        input_type=input_type, h1_units=num_h1_units, \
+        h1_f=h1_activation, h2_f=h2_activation, \
+        epochs=num_epochs_per_trial)
+
+# ------------------------------------------------------------------------
+# Tests ---
+# ------------------------------------------------------------------------
+
+if __name__ == '__main__':
+
+    from datetime import datetime
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    # Set parameters for this set of trials
+    output_type = 'nonrep'
+    num_cross_validation_trials = 10
+    num_epochs_per_trial = 40
+    num_h1_units = 10
+    h1_activation = 'relu'
+    h2_activation = 'relu'
+    h1_h2_dropout_rate = 0.5
+
+    num_epochs_for_training = 20    # ... when training on full training set
+
+    xval_sets, v, train_dataset, train_features, test_dataset, test_features = \
+        get_data(output_type, num_cross_validation_trials)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    scores = run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
+            num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+    save_results_of_trials(scores, num_epochs_per_trial)
+
+    train_data, train_labels = p4_utils.assemble_full_training_data(xval_sets)
+
+    model, history = \
+        run_one_trial(train_data, train_labels, [], [], num_epochs_for_training, \
+            num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+    print_results_of_trials([ history ], num_epochs_for_training)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    model.save("data/p3_tf_MLP_model_" + timestamp + ".h5")
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
