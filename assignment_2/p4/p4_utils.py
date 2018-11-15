@@ -27,12 +27,16 @@ November 9, 2018
 import os
 import re
 import numpy as np
+import random
 import nltk
 
 from datetime import datetime
 from nltk import FreqDist
 from gensim.models import KeyedVectors
 from scipy import spatial
+from scipy.stats import pearsonr
+from scipy.stats import linregress
+from sklearn.metrics import mean_squared_error
 
 import matplotlib.pyplot as plt
 
@@ -111,6 +115,14 @@ def get_bigrams_summary(summary, NO_STOPS=False, NO_PUNCT=False):
     bigrams = get_ngrams_words(words, 2)
     return bigrams
 
+def get_bigrams_summary_no_stops(summary, NO_STOPS=True, NO_PUNCT=True):
+    """
+    Get the bigrams in a summary, with stop words filtered out
+    """
+    words = get_words_summary(summary, NO_STOPS=NO_STOPS, NO_PUNCT=NO_PUNCT)
+    bigrams = get_ngrams_words(words, 2)
+    return bigrams
+
 def get_most_frequent(items):
     """
     Get the most frequent item and its count from the items.
@@ -137,7 +149,7 @@ def load_embeddings_gensim():
     vectors = KeyedVectors.load_word2vec_format(WORD_VECTORS_FILE, binary=True)
     return vectors
 
-def get_vocabulary(vectors, fd_words):
+def get_embeddings_vocabulary(vectors, fd_words):
     """
     Compile a dictionary of vector index -> word, for the words given.
     Compile a reverse dictionary: vector index -> word
@@ -149,9 +161,11 @@ def get_vocabulary(vectors, fd_words):
         wv_vocabulary - [ word, ... ] for review words included in vectors
         wv_dictionary - { word : word vector index, ... }
         wv_reverse_dictionary - { word vector index : word , ... }
+    NOTE: append '</s>' to each review to ensure all have at least one word
+          in the vocabulary of the word embeddings.
     """
     v = vectors
-    wv_vocabulary = ['</s'] + [ w for w in fd_words if w in v.vocab ]
+    wv_vocabulary = ['</s>'] + [ w for w in fd_words if w in v.vocab ]
     wv_dictionary = { w : v.vocab[w].index for w in fd_words \
         if w in v.vocab }
     wv_dictionary['</s>'] = v.vocab['</s>'].index
@@ -174,19 +188,19 @@ def get_embeddings(vectors, words_in_sents):
                 [ word, word, ...]    # sentence N
             ]
     Returns -
-        vw_data - [
+        wv_data - [
                 [ word vector index, word vector index, ...]    # sentence 1
                 [ word vector index, word vector index, ...]    # sentence 2
                 ...
                 [ word vector index, word vector index, ...]    # sentence N
             ]
-        vw_vectors - [
+        wv_vectors - [
                 [ word vector, word vector, ...]                # sentence 1
                 [ word vector, word vector, ...]                # sentence 2
                 ...
                 [ word vector, word vector, ...]                # sentence N
             ]
-        vw_sentence_average_vectors = [
+        wv_sentence_average_vectors = [
                 average word vector,                            # sentence 1
                 average word vector,                            # sentence 2
                 ...
@@ -197,6 +211,7 @@ def get_embeddings(vectors, words_in_sents):
     NOTE: the word embeddings include the NLTK English stop words, except:
             'a', 'and', 'mightn', "mightn't", 'mustn', "mustn't",
             "needn't", 'of', "shan't", 'to'
+          Of these, the words 'a', 'and', 'of', and 'to' are used in the training data.
           The word embeddings do not include punctuation marks.
     """
     v = vectors
@@ -266,5 +281,145 @@ def plot_similarity_hist(similarities):
     plt.xlabel("Similarity")
     plt.ylabel("Count")
     plotName = "tests/p4_utils_max_sent_cos_sim_"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    plt.savefig(plotName + timestamp + '.png')
+
+# ------------------------------------------------------------------------
+# Prepare training and evaluation data ---
+# ------------------------------------------------------------------------
+
+def shuffle_data(review_data, review_labels):
+    """
+    Shuffle the reviews and labels.
+    Return:
+        shuffled_indices -     list of original indices, e.g.,
+                            review_data[shuffled_indices[0]] == shuffled_data[0]
+        shuffled_data -     list of shuffled sentences
+        shuffled_labels -   list of shuffle ratings
+    """
+    # Use the same seed for all the shuffles,
+    # so the data, labels, and indices are all shuffled the same way
+    seed = 123
+
+    # Shuffle the data
+    random.seed(seed)
+    shuffled_data = review_data.copy()
+    random.shuffle(shuffled_data)
+
+    # Shuffle the labels
+    random.seed(seed)
+    shuffled_labels = review_labels.copy()
+    random.shuffle(shuffled_labels)
+
+    # Construct an index to the shuffled data:
+    # where did the original reviews end up?
+    shuffled_indices = list(range(len(review_labels)))
+    random.seed(seed)
+    random.shuffle(shuffled_indices)
+
+    return shuffled_indices, shuffled_data, shuffled_labels
+
+def split_training_data_for_cross_validation(review_data, review_labels, number_of_trials):
+    """
+    Spit the data and labels into N equal size sets, for N trials, after shuffling.
+    Return:
+        shuffled_indices - list of original indices, e.g.,
+                        review_data[shuffled_indices[0]] == data[0][0][0]
+        data = [
+                    ( training_data, validation_data )      # set 1
+                    ( training_data, validation_data )      # set 2
+                    ...
+                    ( training_data, validation_data )      # set N
+                ]
+        where each set has a different (N-1)/N training and 1/N validation data.
+    """
+    # Shuffle the data and labels
+    shuffled_indices, shuffled_data, shuffled_labels = \
+        shuffle_data(review_data, review_labels)
+
+    # Subdivide the data and labels into # NOTE:  ~ equal size sets each
+    N = number_of_trials
+    set_count = len(shuffled_data) // N
+    xval_sets = []
+    for iSet in range(N-1):
+        xD = iSet * set_count
+        xval_sets.append(( \
+            shuffled_data[xD : xD + set_count], \
+            shuffled_labels[xD : xD + set_count] ))
+    xval_sets.append(( \
+        shuffled_data[(N-1) * set_count : len(shuffled_data)], \
+        shuffled_labels[(N-1) * set_count : len(shuffled_data)] ))
+
+    return shuffled_indices, xval_sets
+
+def assemble_cross_validation_data(xval_sets, index_val):
+    """
+    Assemble training data and labels, and validation data and labels,
+    for cross-validation training.
+    Inputs:
+        xval_sets-   sets of data and labels, one to be used for validation.
+        index-  whidh set to use for validation.
+    Returns:
+        cross_validation data and labels -
+            training_set -  ( training_data, training_labels)
+            val_set -       ( val_data, val_labels )
+    """
+    val_set = xval_sets[index_val]
+    training_data = []
+    training_labels = []
+    for iSet, data_labels in enumerate(xval_sets):
+        if iSet != index_val:
+            _data_, _labels_ = data_labels
+            training_data += _data_
+            training_labels += _labels_
+    training_set = ( training_data, training_labels)
+    return training_set, val_set
+
+def assemble_full_training_data(xval_sets):
+    """
+    Assemble training data and labels for training with the full training set.
+    Inputs:
+        xval_sets-   sets of data and labels.
+    Returns:
+        full training data and labels -
+            training_set -  ( training_data, training_labels)
+    """
+    training_data = []
+    training_labels = []
+    for iSet, data_labels in enumerate(xval_sets):
+        _data_, _labels_ = data_labels
+        training_data += _data_
+        training_labels += _labels_
+    training_set = ( training_data, training_labels)
+    return training_set
+
+# ------------------------------------------------------------------------
+# Visualize results ---
+# ------------------------------------------------------------------------
+
+def plot_results(np_train_loss, np_train_mse, np_val_loss, np_val_mse, \
+        heading, subheading, plotName='tests/p4_tf_MLP_test_plot_'):
+
+    figure, axis_1 = plt.subplots()
+
+    plt.suptitle(heading, size=12)
+    plt.title(subheading, size=10)
+
+    # Plot loss for both training and validation
+    axis_1.plot(np_train_loss, 'r--')
+    axis_1.plot(np_val_loss, 'b--')
+    axis_1.set_xlabel('Epoch')
+    axis_1.set_ylabel('Avg Loss')
+    axis_1.legend(['Training Loss', 'Validation Loss'], loc='upper left')
+
+    # Plot MSE for both training and validation
+    axis_2 = axis_1.twinx()
+    axis_2.plot(np_train_mse, 'r')
+    axis_2.plot(np_val_mse, 'b')
+    axis_2.set_ylabel('Avg MSE')
+    axis_2.legend(['Training MSE', 'Validation MSE'], loc='upper right')
+
+    figure.subplots_adjust(top=0.9)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     plt.savefig(plotName + timestamp + '.png')
