@@ -15,6 +15,9 @@ import tensorflow as tf
 import numpy as np
 
 from datetime import datetime
+from scipy.stats import pearsonr
+from scipy.stats import linregress
+from sklearn.metrics import mean_squared_error
 
 from tensorflow.python.keras import models
 from tensorflow.python.keras.layers import Dense
@@ -274,6 +277,29 @@ if __name__ == '__main__':
     save_results_of_trials([ history ], trial_parameters, trial_ID, timestamp)
 
     model.save("data/p4_tf_MLP_model_" + trial_ID + timestamp + ".h5")
+
+    test_summaries, test_non_redundancies, test_fluencies = test_dataset
+    if output_type == 'nonrep':
+        test_labels = test_non_redundancies
+    elif output_type == 'fluency':
+        test_labels = test_fluencies
+
+    np_test_data = np.array(test_features)
+    print("Test data shape: %s" % str(np_test_data.shape))
+    test_predictions = model.predict(np_test_data)
+    predicted_test_labels = [ np.argmax(predictions) for predictions in test_predictions  ]
+    fd_predicted_test_labels = nltk.FreqDist(predicted_test_labels)
+    counts_predicted_test_labels = [ fd_predicted_test_labels[r] for r in range(5)]
+    test_corr = linregress(test_labels, predicted_test_labels)
+    print("Linear regression analysis, labels vs. predicted labels")
+    print(train_corr)
+    r, p = pearsonr(test_labels, predicted_test_labels)
+    print("Pearson Correlation r-value and p-value: %7.4f, %7.4f" % (r, p))
+    mse = mean_squared_error(test_labels, predicted_test_labels)
+    print("Mean Squared Error: %7.4f" % mse)
+    print("Predicted test ratings distribution: %s" % counts_predicted_test_labels)
+    for i, prediction in enumerate(test_predictions[:5]):
+        print("%4d %d %s %s" % (i, np.argmax(predictions), prediction, test_reviews[i]))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
