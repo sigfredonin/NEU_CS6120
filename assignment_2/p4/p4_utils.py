@@ -302,6 +302,14 @@ def get_embeddings(vectors, words_in_sents):
     wv_sentence_average_vectors = [ np.mean(s, axis=0) for s in wv_vectors ]
     return wv_data, wv_vectors, wv_sentence_average_vectors
 
+def cosine_similarity(s1, s2):
+    return 1 - spatial.distance.cosine(s1, s2)
+
+def _max_cosine_similarity(wva_sents):
+    return max([cosine_similarity(wva_sents[i], wva_sents[j]) \
+        for i in range(len(wva_sents)) \
+            for j in range(i+1, len(wva_sents))])
+
 def max_cosine_similarity(wva_sents, DEBUG=False):
     """
     Find the maximum pairwise cosine similarity between the sentences
