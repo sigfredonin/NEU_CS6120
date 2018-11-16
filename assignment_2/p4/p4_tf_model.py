@@ -13,6 +13,7 @@ November 10, 2018
 """
 import tensorflow as tf
 import numpy as np
+import nltk
 
 from datetime import datetime
 from scipy.stats import pearsonr
@@ -168,7 +169,7 @@ def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
 
 def save_results_of_trials(scores, trial_parameters, trial_ID, timestamp):
 
-    input_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial = trial_parameters
+    output_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial = trial_parameters
 
     outFilePath = "tests/p4_tf_model_trials" + trial_ID + timestamp
     with open(outFilePath, 'w') as f:
@@ -218,15 +219,49 @@ def save_results_of_trials(scores, trial_parameters, trial_ID, timestamp):
             val_mse_min = val_mse_mean = val_mse_max = None
 
     # Plot loss and mean squared error over the trials
-    heading = "Keras MLP: %s:Lin, %d:%s, 10:%s, 5:Softmax; epochs=%d" % \
-        (input_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial)
-    if val_acc_min != None and val_acc_mean != None and val_acc_max != None:
-        subheading = "validation accuracy: %7.4f %7.4f %7.4f" % \
-            (val_acc_min, val_acc_mean, val_acc_max)
+    heading = "Keras MLP: %s:Lin, %d:%s, 10:%s, 1:tanh; epochs=%d" % \
+        (output_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial)
+    if val_mse_min != None and val_mse_mean != None and val_mse_max != None:
+        subheading = "validation mean squared error: %7.4f %7.4f %7.4f" % \
+            (val_mse_min, val_mse_mean, val_mse_max)
     else:
         subheading = ""
-    p4_utils.plot_results(np_train_loss, np_train_acc, np_val_loss, np_val_acc, \
-        heading, subheading)
+    plotName='tests/p4_tf_MLP_test_loss_' + trial_ID + timestamp
+    p4_utils.plot_results(np_train_loss, np_train_mse, np_val_loss, np_val_mse, \
+        heading, subheading, plotName)
+
+    return outFilePath
+
+def save_model_predictions(trial_type, gold_labels, predicted_labels, summaries, \
+        outFilePath, trial_parameters, trial_ID, timestamp):
+
+    output_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial = trial_parameters
+    print_heading = (" Predictions on %s Set " % trial_type).center(80, '-')
+
+    with open(outFilePath, 'a') as f:
+        f.write("%s\n\n" % print_heading)
+
+        line = linregress(gold_labels, predicted_labels)
+        f.write("Linear regression analysis, labels vs. predicted labels --\n")
+        f.write("%s\n" % str(line))
+
+        r, p = pearsonr(gold_labels, predicted_labels)
+        f.write("Pearson Correlation r-value and p-value: %7.4f, %7.4f\n" % (r, p))
+
+        mse = mean_squared_error(gold_labels, predicted_labels)
+        f.write("Mean Squared Error: %7.4f\n" % mse)
+
+        f.write("--i- --Gold- --Pred- --Summary-----------------------------------\n")
+        for i, prediction in enumerate(predicted_labels):
+            f.write("%4d %7.4f %7.4f %s\n" % (i, gold_labels[i], prediction, summaries[i]))
+
+    # Plot gold labels vs. predicted labels, together with least square fit line
+    heading = "Keras MLP: %s:Lin, %d:%s, 10:%s, 1:tanh; epochs=%d" % \
+        (output_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial)
+    subheading = "test data pearson r, p; mse: %7.4f %7.4f %7.4f" % (r, p, mse)
+    plotName='tests/p4_tf_MLP_test_comp' + trial_ID + timestamp
+    p4_utils.plot_compare(gold_labels, predicted_labels, line.slope, line.intercept, \
+        heading, subheading, plotName)
 
 # ------------------------------------------------------------------------
 # Tests ---
@@ -242,13 +277,13 @@ if __name__ == '__main__':
     # Set parameters for this set of trials
     output_type = 'nonrep'
     num_cross_validation_trials = 10
-    num_epochs_per_trial = 40
+    num_epochs_per_trial = 60
     num_h1_units = 10
     h1_activation = 'relu'
     h2_activation = 'relu'
     h1_h2_dropout_rate = 0.5
 
-    num_epochs_for_training = 20    # ... when training on full training set
+    num_epochs_for_training = 60    # ... when training on full training set
 
     xval_sets, v, train_dataset, train_features, test_dataset, test_features = \
         get_data(output_type, num_cross_validation_trials)
@@ -260,46 +295,42 @@ if __name__ == '__main__':
             num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    trial_parameters = (input_type, num_h1_units, \
+    trial_parameters = (output_type, num_h1_units, \
         h1_activation, h2_activation, num_epochs_per_trial)
-    trial_ID = "_%s_%d-%s_10-%s_1-tanh_epochs_%s_" % trial_parameters
-    save_results_of_trials(scores, trial_parameters, trial_IID, timestamp)
+    trial_ID = "_10-fold_%s_%d-%s_10-%s_1-tanh_epochs_%s_" % trial_parameters
+    save_results_of_trials(scores, trial_parameters, trial_ID, timestamp)
 
     train_data, train_labels = p4_utils.assemble_full_training_data(xval_sets)
 
     model, history = \
         run_one_trial(train_data, train_labels, [], [], num_epochs_for_training, \
             num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
-
-    trial_parameters = (input_type, num_h1_units, \
-        h1_activation, h2_activation, num_epochs_for_training)
-    trial_ID = "_%s_%d-%s_10-%s_1-tanh_epochs_%s_" % trial_parameters
-    save_results_of_trials([ history ], trial_parameters, trial_ID, timestamp)
-
     model.save("data/p4_tf_MLP_model_" + trial_ID + timestamp + ".h5")
+
+    trial_parameters = (output_type, num_h1_units, \
+        h1_activation, h2_activation, num_epochs_for_training)
+    trial_ID = "_full_%s_%d-%s_10-%s_1-tanh_epochs_%s_" % trial_parameters
+    outFilePath = save_results_of_trials([ history ], trial_parameters, trial_ID, timestamp)
+
+    train_summaries, train_non_redundancies, train_fluencies = train_dataset
+    np_train_data = np.array(train_data)
+    train_predictions = model.predict(np_train_data)
+    predicted_train_labels = np.array([ predictions[0] for predictions in train_predictions ])
+    save_model_predictions("Training", train_labels, predicted_train_labels, train_summaries, \
+        outFilePath, trial_parameters, "_TRAIN"+trial_ID, timestamp)
 
     test_summaries, test_non_redundancies, test_fluencies = test_dataset
     if output_type == 'nonrep':
-        test_labels = test_non_redundancies
+        _test_labels = test_non_redundancies
     elif output_type == 'fluency':
-        test_labels = test_fluencies
+        _test_labels = test_fluencies
+    test_labels = np.array(_test_labels)
 
     np_test_data = np.array(test_features)
-    print("Test data shape: %s" % str(np_test_data.shape))
     test_predictions = model.predict(np_test_data)
-    predicted_test_labels = [ np.argmax(predictions) for predictions in test_predictions  ]
-    fd_predicted_test_labels = nltk.FreqDist(predicted_test_labels)
-    counts_predicted_test_labels = [ fd_predicted_test_labels[r] for r in range(5)]
-    test_corr = linregress(test_labels, predicted_test_labels)
-    print("Linear regression analysis, labels vs. predicted labels")
-    print(train_corr)
-    r, p = pearsonr(test_labels, predicted_test_labels)
-    print("Pearson Correlation r-value and p-value: %7.4f, %7.4f" % (r, p))
-    mse = mean_squared_error(test_labels, predicted_test_labels)
-    print("Mean Squared Error: %7.4f" % mse)
-    print("Predicted test ratings distribution: %s" % counts_predicted_test_labels)
-    for i, prediction in enumerate(test_predictions[:5]):
-        print("%4d %d %s %s" % (i, np.argmax(predictions), prediction, test_reviews[i]))
+    predicted_test_labels = np.array([ predictions[0] for predictions in test_predictions ])
+    save_model_predictions("Test", test_labels, predicted_test_labels, test_summaries, \
+        outFilePath, trial_parameters, "_TEST"+trial_ID, timestamp)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")

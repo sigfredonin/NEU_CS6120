@@ -53,9 +53,9 @@ def remove_extra_whitespace(token_str):
    no_dup_spaces = re.sub(r'  +', " ", no_new_line)
    return no_dup_spaces
 
-def get_summary_data(filePath):
+def get_summary_data(filePath, skip):
     """
-    Read all of the records from the training file.
+    Read all of the records from the summaries file.
     This is a csv file containing the summaries,
     one sentence per line, with non-redundancy and fluency
     scores at the end, separated by commas from the sentence and
@@ -64,6 +64,25 @@ def get_summary_data(filePath):
     Examples:
         The movie really stunk ! The movie proved bad bad .,-1,0
         "Mary's new movie is a real showcase of her talents . Hurrah !",-1,0.5
+    Inputs -
+        filePath - file system path to the input .csv file
+        skip     - number of records to skip at the beginning of the file
+    Outputs -
+        summaries - the summary texts
+        non_redundancies_float - list of non-redundancy ratings, float -1.0..1.0
+        fluencies_float - list of fluency ratings, float -1.0..1.0
+    """
+    with open(filePath) as f:
+        records = list(csv.reader(f))[skip:]
+    summaries, non_redundancies, fluencies = zip(*records)
+    summaries = [ remove_extra_whitespace(s) for s in summaries ]
+    non_redundancies_float = [ float(yNR) for yNR in non_redundancies ]
+    fluencies_float = [ float(yFl) for yFl in fluencies ]
+    return summaries, non_redundancies_float, fluencies_float
+
+def load_summary_training_data():
+    """
+    Read all of the summary records from the training file.
     Note:
         Drop the first and second records from the training data.
         The first record is a heading ...
@@ -71,19 +90,17 @@ def get_summary_data(filePath):
         The second record has no ratings at the end, so is useless for training ...
             "Nepalese, ▃, sustained severe injuries ... facing in the. .",,null
     """
-    with open(filePath) as f:
-        records = list(csv.reader(f))[2:]
-    summaries, non_redundancies, fluencies = zip(*records)
-    summaries = [ remove_extra_whitespace(s) for s in summaries ]
-    np_non_redundancies_float = np.array(non_redundancies).astype(np.float)
-    np_fluencies_float = np.array(fluencies).astype(np.float)
-    return summaries, np_non_redundancies_float, np_fluencies_float
-
-def load_summary_training_data():
-    return get_summary_data(PATH_TRAIN)
+    return get_summary_data(PATH_TRAIN, 2)
 
 def load_summary_test_data():
-    return get_summary_data(PATH_TEST)
+    """
+    Read all of the summary records from the training file.
+    Note:
+        Drop the first record from the training data.
+        The first record is a heading ...
+            Summary,Non-Redundancy,Fluency
+    """
+    return get_summary_data(PATH_TEST, 1)
 
 # ------------------------------------------------------------------------
 # Data preprocessing ---
@@ -426,7 +443,24 @@ def plot_results(np_train_loss, np_train_mse, np_val_loss, np_val_mse, \
     axis_2.set_ylabel('Avg MSE')
     axis_2.legend(['Training MSE', 'Validation MSE'], loc='upper right')
 
-    figure.subplots_adjust(top=0.9)
+    figure.subplots_adjust(top=0.9, right=0.9)
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    plt.savefig(plotName + timestamp + '.png')
+    plt.savefig(plotName + '.png')
+
+def plot_compare(gold, pred, slope, intercept, \
+        heading, subheading, plotName='tests/p4_tf_MLP_test_comp_'):
+
+    figure, axis_1 = plt.subplots()
+
+    plt.suptitle(heading, size=12)
+    plt.title(subheading, size=10)
+
+    # Plot gold and predicted values
+    axis_1.scatter(gold, pred)
+    axis_1.plot([-1,1],[slope*x+intercept for x in [-1.0, 1.0 ]])
+    axis_1.set_xlabel('Gold')
+    axis_1.set_ylabel('Predicted')
+
+    figure.subplots_adjust(top=0.9, right=0.9)
+
+    plt.savefig(plotName + '.png')
