@@ -358,7 +358,7 @@ def get_fluency_features(summary, DEBUG=False):
     Returns -
         - repeated unigram count (int)
         - repeated bigram count (int)
-        - min Flesch sentence reading ease score (float 0.0 .. 110.0+)
+        - min Flesch sentence reading ease score (float 0.0 .. 121.22)
     """
     repeated_unigrams_count = get_counts_repeated_unigrams(summary)
     if DEBUG:
