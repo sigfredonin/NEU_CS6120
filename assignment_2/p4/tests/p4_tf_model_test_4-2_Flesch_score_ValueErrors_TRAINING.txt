@@ -1,0 +1,49 @@
+Value error scoring summary 27, ['.'].
+Value error scoring summary 52, ['.'].
+Value error scoring summary 90, ['.'].
+Value error scoring summary 92, ['.'].
+Value error scoring summary 101, ['.'].
+Value error scoring summary 120, ['.'].
+Value error scoring summary 125, ['.'].
+Value error scoring summary 140, ['.'].
+Value error scoring summary 184, ['.'].
+Value error scoring summary 187, ['.'].
+Value error scoring summary 193, ['.'].
+Value error scoring summary 219, ['.'].
+Value error scoring summary 239, ['.'].
+Value error scoring summary 240, ['.'].
+Value error scoring summary 267, ['.'].
+Value error scoring summary 274, ['.'].
+Value error scoring summary 277, ['.'].
+Value error scoring summary 284, ['.'].
+Value error scoring summary 287, ['.'].
+Value error scoring summary 287, ['.'].
+Value error scoring summary 307, ['.'].
+Value error scoring summary 317, ['.'].
+Value error scoring summary 374, ["'", '.'].
+Value error scoring summary 390, ['.'].
+Value error scoring summary 392, ['.'].
+Value error scoring summary 401, ['.'].
+Value error scoring summary 408, ['.'].
+Value error scoring summary 413, ['.'].
+Value error scoring summary 434, ['.'].
+Value error scoring summary 450, ['.'].
+Value error scoring summary 452, ['.'].
+Value error scoring summary 538, ['.'].
+Value error scoring summary 550, ['.'].
+Value error scoring summary 556, ['.'].
+Value error scoring summary 556, ['.'].
+Value error scoring summary 561, ['.'].
+Value error scoring summary 578, ['.'].
+Value error scoring summary 578, ['.'].
+Value error scoring summary 597, ['.'].
+Value error scoring summary 617, ['.'].
+Value error scoring summary 632, ['.'].
+Value error scoring summary 641, ["'", '.'].
+Value error scoring summary 663, ['.'].
+Value error scoring summary 680, ['.'].
+Value error scoring summary 695, ['.'].
+Value error scoring summary 742, ['.'].
+Value error scoring summary 751, ['..'].
+Value error scoring summary 762, ["'", '.'].
+Value error scoring summary 787, ["'", '.'].

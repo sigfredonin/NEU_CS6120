@@ -26,12 +26,14 @@ from tensorflow.python.keras.layers import Dropout
 
 import p4_utils
 
-def get_data(output_type, num_cross_validation_trials):
+def get_data(trial_parameters):
     """
     Load the datasets, training and testing.
     Load the Google News word embedding vectors.
     Preprocess the data to calculate the feature vectors.
     """
+    output_type, num_cross_validation_trials, num_epochs_per_trial = trial_parameters
+
     train_dataset = p4_utils.load_summary_training_data()
     test_dataset  = p4_utils.load_summary_test_data()
 
@@ -58,6 +60,7 @@ def get_data(output_type, num_cross_validation_trials):
         labels = train_non_redundancies
     elif output_type == 'fluency':
         labels = train_fluencies
+    # TODO: add quantized output types
 
     shuffle_indices, xval_sets = \
         p4_utils.split_training_data_for_cross_validation(data, labels, \
@@ -65,30 +68,33 @@ def get_data(output_type, num_cross_validation_trials):
 
     return xval_sets, v, train_dataset, train_features, test_dataset, test_features
 
-def mlp_model(input_shape, h1_units, h1_activation='relu', h2_activation='relu', \
-              output_activation='tanh', dropout_rate=0.0, input_dropout_rate=0.0):
+def mlp_model(input_shape, model_parameters):
     """
     Creates a TF Keras Multi-Layer Perceptron model,
     with an input layer, two hidden layers, and an output layer.
     """
     input_dim = input_shape[0]
+    num_h1_units, h1_activation, \
+        num_h2_units, h2_activation, \
+        num_output_units, output_activation, \
+        input_dropout_rate, h1_h2_dropout_rate = model_parameters
     print("--- Model ---")
     print("Input    : %d x %d" % (1, input_dim))
-    print("Layer h1 : %d x %d %s" % (input_dim, h1_units, h1_activation))
-    print("Layer h2 : %d x %d %s" % (h1_units, 10, h2_activation))
-    print("Output   : %d x %d %s" % (10, 1, output_activation))
+    print("Layer h1 : %d x %d %s" % (input_dim, num_h1_units, h1_activation))
+    print("Layer h2 : %d x %d %s" % (num_h1_units, num_h2_units, h2_activation))
+    print("Output   : %d x %d %s" % (num_h2_units, num_output_units, output_activation))
     print("----------")
     model = models.Sequential()
     # input layer
     model.add(Dropout(rate=input_dropout_rate, input_shape=input_shape))
     # h1: hidden layer 1
-    model.add(Dense(units=h1_units, activation=h1_activation))
-    model.add(Dropout(rate=dropout_rate))
+    model.add(Dense(units=num_h1_units, activation=h1_activation))
+    model.add(Dropout(rate=h1_h2_dropout_rate))
     # h2: hidden layer 2
-    model.add(Dense(units=10, activation=h2_activation))
-    model.add(Dropout(rate=dropout_rate))
+    model.add(Dense(units=num_h2_units, activation=h2_activation))
+    model.add(Dropout(rate=h1_h2_dropout_rate))
     # output layer
-    model.add(Dense(units=1, activation=output_activation))
+    model.add(Dense(units=num_output_units, activation=output_activation))
     return model
 
 def mlp_train(model, data, epochs=10):
@@ -119,8 +125,10 @@ def mlp_train(model, data, epochs=10):
 
     return history
 
-def run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per_trial, \
-        num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate):
+def run_one_trial(train_data, train_labels, val_data, val_labels, \
+        model_parameters, trial_parameters):
+
+    output_type, num_cross_validation_trials, num_epochs_per_trial = trial_parameters
 
     np_train_data = np.array(train_data)
     np_train_labels = np.array(train_labels)
@@ -131,9 +139,7 @@ def run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    model = mlp_model(input_shape=np_train_data.shape[1:], \
-                      h1_units=num_h1_units, h1_activation=h1_activation, \
-                      h2_activation=h2_activation, dropout_rate=h1_h2_dropout_rate)
+    model = mlp_model(np_train_data.shape[1:], model_parameters)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
@@ -142,8 +148,9 @@ def run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per
 
     return model, history
 
-def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
-        num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate):
+def run_trials(xval_sets, model_parameters, trial_parameters):
+
+    output_type, num_cross_validation_trials, num_epochs_per_trial = trial_parameters
 
     scores = []
     for iTrial in range(num_cross_validation_trials):
@@ -157,8 +164,8 @@ def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
             p4_utils.assemble_cross_validation_data(xval_sets, iTrial)
 
         model, history = \
-            run_one_trial(train_data, train_labels, val_data, val_labels, num_epochs_per_trial, \
-                num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+            run_one_trial(train_data, train_labels, val_data, val_labels, \
+                model_parameters, trial_parameters)
 
         scores.append(history)
 
@@ -167,9 +174,13 @@ def run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
 
     return scores
 
-def save_results_of_trials(scores, trial_parameters, trial_ID, timestamp):
+def save_results_of_trials(scores, model_parameters, trial_parameters, trial_ID, timestamp):
 
-    output_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial = trial_parameters
+    output_type, num_cross_validation_trials, num_epochs_per_trial = trial_parameters
+    num_h1_units, h1_activation, \
+        num_h2_units, h2_activation, \
+        num_output_units, output_activation, \
+        input_dropout_rate, h1_h2_dropout_rate = model_parameters
 
     outFilePath = "tests/p4_tf_model_trials" + trial_ID + timestamp
     with open(outFilePath, 'w') as f:
@@ -233,9 +244,14 @@ def save_results_of_trials(scores, trial_parameters, trial_ID, timestamp):
     return outFilePath
 
 def save_model_predictions(trial_type, gold_labels, predicted_labels, summaries, \
-        outFilePath, trial_parameters, trial_ID, timestamp):
+        outFilePath, model_parameters, trial_parameters, trial_ID, timestamp):
 
-    output_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial = trial_parameters
+    output_type, num_cross_validation_trials, num_epochs_per_trial = trial_parameters
+    num_h1_units, h1_activation, \
+        num_h2_units, h2_activation, \
+        num_output_units, output_activation, \
+        input_dropout_rate, h1_h2_dropout_rate = model_parameters
+
     print_heading = (" Predictions on %s Set " % trial_type).center(80, '-')
 
     with open(outFilePath, 'a') as f:
@@ -275,49 +291,64 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     # Set parameters for this set of trials
-    output_type = 'nonrep'
+    #   output types -  1 tanh      : nonrep, fluency
+    #                   13 softmax  : nonrepQ, fluencyQ
+    output_type = 'fluency'
     num_cross_validation_trials = 10
-    num_epochs_per_trial = 60
+    num_epochs_per_trial = 60       # ... for 10-fold cross-validatin training
+    num_epochs_for_training = 60    # ... for training on the full training set
+
+    # set model parameters for this set of trials
     num_h1_units = 10
     h1_activation = 'relu'
+    num_h2_units = 10
     h2_activation = 'relu'
+    num_output_units = 1
+    output_activation = 'tanh'
+    input_dropout_rate = 0.0
     h1_h2_dropout_rate = 0.5
 
-    num_epochs_for_training = 60    # ... when training on full training set
+    model_parameters = \
+        num_h1_units, h1_activation, \
+        num_h2_units, h2_activation, \
+        num_output_units, output_activation, \
+        input_dropout_rate, h1_h2_dropout_rate
+    model_ID = "%d-%s_%d-%s_%d-%s_(%3.1f,%3.1f)" % model_parameters
+
+    trial_parameters = output_type, num_cross_validation_trials, num_epochs_per_trial
 
     xval_sets, v, train_dataset, train_features, test_dataset, test_features = \
-        get_data(output_type, num_cross_validation_trials)
+        get_data(trial_parameters)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    scores = run_trials(xval_sets, num_cross_validation_trials, num_epochs_per_trial, \
-            num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
-
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    trial_parameters = (output_type, num_h1_units, \
-        h1_activation, h2_activation, num_epochs_per_trial)
-    trial_ID = "_10-fold_%s_%d-%s_10-%s_1-tanh_epochs_%s_" % trial_parameters
-    save_results_of_trials(scores, trial_parameters, trial_ID, timestamp)
+    trial_ID = "_%s_%d-fold_%d_epochs_" % trial_parameters
+    trial_ID += model_ID + '_'
+    scores = run_trials(xval_sets, \
+        model_parameters, trial_parameters)
+    save_results_of_trials(scores, \
+        model_parameters, trial_parameters, trial_ID, timestamp)
 
     train_data, train_labels = p4_utils.assemble_full_training_data(xval_sets)
 
-    model, history = \
-        run_one_trial(train_data, train_labels, [], [], num_epochs_for_training, \
-            num_h1_units, h1_activation, h2_activation, h1_h2_dropout_rate)
+    model, history = run_one_trial(train_data, train_labels, [], [], \
+        model_parameters, trial_parameters)
     model.save("data/p4_tf_MLP_model_" + trial_ID + timestamp + ".h5")
 
-    trial_parameters = (output_type, num_h1_units, \
-        h1_activation, h2_activation, num_epochs_for_training)
-    trial_ID = "_full_%s_%d-%s_10-%s_1-tanh_epochs_%s_" % trial_parameters
-    outFilePath = save_results_of_trials([ history ], trial_parameters, trial_ID, timestamp)
+    trial_parameters = output_type, num_cross_validation_trials, num_epochs_for_training
+    trial_ID = "_%s_full_%d_epochs_" % (output_type, num_epochs_for_training)
+    trial_ID += model_ID + '_'
+    outFilePath = save_results_of_trials([ history ], \
+        model_parameters, trial_parameters, trial_ID, timestamp)
 
     train_summaries, train_non_redundancies, train_fluencies = train_dataset
     np_train_data = np.array(train_data)
     train_predictions = model.predict(np_train_data)
     predicted_train_labels = np.array([ predictions[0] for predictions in train_predictions ])
     save_model_predictions("Training", train_labels, predicted_train_labels, train_summaries, \
-        outFilePath, trial_parameters, "_TRAIN"+trial_ID, timestamp)
+        outFilePath, model_parameters, trial_parameters, "_TRAIN"+trial_ID, timestamp)
 
     test_summaries, test_non_redundancies, test_fluencies = test_dataset
     if output_type == 'nonrep':
@@ -330,7 +361,7 @@ if __name__ == '__main__':
     test_predictions = model.predict(np_test_data)
     predicted_test_labels = np.array([ predictions[0] for predictions in test_predictions ])
     save_model_predictions("Test", test_labels, predicted_test_labels, test_summaries, \
-        outFilePath, trial_parameters, "_TEST"+trial_ID, timestamp)
+        outFilePath, model_parameters, trial_parameters, "_TEST"+trial_ID, timestamp)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
