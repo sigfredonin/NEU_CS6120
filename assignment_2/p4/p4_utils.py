@@ -30,6 +30,7 @@ import numpy as np
 import random
 import nltk
 import csv
+import readability
 
 from datetime import datetime
 from nltk import FreqDist
@@ -147,6 +148,32 @@ def get_bigrams_summary_no_stops(summary, NO_STOPS=True, NO_PUNCT=True):
     bigrams = get_ngrams_words(words, 2)
     return bigrams
 
+def get_counts_repeated_unigrams(summary, NO_STOPS=False, NO_PUNCT=False):
+    """
+    Get the counts of unigrams that are the same as the preceding unigram.
+    """
+    words = get_words_summary(summary, NO_STOPS=NO_STOPS, NO_PUNCT=NO_PUNCT)
+    count = 0
+    prev_word = ''
+    for i, word in enumerate(words):
+        if prev_word == word:
+            count += 1
+        prev_word = word
+    return count
+
+def get_counts_repeated_bigrams(summary, NO_STOPS=False, NO_PUNCT=False):
+    """
+    Get the counts of bigrams that are the same as the preceding unigram.
+    """
+    bigrams = get_bigrams_summary(summary, NO_STOPS=NO_STOPS, NO_PUNCT=NO_PUNCT)
+    count = 0
+    prev_bigram = ''
+    for i, bigram in enumerate(bigrams):
+        if prev_bigram == bigram:
+            count += 1
+        prev_bigram = bigram
+    return count
+
 def get_most_frequent(items):
     """
     Get the most frequent item and its count from the items.
@@ -157,6 +184,19 @@ def get_most_frequent(items):
     most_freq = fd.most_common(1)
     item, count = most_freq[0]
     return item, count
+
+def get_min_Flesch_reading_ease(words_in_sents):
+    scores = []
+    for iSummary, summary_sents in enumerate(words_in_sents):
+        ss = []
+        for sent in summary_sents:
+            try:
+                measures = readability.getmeasures(sent)
+                score = measures['readability grades']['FleschReadingEase']
+                ss.append(score)
+            except ValueError:
+                print("Value error scoring summary %d, %s." % (iSummary, sent))
+        scores.append(min(ss))
 
 # ------------------------------------------------------------------------
 # Word vector embeddings ---
@@ -307,6 +347,30 @@ def plot_similarity_hist(similarities):
     plotName = "tests/p4_utils_max_sent_cos_sim_"
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     plt.savefig(plotName + timestamp + '.png')
+
+# ------------------------------------------------------------------------
+# Fluency features (for problem 4.1) ---
+# ------------------------------------------------------------------------
+
+def get_fluency_features(summary, DEBUG=False):
+    """
+    Get the fluency features for a summary.
+    Returns -
+        - repeated unigram count (int)
+        - repeated bigram count (int)
+        - min Flesch sentence reading ease score (float 0.0 .. 110.0+)
+    """
+    repeated_unigrams_count = get_counts_repeated_unigrams(summary)
+    if DEBUG:
+        print("Count repeated unigram: %d" % repeated_unigrams_count)
+    repeated_bigrams_count = get_counts_repeated_bigrams(summary)
+    if DEBUG:
+        print("Count repeated bigram: %d" % repeated_bigrams_count)
+    words_in_sents = get_words_in_sents_summary(summary)
+    min_Flesch_score = get_min_Flesch_reading_ease(words_in_sents)
+    if DEBUG:
+        print("Min Flesch reading ease: %7.4f" % min_Flesch_score)
+    return repeated_unigrams_count, repeated_bigrams_count, min_Flesch_score
 
 # ------------------------------------------------------------------------
 # Prepare training and evaluation data ---
