@@ -104,7 +104,7 @@ def load_summary_test_data():
     return get_summary_data(PATH_TEST, 1)
 
 # ------------------------------------------------------------------------
-# Data preprocessing ---
+# Data preprocessing and basic feature extraction ---
 # ------------------------------------------------------------------------
 
 from nltk.corpus import stopwords
@@ -185,18 +185,34 @@ def get_most_frequent(items):
     item, count = most_freq[0]
     return item, count
 
+def get_min_Flesch_reading_ease_summary(summary_sents):
+    """
+    Get the Flesch reading ease scores for the sentences in a summary.
+    Input - a list of the words (tokens) in each sentence of a summary
+    Returns - the minimum score.
+    """
+    sentence_scores = []
+    for sent in summary_sents:
+        try:
+            measures = readability.getmeasures(sent)
+            score = measures['readability grades']['FleschReadingEase']
+            sentence_scores.append(score)
+        except ValueError:
+            print("Value error scoring summary, %s." % sent)
+    return min(sentence_scores)
+
 def get_min_Flesch_reading_ease(words_in_sents):
+    """
+    Get the minimum Flesch reading ease score among the sentences
+    in a list of summaries.
+    Input - words in each sentence in each summary.
+    Returns - a list of the minimum scores
+    """
     scores = []
     for iSummary, summary_sents in enumerate(words_in_sents):
-        ss = []
-        for sent in summary_sents:
-            try:
-                measures = readability.getmeasures(sent)
-                score = measures['readability grades']['FleschReadingEase']
-                ss.append(score)
-            except ValueError:
-                print("Value error scoring summary %d, %s." % (iSummary, sent))
-        scores.append(min(ss))
+        min_sentence_score = get_min_Flesch_reading_ease_summary(summary_sents)
+        scores.append(min_sentence_score)
+    return scores
 
 # ------------------------------------------------------------------------
 # Word vector embeddings ---
@@ -349,7 +365,7 @@ def plot_similarity_hist(similarities):
     plt.savefig(plotName + timestamp + '.png')
 
 # ------------------------------------------------------------------------
-# Fluency features (for problem 4.1) ---
+# Fluency features (for problem 4.2) ---
 # ------------------------------------------------------------------------
 
 def get_fluency_features(summary, DEBUG=False):
@@ -367,7 +383,7 @@ def get_fluency_features(summary, DEBUG=False):
     if DEBUG:
         print("Count repeated bigram: %d" % repeated_bigrams_count)
     words_in_sents = get_words_in_sents_summary(summary)
-    min_Flesch_score = get_min_Flesch_reading_ease(words_in_sents)
+    min_Flesch_score = get_min_Flesch_reading_ease_summary(words_in_sents)
     if DEBUG:
         print("Min Flesch reading ease: %7.4f" % min_Flesch_score)
     return repeated_unigrams_count, repeated_bigrams_count, min_Flesch_score
