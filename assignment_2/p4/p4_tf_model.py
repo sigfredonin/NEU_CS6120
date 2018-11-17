@@ -356,7 +356,7 @@ if __name__ == '__main__':
     # Set parameters for this set of trials
     #   output types -  1 tanh      : nonrep, fluency
     #                   13 softmax  : nonrepQ, fluencyQ
-    output_type = 'nonrepQ'
+    output_type = 'fluency'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 60       # ... for 10-fold cross-validatin training
     num_epochs_for_training = 60    # ... for training on the full training set
@@ -364,7 +364,7 @@ if __name__ == '__main__':
     # set model parameters for this set of trials
     num_h1_units = 10
     h1_activation = 'relu'
-    num_h2_units = 10
+    num_h2_units = 300
     h2_activation = 'relu'
     if output_type == 'nonrep' or output_type == 'fluency':
         num_output_units = 1
