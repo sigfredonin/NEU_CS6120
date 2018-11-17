@@ -185,7 +185,7 @@ def get_most_frequent(items):
     item, count = most_freq[0]
     return item, count
 
-def get_min_Flesch_reading_ease_summary(summary_sents):
+def get_min_Flesch_reading_ease_summary(iSummary, summary_sents):
     """
     Get the Flesch reading ease scores for the sentences in a summary.
     Input - a list of the words (tokens) in each sentence of a summary
@@ -198,7 +198,7 @@ def get_min_Flesch_reading_ease_summary(summary_sents):
             score = measures['readability grades']['FleschReadingEase']
             sentence_scores.append(score)
         except ValueError:
-            print("Value error scoring summary, %s." % sent)
+            print("Value error scoring summary, %d: %s." % (iSummary, sent))
     return min(sentence_scores)
 
 def get_min_Flesch_reading_ease(words_in_sents):
@@ -210,7 +210,7 @@ def get_min_Flesch_reading_ease(words_in_sents):
     """
     scores = []
     for iSummary, summary_sents in enumerate(words_in_sents):
-        min_sentence_score = get_min_Flesch_reading_ease_summary(summary_sents)
+        min_sentence_score = get_min_Flesch_reading_ease_summary(iSummary, summary_sents)
         scores.append(min_sentence_score)
     return scores
 
@@ -336,7 +336,7 @@ def max_cosine_similarity(wva_sents, DEBUG=False):
 # Non-redundancy features (for problem 4.1) ---
 # ------------------------------------------------------------------------
 
-def get_non_redundancy_features(vectors, summary, DEBUG=False):
+def get_non_redundancy_features_summary(vectors, iSummary, summary, DEBUG=False):
     """
     Get the non-redundancy features for a summary.
     Returns -
@@ -362,6 +362,13 @@ def get_non_redundancy_features(vectors, summary, DEBUG=False):
         print("Max cosine similarity: %7.4f : (%d,%d)" % (max_similarity, s1, s2))
     return mf_unigram_count, mf_bigram_count, max_similarity
 
+def get_non_redundancy_features(vectors, summaries, DEBUG=False):
+    features = []
+    for iSummary, summary in enumerate(summaries):
+        summary_features = get_non_redundancy_features_summary(vectors, iSummary, summary, DEBUG=DEBUG)
+        features.append(summary_features)
+    return features
+
 def plot_similarity_hist(similarities):
     plt.figure()
     plt.hist(similarities, bins=51)
@@ -376,7 +383,7 @@ def plot_similarity_hist(similarities):
 # Fluency features (for problem 4.2) ---
 # ------------------------------------------------------------------------
 
-def get_fluency_features(summary, DEBUG=False):
+def get_fluency_features_summary(iSummary, summary, DEBUG=False):
     """
     Get the fluency features for a summary.
     Returns -
@@ -391,10 +398,17 @@ def get_fluency_features(summary, DEBUG=False):
     if DEBUG:
         print("Count repeated bigram: %d" % repeated_bigrams_count)
     words_in_sents = get_words_in_sents_summary(summary)
-    min_Flesch_score = get_min_Flesch_reading_ease_summary(words_in_sents)
+    min_Flesch_score = get_min_Flesch_reading_ease_summary(iSummary, words_in_sents)
     if DEBUG:
         print("Min Flesch reading ease: %7.4f" % min_Flesch_score)
     return repeated_unigrams_count, repeated_bigrams_count, min_Flesch_score
+
+def get_fluency_features(summaries, DEBUG=False):
+    features = []
+    for iSummary, summary in enumerate(summaries):
+        summary_features = get_fluency_features_summary(iSummary, summary, DEBUG=DEBUG)
+        features.append(summary_features)
+    return features
 
 # ------------------------------------------------------------------------
 # Prepare training and evaluation data ---
@@ -505,12 +519,19 @@ def assemble_full_training_data(xval_sets):
     training_set = ( training_data, training_labels)
     return training_set
 
+VALUES = [ -1.0, -0.8, -0.6, -0.5, -0.4, -0.2, 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0 ]
+DICT = { v : i for i, v in enumerate(VALUES) }
+REVD = { i : v for i, v in enumerate(VALUES) }
+
+def get_class_labels(float_labels):
+    return [ DICT[float(label)] for label in float_labels]
+
 # ------------------------------------------------------------------------
 # Visualize results ---
 # ------------------------------------------------------------------------
 
 def plot_results(np_train_loss, np_train_mse, np_val_loss, np_val_mse, \
-        heading, subheading, plotName='tests/p4_tf_MLP_test_plot_'):
+        heading, subheading, metric, plotName='tests/p4_tf_MLP_test_'):
 
     figure, axis_1 = plt.subplots()
 
@@ -524,12 +545,12 @@ def plot_results(np_train_loss, np_train_mse, np_val_loss, np_val_mse, \
     axis_1.set_ylabel('Avg Loss')
     axis_1.legend(['Training Loss', 'Validation Loss'], loc='upper left')
 
-    # Plot MSE for both training and validation
+    # Plot metric for both training and validation
     axis_2 = axis_1.twinx()
     axis_2.plot(np_train_mse, 'r')
     axis_2.plot(np_val_mse, 'b')
-    axis_2.set_ylabel('Avg MSE')
-    axis_2.legend(['Training MSE', 'Validation MSE'], loc='upper right')
+    axis_2.set_ylabel('Avg ' + metric)
+    axis_2.legend(['Training ' + metric, 'Validation ' + metric], loc='upper right')
 
     figure.subplots_adjust(top=0.9, right=0.9)
 
