@@ -556,8 +556,8 @@ def plot_results(np_train_loss, np_train_mse, np_val_loss, np_val_mse, \
 
     plt.savefig(plotName + '.png')
 
-def plot_compare(gold, pred, slope, intercept, \
-        heading, subheading, plotName='tests/p4_tf_MLP_test_comp_'):
+def plot_compare(gold, pred, slope, intercept, heading, subheading, \
+    xlabel="Gold", ylabel="Pred", plotName='tests/p4_tf_MLP_test_comp_'):
 
     figure, axis_1 = plt.subplots()
 
@@ -567,8 +567,8 @@ def plot_compare(gold, pred, slope, intercept, \
     # Plot gold and predicted values
     axis_1.scatter(gold, pred)
     axis_1.plot([-1,1],[slope*x+intercept for x in [-1.0, 1.0 ]])
-    axis_1.set_xlabel('Gold')
-    axis_1.set_ylabel('Predicted')
+    axis_1.set_xlabel(xlabel)
+    axis_1.set_ylabel(ylabel)
 
     figure.subplots_adjust(top=0.9, right=0.9)
 
