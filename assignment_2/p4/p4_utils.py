@@ -115,6 +115,10 @@ def get_ngrams_words(words, N):
     grams = [tuple(words[i:i+N]) for i in range(len(words)-N+1)]
     return grams
 
+def get_skip_grams_words(words, N):
+    grams = [tuple(words[i:i+N]+words[i+N+1:i+N+1+N]) for i in range(len(words)-(2*N))]
+    return grams
+
 def get_words_in_sents_summary(summary, NO_STOPS=False, NO_PUNCT=False):
     sents = nltk.sent_tokenize(summary)
     words_in_sents = [ [ w for w in nltk.word_tokenize(s) \
