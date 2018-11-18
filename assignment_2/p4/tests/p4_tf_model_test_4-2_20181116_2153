@@ -1,0 +1,2866 @@
+====November 16, 2018 09:53:27 PM====
+Trial ID: _fluency_10-fold_60_epochs_10-relu_5-relu_1-tanh_(0.0,0.5)_
+  output: fluency, 10-fold cross-validation, 60 epochs
+  H1: 10 relu, H2: 5, relu, OUT: 1, tanh, dropout: IN=0.0 OUT=0.5
+Value error scoring summary, 27: ['.'].
+Value error scoring summary, 52: ['.'].
+Value error scoring summary, 90: ['.'].
+Value error scoring summary, 92: ['.'].
+Value error scoring summary, 101: ['.'].
+Value error scoring summary, 120: ['.'].
+Value error scoring summary, 125: ['.'].
+Value error scoring summary, 140: ['.'].
+Value error scoring summary, 184: ['.'].
+Value error scoring summary, 187: ['.'].
+Value error scoring summary, 193: ['.'].
+Value error scoring summary, 219: ['.'].
+Value error scoring summary, 239: ['.'].
+Value error scoring summary, 240: ['.'].
+Value error scoring summary, 267: ['.'].
+Value error scoring summary, 274: ['.'].
+Value error scoring summary, 277: ['.'].
+Value error scoring summary, 284: ['.'].
+Value error scoring summary, 287: ['.'].
+Value error scoring summary, 287: ['.'].
+Value error scoring summary, 307: ['.'].
+Value error scoring summary, 317: ['.'].
+Value error scoring summary, 374: ["'", '.'].
+Value error scoring summary, 390: ['.'].
+Value error scoring summary, 392: ['.'].
+Value error scoring summary, 401: ['.'].
+Value error scoring summary, 408: ['.'].
+Value error scoring summary, 413: ['.'].
+Value error scoring summary, 434: ['.'].
+Value error scoring summary, 450: ['.'].
+Value error scoring summary, 452: ['.'].
+Value error scoring summary, 538: ['.'].
+Value error scoring summary, 550: ['.'].
+Value error scoring summary, 556: ['.'].
+Value error scoring summary, 556: ['.'].
+Value error scoring summary, 561: ['.'].
+Value error scoring summary, 578: ['.'].
+Value error scoring summary, 578: ['.'].
+Value error scoring summary, 597: ['.'].
+Value error scoring summary, 617: ['.'].
+Value error scoring summary, 632: ['.'].
+Value error scoring summary, 641: ["'", '.'].
+Value error scoring summary, 663: ['.'].
+Value error scoring summary, 680: ['.'].
+Value error scoring summary, 695: ['.'].
+Value error scoring summary, 742: ['.'].
+Value error scoring summary, 751: ['..'].
+Value error scoring summary, 762: ["'", '.'].
+Value error scoring summary, 787: ["'", '.'].
+Value error scoring summary, 119: ['.'].
+Value error scoring summary, 148: ['.'].
+Value error scoring summary, 167: ['.'].
+Value error scoring summary, 190: ['.'].
+====November 16, 2018 09:53:31 PM====
+====November 16, 2018 09:53:31 PM====
+--------------------------------- Trial 1 of 10---------------------------------
+====November 16, 2018 09:53:31 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout (Dropout)            (None, 3)                 0         
+_________________________________________________________________
+dense (Dense)                (None, 10)                40        
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 10)                0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 5)                 55        
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 5)                 0         
+_________________________________________________________________
+dense_2 (Dense)              (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:31 PM====
+Training   - data: (720, 3) labels: (720,)
+Validation - data: (79, 3) labels: (79,)
+Train on 720 samples, validate on 79 samples
+Epoch 1/60
+
+ 32/720 [>.............................] - ETA: 5s - loss: 0.9341 - mean_squared_error: 0.9341
+720/720 [==============================] - 0s 455us/step - loss: 1.1211 - mean_squared_error: 1.1211 - val_loss: 0.7594 - val_mean_squared_error: 0.7594
+Epoch 2/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2273 - mean_squared_error: 1.2273
+720/720 [==============================] - 0s 43us/step - loss: 1.0939 - mean_squared_error: 1.0939 - val_loss: 0.7600 - val_mean_squared_error: 0.7600
+Epoch 3/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8579 - mean_squared_error: 0.8579
+720/720 [==============================] - 0s 32us/step - loss: 1.1047 - mean_squared_error: 1.1047 - val_loss: 0.7606 - val_mean_squared_error: 0.7606
+Epoch 4/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9180 - mean_squared_error: 0.9180
+720/720 [==============================] - 0s 8us/step - loss: 1.0396 - mean_squared_error: 1.0396 - val_loss: 0.7610 - val_mean_squared_error: 0.7610
+Epoch 5/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0255 - mean_squared_error: 1.0255
+720/720 [==============================] - 0s 43us/step - loss: 1.0478 - mean_squared_error: 1.0478 - val_loss: 0.7612 - val_mean_squared_error: 0.7612
+Epoch 6/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2936 - mean_squared_error: 1.2936
+720/720 [==============================] - 0s 22us/step - loss: 1.0337 - mean_squared_error: 1.0337 - val_loss: 0.7615 - val_mean_squared_error: 0.7615
+Epoch 7/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0335 - mean_squared_error: 1.0335
+720/720 [==============================] - 0s 22us/step - loss: 1.0082 - mean_squared_error: 1.0082 - val_loss: 0.7617 - val_mean_squared_error: 0.7617
+Epoch 8/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1272 - mean_squared_error: 1.1272
+720/720 [==============================] - 0s 22us/step - loss: 1.0255 - mean_squared_error: 1.0255 - val_loss: 0.7622 - val_mean_squared_error: 0.7622
+Epoch 9/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1092 - mean_squared_error: 1.1092
+720/720 [==============================] - 0s 43us/step - loss: 1.0519 - mean_squared_error: 1.0519 - val_loss: 0.7627 - val_mean_squared_error: 0.7627
+Epoch 10/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5958 - mean_squared_error: 0.5958
+720/720 [==============================] - 0s 22us/step - loss: 0.9598 - mean_squared_error: 0.9598 - val_loss: 0.7631 - val_mean_squared_error: 0.7631
+Epoch 11/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2180 - mean_squared_error: 1.2180
+720/720 [==============================] - 0s 22us/step - loss: 0.9794 - mean_squared_error: 0.9794 - val_loss: 0.7639 - val_mean_squared_error: 0.7639
+Epoch 12/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7964 - mean_squared_error: 0.7964
+720/720 [==============================] - 0s 22us/step - loss: 0.9754 - mean_squared_error: 0.9754 - val_loss: 0.7642 - val_mean_squared_error: 0.7642
+Epoch 13/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9948 - mean_squared_error: 0.9948
+720/720 [==============================] - 0s 22us/step - loss: 0.9376 - mean_squared_error: 0.9376 - val_loss: 0.7646 - val_mean_squared_error: 0.7646
+Epoch 14/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7315 - mean_squared_error: 0.7315
+720/720 [==============================] - 0s 44us/step - loss: 0.8732 - mean_squared_error: 0.8732 - val_loss: 0.7644 - val_mean_squared_error: 0.7644
+Epoch 15/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0941 - mean_squared_error: 1.0941
+720/720 [==============================] - 0s 26us/step - loss: 0.9372 - mean_squared_error: 0.9372 - val_loss: 0.7641 - val_mean_squared_error: 0.7641
+Epoch 16/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1230 - mean_squared_error: 1.1230
+720/720 [==============================] - 0s 25us/step - loss: 0.9203 - mean_squared_error: 0.9203 - val_loss: 0.7635 - val_mean_squared_error: 0.7635
+Epoch 17/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9827 - mean_squared_error: 0.9827
+720/720 [==============================] - 0s 22us/step - loss: 0.8634 - mean_squared_error: 0.8634 - val_loss: 0.7633 - val_mean_squared_error: 0.7633
+Epoch 18/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8398 - mean_squared_error: 0.8398
+720/720 [==============================] - 0s 22us/step - loss: 0.9469 - mean_squared_error: 0.9469 - val_loss: 0.7639 - val_mean_squared_error: 0.7639
+Epoch 19/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7416 - mean_squared_error: 0.7416
+720/720 [==============================] - 0s 22us/step - loss: 0.8583 - mean_squared_error: 0.8583 - val_loss: 0.7645 - val_mean_squared_error: 0.7645
+Epoch 20/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5645 - mean_squared_error: 0.5645
+720/720 [==============================] - 0s 43us/step - loss: 0.8754 - mean_squared_error: 0.8754 - val_loss: 0.7641 - val_mean_squared_error: 0.7641
+Epoch 21/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6997 - mean_squared_error: 0.6997
+720/720 [==============================] - 0s 22us/step - loss: 0.9308 - mean_squared_error: 0.9308 - val_loss: 0.7637 - val_mean_squared_error: 0.7637
+Epoch 22/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9195 - mean_squared_error: 0.9195
+720/720 [==============================] - 0s 22us/step - loss: 0.8639 - mean_squared_error: 0.8639 - val_loss: 0.7628 - val_mean_squared_error: 0.7628
+Epoch 23/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7135 - mean_squared_error: 0.7135
+720/720 [==============================] - 0s 22us/step - loss: 0.9663 - mean_squared_error: 0.9663 - val_loss: 0.7624 - val_mean_squared_error: 0.7624
+Epoch 24/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6654 - mean_squared_error: 0.6654
+720/720 [==============================] - 0s 22us/step - loss: 0.8956 - mean_squared_error: 0.8956 - val_loss: 0.7620 - val_mean_squared_error: 0.7620
+Epoch 25/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1840 - mean_squared_error: 1.1840
+720/720 [==============================] - 0s 46us/step - loss: 0.9060 - mean_squared_error: 0.9060 - val_loss: 0.7618 - val_mean_squared_error: 0.7618
+Epoch 26/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8036 - mean_squared_error: 0.8036
+720/720 [==============================] - 0s 7us/step - loss: 0.8291 - mean_squared_error: 0.8291 - val_loss: 0.7620 - val_mean_squared_error: 0.7620
+Epoch 27/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9106 - mean_squared_error: 0.9106
+720/720 [==============================] - 0s 43us/step - loss: 0.7833 - mean_squared_error: 0.7833 - val_loss: 0.7614 - val_mean_squared_error: 0.7614
+Epoch 28/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7279 - mean_squared_error: 0.7279
+720/720 [==============================] - 0s 22us/step - loss: 0.7719 - mean_squared_error: 0.7719 - val_loss: 0.7608 - val_mean_squared_error: 0.7608
+Epoch 29/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8939 - mean_squared_error: 0.8939
+720/720 [==============================] - 0s 22us/step - loss: 0.8315 - mean_squared_error: 0.8315 - val_loss: 0.7607 - val_mean_squared_error: 0.7607
+Epoch 30/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9281 - mean_squared_error: 0.9281
+720/720 [==============================] - 0s 22us/step - loss: 0.8274 - mean_squared_error: 0.8274 - val_loss: 0.7612 - val_mean_squared_error: 0.7612
+Epoch 31/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9711 - mean_squared_error: 0.9711
+720/720 [==============================] - 0s 43us/step - loss: 0.7451 - mean_squared_error: 0.7451 - val_loss: 0.7640 - val_mean_squared_error: 0.7640
+Epoch 32/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8822 - mean_squared_error: 0.8822
+720/720 [==============================] - 0s 22us/step - loss: 0.8397 - mean_squared_error: 0.8397 - val_loss: 0.7677 - val_mean_squared_error: 0.7677
+Epoch 33/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5513 - mean_squared_error: 0.5513
+720/720 [==============================] - 0s 22us/step - loss: 0.7794 - mean_squared_error: 0.7794 - val_loss: 0.7671 - val_mean_squared_error: 0.7671
+Epoch 34/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0387 - mean_squared_error: 1.0387
+720/720 [==============================] - 0s 22us/step - loss: 0.7838 - mean_squared_error: 0.7838 - val_loss: 0.7672 - val_mean_squared_error: 0.7672
+Epoch 35/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8878 - mean_squared_error: 0.8878
+720/720 [==============================] - 0s 39us/step - loss: 0.7843 - mean_squared_error: 0.7843 - val_loss: 0.7655 - val_mean_squared_error: 0.7655
+Epoch 36/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4056 - mean_squared_error: 1.4056
+720/720 [==============================] - 0s 26us/step - loss: 0.7728 - mean_squared_error: 0.7728 - val_loss: 0.7711 - val_mean_squared_error: 0.7711
+Epoch 37/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6247 - mean_squared_error: 0.6247
+720/720 [==============================] - 0s 23us/step - loss: 0.6970 - mean_squared_error: 0.6970 - val_loss: 0.7737 - val_mean_squared_error: 0.7737
+Epoch 38/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5252 - mean_squared_error: 0.5252
+720/720 [==============================] - 0s 22us/step - loss: 0.6891 - mean_squared_error: 0.6891 - val_loss: 0.7767 - val_mean_squared_error: 0.7767
+Epoch 39/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7702 - mean_squared_error: 0.7702
+720/720 [==============================] - 0s 22us/step - loss: 0.7806 - mean_squared_error: 0.7806 - val_loss: 0.7766 - val_mean_squared_error: 0.7766
+Epoch 40/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7842 - mean_squared_error: 0.7842
+720/720 [==============================] - 0s 22us/step - loss: 0.7580 - mean_squared_error: 0.7580 - val_loss: 0.7766 - val_mean_squared_error: 0.7766
+Epoch 41/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6507 - mean_squared_error: 0.6507
+720/720 [==============================] - 0s 43us/step - loss: 0.7491 - mean_squared_error: 0.7491 - val_loss: 0.7767 - val_mean_squared_error: 0.7767
+Epoch 42/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3699 - mean_squared_error: 1.3699
+720/720 [==============================] - 0s 22us/step - loss: 0.7890 - mean_squared_error: 0.7890 - val_loss: 0.7765 - val_mean_squared_error: 0.7765
+Epoch 43/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1013 - mean_squared_error: 1.1013
+720/720 [==============================] - 0s 22us/step - loss: 0.8014 - mean_squared_error: 0.8014 - val_loss: 0.7767 - val_mean_squared_error: 0.7767
+Epoch 44/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8840 - mean_squared_error: 0.8840
+720/720 [==============================] - 0s 22us/step - loss: 0.7818 - mean_squared_error: 0.7818 - val_loss: 0.7767 - val_mean_squared_error: 0.7767
+Epoch 45/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3725 - mean_squared_error: 0.3725
+720/720 [==============================] - 0s 22us/step - loss: 0.8353 - mean_squared_error: 0.8353 - val_loss: 0.7765 - val_mean_squared_error: 0.7765
+Epoch 46/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7832 - mean_squared_error: 0.7832
+720/720 [==============================] - 0s 43us/step - loss: 0.7767 - mean_squared_error: 0.7767 - val_loss: 0.7767 - val_mean_squared_error: 0.7767
+Epoch 47/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7848 - mean_squared_error: 0.7848
+720/720 [==============================] - 0s 22us/step - loss: 0.7375 - mean_squared_error: 0.7375 - val_loss: 0.7764 - val_mean_squared_error: 0.7764
+Epoch 48/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7874 - mean_squared_error: 0.7874
+720/720 [==============================] - 0s 22us/step - loss: 0.7624 - mean_squared_error: 0.7624 - val_loss: 0.7766 - val_mean_squared_error: 0.7766
+Epoch 49/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8578 - mean_squared_error: 0.8578
+720/720 [==============================] - 0s 36us/step - loss: 0.7791 - mean_squared_error: 0.7791 - val_loss: 0.7769 - val_mean_squared_error: 0.7769
+Epoch 50/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7352 - mean_squared_error: 0.7352
+720/720 [==============================] - 0s 13us/step - loss: 0.7462 - mean_squared_error: 0.7462 - val_loss: 0.7767 - val_mean_squared_error: 0.7767
+Epoch 51/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9905 - mean_squared_error: 0.9905
+720/720 [==============================] - 0s 22us/step - loss: 0.7415 - mean_squared_error: 0.7415 - val_loss: 0.7765 - val_mean_squared_error: 0.7765
+Epoch 52/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8172 - mean_squared_error: 0.8172
+720/720 [==============================] - 0s 43us/step - loss: 0.7014 - mean_squared_error: 0.7014 - val_loss: 0.7764 - val_mean_squared_error: 0.7764
+Epoch 53/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6971 - mean_squared_error: 0.6971
+720/720 [==============================] - 0s 22us/step - loss: 0.8127 - mean_squared_error: 0.8127 - val_loss: 0.7764 - val_mean_squared_error: 0.7764
+Epoch 54/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9046 - mean_squared_error: 0.9046
+720/720 [==============================] - 0s 22us/step - loss: 0.7232 - mean_squared_error: 0.7232 - val_loss: 0.7762 - val_mean_squared_error: 0.7762
+Epoch 55/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6801 - mean_squared_error: 0.6801
+720/720 [==============================] - 0s 36us/step - loss: 0.7273 - mean_squared_error: 0.7273 - val_loss: 0.7762 - val_mean_squared_error: 0.7762
+Epoch 56/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6901 - mean_squared_error: 0.6901
+720/720 [==============================] - 0s 27us/step - loss: 0.6983 - mean_squared_error: 0.6983 - val_loss: 0.7761 - val_mean_squared_error: 0.7761
+Epoch 57/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6532 - mean_squared_error: 0.6532
+720/720 [==============================] - 0s 8us/step - loss: 0.6943 - mean_squared_error: 0.6943 - val_loss: 0.7761 - val_mean_squared_error: 0.7761
+Epoch 58/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8215 - mean_squared_error: 0.8215
+720/720 [==============================] - 0s 43us/step - loss: 0.7335 - mean_squared_error: 0.7335 - val_loss: 0.7760 - val_mean_squared_error: 0.7760
+Epoch 59/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8045 - mean_squared_error: 0.8045
+720/720 [==============================] - 0s 22us/step - loss: 0.8099 - mean_squared_error: 0.8099 - val_loss: 0.7761 - val_mean_squared_error: 0.7761
+Epoch 60/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4680 - mean_squared_error: 0.4680
+720/720 [==============================] - 0s 22us/step - loss: 0.7542 - mean_squared_error: 0.7542 - val_loss: 0.7762 - val_mean_squared_error: 0.7762
+====November 16, 2018 09:53:33 PM====
+====November 16, 2018 09:53:33 PM====
+--------------------------------- Trial 2 of 10---------------------------------
+====November 16, 2018 09:53:33 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_3 (Dropout)          (None, 3)                 0         
+_________________________________________________________________
+dense_3 (Dense)              (None, 10)                40        
+_________________________________________________________________
+dropout_4 (Dropout)          (None, 10)                0         
+_________________________________________________________________
+dense_4 (Dense)              (None, 5)                 55        
+_________________________________________________________________
+dropout_5 (Dropout)          (None, 5)                 0         
+_________________________________________________________________
+dense_5 (Dense)              (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:33 PM====
+Training   - data: (720, 3) labels: (720,)
+Validation - data: (79, 3) labels: (79,)
+Train on 720 samples, validate on 79 samples
+Epoch 1/60
+
+ 32/720 [>.............................] - ETA: 5s - loss: 1.3330 - mean_squared_error: 1.3330
+720/720 [==============================] - 0s 491us/step - loss: 0.8030 - mean_squared_error: 0.8030 - val_loss: 1.4574 - val_mean_squared_error: 1.4574
+Epoch 2/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0906 - mean_squared_error: 1.0906
+720/720 [==============================] - 0s 29us/step - loss: 0.7530 - mean_squared_error: 0.7530 - val_loss: 1.4953 - val_mean_squared_error: 1.4953
+Epoch 3/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5439 - mean_squared_error: 0.5439
+720/720 [==============================] - 0s 26us/step - loss: 0.7520 - mean_squared_error: 0.7520 - val_loss: 1.5597 - val_mean_squared_error: 1.5597
+Epoch 4/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7012 - mean_squared_error: 0.7012
+720/720 [==============================] - 0s 15us/step - loss: 0.7282 - mean_squared_error: 0.7282 - val_loss: 1.4192 - val_mean_squared_error: 1.4192
+Epoch 5/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6109 - mean_squared_error: 0.6109
+720/720 [==============================] - 0s 22us/step - loss: 0.6673 - mean_squared_error: 0.6673 - val_loss: 1.2139 - val_mean_squared_error: 1.2139
+Epoch 6/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7966 - mean_squared_error: 0.7966
+720/720 [==============================] - 0s 22us/step - loss: 0.6893 - mean_squared_error: 0.6893 - val_loss: 1.1378 - val_mean_squared_error: 1.1378
+Epoch 7/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3841 - mean_squared_error: 0.3841
+720/720 [==============================] - 0s 43us/step - loss: 0.7248 - mean_squared_error: 0.7248 - val_loss: 0.8880 - val_mean_squared_error: 0.8880
+Epoch 8/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6882 - mean_squared_error: 0.6882
+720/720 [==============================] - 0s 22us/step - loss: 0.6584 - mean_squared_error: 0.6584 - val_loss: 0.2796 - val_mean_squared_error: 0.2796
+Epoch 9/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4594 - mean_squared_error: 0.4594
+720/720 [==============================] - 0s 22us/step - loss: 0.5649 - mean_squared_error: 0.5649 - val_loss: 0.2787 - val_mean_squared_error: 0.2787
+Epoch 10/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6720 - mean_squared_error: 0.6720
+720/720 [==============================] - 0s 43us/step - loss: 0.5277 - mean_squared_error: 0.5277 - val_loss: 0.2614 - val_mean_squared_error: 0.2614
+Epoch 11/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4425 - mean_squared_error: 0.4425
+720/720 [==============================] - 0s 22us/step - loss: 0.5346 - mean_squared_error: 0.5346 - val_loss: 0.2540 - val_mean_squared_error: 0.2540
+Epoch 12/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6667 - mean_squared_error: 0.6667
+720/720 [==============================] - 0s 22us/step - loss: 0.5214 - mean_squared_error: 0.5214 - val_loss: 0.2505 - val_mean_squared_error: 0.2505
+Epoch 13/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4998 - mean_squared_error: 0.4998
+720/720 [==============================] - 0s 22us/step - loss: 0.5255 - mean_squared_error: 0.5255 - val_loss: 0.2479 - val_mean_squared_error: 0.2479
+Epoch 14/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3599 - mean_squared_error: 0.3599
+720/720 [==============================] - 0s 22us/step - loss: 0.5087 - mean_squared_error: 0.5087 - val_loss: 0.2453 - val_mean_squared_error: 0.2453
+Epoch 15/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8017 - mean_squared_error: 0.8017
+720/720 [==============================] - 0s 43us/step - loss: 0.5019 - mean_squared_error: 0.5019 - val_loss: 0.2430 - val_mean_squared_error: 0.2430
+Epoch 16/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6470 - mean_squared_error: 0.6470
+720/720 [==============================] - 0s 22us/step - loss: 0.5224 - mean_squared_error: 0.5224 - val_loss: 0.2415 - val_mean_squared_error: 0.2415
+Epoch 17/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6032 - mean_squared_error: 0.6032
+720/720 [==============================] - 0s 22us/step - loss: 0.4467 - mean_squared_error: 0.4467 - val_loss: 0.2409 - val_mean_squared_error: 0.2409
+Epoch 18/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4284 - mean_squared_error: 0.4284
+720/720 [==============================] - 0s 22us/step - loss: 0.4692 - mean_squared_error: 0.4692 - val_loss: 0.2400 - val_mean_squared_error: 0.2400
+Epoch 19/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6847 - mean_squared_error: 0.6847
+720/720 [==============================] - 0s 44us/step - loss: 0.5264 - mean_squared_error: 0.5264 - val_loss: 0.2389 - val_mean_squared_error: 0.2389
+Epoch 20/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3818 - mean_squared_error: 0.3818
+720/720 [==============================] - 0s 26us/step - loss: 0.4698 - mean_squared_error: 0.4698 - val_loss: 0.2385 - val_mean_squared_error: 0.2385
+Epoch 21/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4195 - mean_squared_error: 0.4195
+720/720 [==============================] - 0s 25us/step - loss: 0.4752 - mean_squared_error: 0.4752 - val_loss: 0.2385 - val_mean_squared_error: 0.2385
+Epoch 22/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5268 - mean_squared_error: 0.5268
+720/720 [==============================] - 0s 17us/step - loss: 0.4853 - mean_squared_error: 0.4853 - val_loss: 0.2376 - val_mean_squared_error: 0.2376
+Epoch 23/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4934 - mean_squared_error: 0.4934
+720/720 [==============================] - 0s 22us/step - loss: 0.5031 - mean_squared_error: 0.5031 - val_loss: 0.2373 - val_mean_squared_error: 0.2373
+Epoch 24/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4798 - mean_squared_error: 0.4798
+720/720 [==============================] - 0s 22us/step - loss: 0.5040 - mean_squared_error: 0.5040 - val_loss: 0.2368 - val_mean_squared_error: 0.2368
+Epoch 25/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4930 - mean_squared_error: 0.4930
+720/720 [==============================] - 0s 43us/step - loss: 0.5263 - mean_squared_error: 0.5263 - val_loss: 0.2372 - val_mean_squared_error: 0.2372
+Epoch 26/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5422 - mean_squared_error: 0.5422
+720/720 [==============================] - 0s 22us/step - loss: 0.5003 - mean_squared_error: 0.5003 - val_loss: 0.2373 - val_mean_squared_error: 0.2373
+Epoch 27/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5426 - mean_squared_error: 0.5426
+720/720 [==============================] - 0s 22us/step - loss: 0.4746 - mean_squared_error: 0.4746 - val_loss: 0.2374 - val_mean_squared_error: 0.2374
+Epoch 28/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5619 - mean_squared_error: 0.5619
+720/720 [==============================] - 0s 22us/step - loss: 0.5168 - mean_squared_error: 0.5168 - val_loss: 0.2373 - val_mean_squared_error: 0.2373
+Epoch 29/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5455 - mean_squared_error: 0.5455
+720/720 [==============================] - 0s 43us/step - loss: 0.4704 - mean_squared_error: 0.4704 - val_loss: 0.2372 - val_mean_squared_error: 0.2372
+Epoch 30/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2956 - mean_squared_error: 0.2956
+720/720 [==============================] - 0s 22us/step - loss: 0.4897 - mean_squared_error: 0.4897 - val_loss: 0.2370 - val_mean_squared_error: 0.2370
+Epoch 31/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8072 - mean_squared_error: 0.8072
+720/720 [==============================] - 0s 36us/step - loss: 0.5041 - mean_squared_error: 0.5041 - val_loss: 0.2375 - val_mean_squared_error: 0.2375
+Epoch 32/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2704 - mean_squared_error: 0.2704
+720/720 [==============================] - 0s 13us/step - loss: 0.4779 - mean_squared_error: 0.4779 - val_loss: 0.2373 - val_mean_squared_error: 0.2373
+Epoch 33/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5868 - mean_squared_error: 0.5868
+720/720 [==============================] - 0s 22us/step - loss: 0.4816 - mean_squared_error: 0.4816 - val_loss: 0.2374 - val_mean_squared_error: 0.2374
+Epoch 34/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5168 - mean_squared_error: 0.5168
+720/720 [==============================] - 0s 43us/step - loss: 0.5140 - mean_squared_error: 0.5140 - val_loss: 0.2374 - val_mean_squared_error: 0.2374
+Epoch 35/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5979 - mean_squared_error: 0.5979
+720/720 [==============================] - 0s 22us/step - loss: 0.4704 - mean_squared_error: 0.4704 - val_loss: 0.2372 - val_mean_squared_error: 0.2372
+Epoch 36/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5707 - mean_squared_error: 0.5707
+720/720 [==============================] - 0s 22us/step - loss: 0.4733 - mean_squared_error: 0.4733 - val_loss: 0.2370 - val_mean_squared_error: 0.2370
+Epoch 37/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3447 - mean_squared_error: 0.3447
+720/720 [==============================] - 0s 22us/step - loss: 0.4934 - mean_squared_error: 0.4934 - val_loss: 0.2371 - val_mean_squared_error: 0.2371
+Epoch 38/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3272 - mean_squared_error: 0.3272
+720/720 [==============================] - 0s 43us/step - loss: 0.4923 - mean_squared_error: 0.4923 - val_loss: 0.2366 - val_mean_squared_error: 0.2366
+Epoch 39/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8674 - mean_squared_error: 0.8674
+720/720 [==============================] - 0s 22us/step - loss: 0.5579 - mean_squared_error: 0.5579 - val_loss: 0.2373 - val_mean_squared_error: 0.2373
+Epoch 40/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5233 - mean_squared_error: 0.5233
+720/720 [==============================] - 0s 22us/step - loss: 0.4635 - mean_squared_error: 0.4635 - val_loss: 0.2371 - val_mean_squared_error: 0.2371
+Epoch 41/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3594 - mean_squared_error: 0.3594
+720/720 [==============================] - 0s 22us/step - loss: 0.4515 - mean_squared_error: 0.4515 - val_loss: 0.2370 - val_mean_squared_error: 0.2370
+Epoch 42/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4389 - mean_squared_error: 0.4389
+720/720 [==============================] - 0s 44us/step - loss: 0.5027 - mean_squared_error: 0.5027 - val_loss: 0.2370 - val_mean_squared_error: 0.2370
+Epoch 43/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5566 - mean_squared_error: 0.5566
+720/720 [==============================] - 0s 26us/step - loss: 0.4468 - mean_squared_error: 0.4468 - val_loss: 0.2371 - val_mean_squared_error: 0.2371
+Epoch 44/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4526 - mean_squared_error: 0.4526
+720/720 [==============================] - 0s 25us/step - loss: 0.4716 - mean_squared_error: 0.4716 - val_loss: 0.2371 - val_mean_squared_error: 0.2371
+Epoch 45/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3200 - mean_squared_error: 0.3200
+720/720 [==============================] - 0s 22us/step - loss: 0.4893 - mean_squared_error: 0.4893 - val_loss: 0.2376 - val_mean_squared_error: 0.2376
+Epoch 46/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4736 - mean_squared_error: 0.4736
+720/720 [==============================] - 0s 22us/step - loss: 0.4897 - mean_squared_error: 0.4897 - val_loss: 0.2379 - val_mean_squared_error: 0.2379
+Epoch 47/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4273 - mean_squared_error: 0.4273
+720/720 [==============================] - 0s 22us/step - loss: 0.4550 - mean_squared_error: 0.4550 - val_loss: 0.2382 - val_mean_squared_error: 0.2382
+Epoch 48/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3737 - mean_squared_error: 0.3737
+720/720 [==============================] - 0s 22us/step - loss: 0.4773 - mean_squared_error: 0.4773 - val_loss: 0.2385 - val_mean_squared_error: 0.2385
+Epoch 49/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5110 - mean_squared_error: 0.5110
+720/720 [==============================] - 0s 22us/step - loss: 0.4409 - mean_squared_error: 0.4409 - val_loss: 0.2388 - val_mean_squared_error: 0.2388
+Epoch 50/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3629 - mean_squared_error: 0.3629
+720/720 [==============================] - 0s 22us/step - loss: 0.4881 - mean_squared_error: 0.4881 - val_loss: 0.2391 - val_mean_squared_error: 0.2391
+Epoch 51/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4974 - mean_squared_error: 0.4974
+720/720 [==============================] - 0s 22us/step - loss: 0.4902 - mean_squared_error: 0.4902 - val_loss: 0.2395 - val_mean_squared_error: 0.2395
+Epoch 52/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4406 - mean_squared_error: 0.4406
+720/720 [==============================] - 0s 22us/step - loss: 0.5305 - mean_squared_error: 0.5305 - val_loss: 0.2394 - val_mean_squared_error: 0.2394
+Epoch 53/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5300 - mean_squared_error: 0.5300
+720/720 [==============================] - 0s 43us/step - loss: 0.4894 - mean_squared_error: 0.4894 - val_loss: 0.2389 - val_mean_squared_error: 0.2389
+Epoch 54/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3776 - mean_squared_error: 0.3776
+720/720 [==============================] - 0s 22us/step - loss: 0.4556 - mean_squared_error: 0.4556 - val_loss: 0.2394 - val_mean_squared_error: 0.2394
+Epoch 55/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4337 - mean_squared_error: 0.4337
+720/720 [==============================] - 0s 22us/step - loss: 0.5098 - mean_squared_error: 0.5098 - val_loss: 0.2396 - val_mean_squared_error: 0.2396
+Epoch 56/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4482 - mean_squared_error: 0.4482
+720/720 [==============================] - 0s 34us/step - loss: 0.5030 - mean_squared_error: 0.5030 - val_loss: 0.2399 - val_mean_squared_error: 0.2399
+Epoch 57/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3833 - mean_squared_error: 0.3833
+720/720 [==============================] - 0s 22us/step - loss: 0.5066 - mean_squared_error: 0.5066 - val_loss: 0.2400 - val_mean_squared_error: 0.2400
+Epoch 58/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4573 - mean_squared_error: 0.4573
+720/720 [==============================] - 0s 22us/step - loss: 0.4979 - mean_squared_error: 0.4979 - val_loss: 0.2408 - val_mean_squared_error: 0.2408
+Epoch 59/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3492 - mean_squared_error: 0.3492
+720/720 [==============================] - 0s 43us/step - loss: 0.5066 - mean_squared_error: 0.5066 - val_loss: 0.2405 - val_mean_squared_error: 0.2405
+Epoch 60/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4383 - mean_squared_error: 0.4383
+720/720 [==============================] - 0s 22us/step - loss: 0.4878 - mean_squared_error: 0.4878 - val_loss: 0.2405 - val_mean_squared_error: 0.2405
+====November 16, 2018 09:53:34 PM====
+====November 16, 2018 09:53:34 PM====
+--------------------------------- Trial 3 of 10---------------------------------
+====November 16, 2018 09:53:34 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_6 (Dropout)          (None, 3)                 0         
+_________________________________________________________________
+dense_6 (Dense)              (None, 10)                40        
+_________________________________________________________________
+dropout_7 (Dropout)          (None, 10)                0         
+_________________________________________________________________
+dense_7 (Dense)              (None, 5)                 55        
+_________________________________________________________________
+dropout_8 (Dropout)          (None, 5)                 0         
+_________________________________________________________________
+dense_8 (Dense)              (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:35 PM====
+Training   - data: (720, 3) labels: (720,)
+Validation - data: (79, 3) labels: (79,)
+Train on 720 samples, validate on 79 samples
+Epoch 1/60
+
+ 32/720 [>.............................] - ETA: 6s - loss: 1.0487 - mean_squared_error: 1.0487
+720/720 [==============================] - 0s 544us/step - loss: 1.2672 - mean_squared_error: 1.2672 - val_loss: 1.8020 - val_mean_squared_error: 1.8020
+Epoch 2/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2822 - mean_squared_error: 1.2822
+720/720 [==============================] - 0s 22us/step - loss: 1.2671 - mean_squared_error: 1.2671 - val_loss: 1.7996 - val_mean_squared_error: 1.7996
+Epoch 3/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0286 - mean_squared_error: 1.0286
+720/720 [==============================] - 0s 44us/step - loss: 1.2300 - mean_squared_error: 1.2300 - val_loss: 1.7990 - val_mean_squared_error: 1.7990
+Epoch 4/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9458 - mean_squared_error: 0.9458
+720/720 [==============================] - 0s 30us/step - loss: 1.2105 - mean_squared_error: 1.2105 - val_loss: 1.8024 - val_mean_squared_error: 1.8024
+Epoch 5/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4503 - mean_squared_error: 1.4503
+720/720 [==============================] - 0s 25us/step - loss: 1.1652 - mean_squared_error: 1.1652 - val_loss: 1.7972 - val_mean_squared_error: 1.7972
+Epoch 6/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4348 - mean_squared_error: 1.4348
+720/720 [==============================] - 0s 22us/step - loss: 1.1873 - mean_squared_error: 1.1873 - val_loss: 1.7951 - val_mean_squared_error: 1.7951
+Epoch 7/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9886 - mean_squared_error: 0.9886
+720/720 [==============================] - 0s 22us/step - loss: 1.1010 - mean_squared_error: 1.1010 - val_loss: 1.7948 - val_mean_squared_error: 1.7948
+Epoch 8/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.5534 - mean_squared_error: 1.5534
+720/720 [==============================] - 0s 33us/step - loss: 1.2129 - mean_squared_error: 1.2129 - val_loss: 1.7927 - val_mean_squared_error: 1.7927
+Epoch 9/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1818 - mean_squared_error: 1.1818
+720/720 [==============================] - 0s 22us/step - loss: 1.1167 - mean_squared_error: 1.1167 - val_loss: 1.7928 - val_mean_squared_error: 1.7928
+Epoch 10/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0873 - mean_squared_error: 1.0873
+720/720 [==============================] - 0s 22us/step - loss: 1.2269 - mean_squared_error: 1.2269 - val_loss: 1.7903 - val_mean_squared_error: 1.7903
+Epoch 11/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.7114 - mean_squared_error: 1.7114
+720/720 [==============================] - 0s 43us/step - loss: 1.2409 - mean_squared_error: 1.2409 - val_loss: 1.7827 - val_mean_squared_error: 1.7827
+Epoch 12/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4279 - mean_squared_error: 1.4279
+720/720 [==============================] - 0s 22us/step - loss: 1.1611 - mean_squared_error: 1.1611 - val_loss: 1.7818 - val_mean_squared_error: 1.7818
+Epoch 13/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1988 - mean_squared_error: 1.1988
+720/720 [==============================] - 0s 22us/step - loss: 1.2193 - mean_squared_error: 1.2193 - val_loss: 1.7821 - val_mean_squared_error: 1.7821
+Epoch 14/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9982 - mean_squared_error: 0.9982
+720/720 [==============================] - 0s 22us/step - loss: 1.2198 - mean_squared_error: 1.2198 - val_loss: 1.7820 - val_mean_squared_error: 1.7820
+Epoch 15/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3456 - mean_squared_error: 1.3456
+720/720 [==============================] - 0s 47us/step - loss: 1.1961 - mean_squared_error: 1.1961 - val_loss: 1.7790 - val_mean_squared_error: 1.7790
+Epoch 16/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2490 - mean_squared_error: 1.2490
+720/720 [==============================] - 0s 27us/step - loss: 1.2219 - mean_squared_error: 1.2219 - val_loss: 1.7789 - val_mean_squared_error: 1.7789
+Epoch 17/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1447 - mean_squared_error: 1.1447
+720/720 [==============================] - 0s 22us/step - loss: 1.1799 - mean_squared_error: 1.1799 - val_loss: 1.7736 - val_mean_squared_error: 1.7736
+Epoch 18/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1578 - mean_squared_error: 1.1578
+720/720 [==============================] - 0s 22us/step - loss: 1.1731 - mean_squared_error: 1.1731 - val_loss: 1.7757 - val_mean_squared_error: 1.7757
+Epoch 19/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4551 - mean_squared_error: 1.4551
+720/720 [==============================] - 0s 22us/step - loss: 1.2326 - mean_squared_error: 1.2326 - val_loss: 1.7750 - val_mean_squared_error: 1.7750
+Epoch 20/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3899 - mean_squared_error: 1.3899
+720/720 [==============================] - 0s 43us/step - loss: 1.1536 - mean_squared_error: 1.1536 - val_loss: 1.7706 - val_mean_squared_error: 1.7706
+Epoch 21/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2534 - mean_squared_error: 1.2534
+720/720 [==============================] - 0s 22us/step - loss: 1.1818 - mean_squared_error: 1.1818 - val_loss: 1.7763 - val_mean_squared_error: 1.7763
+Epoch 22/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1921 - mean_squared_error: 1.1921
+720/720 [==============================] - 0s 22us/step - loss: 1.1538 - mean_squared_error: 1.1538 - val_loss: 1.7753 - val_mean_squared_error: 1.7753
+Epoch 23/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3776 - mean_squared_error: 1.3776
+720/720 [==============================] - 0s 22us/step - loss: 1.1529 - mean_squared_error: 1.1529 - val_loss: 1.7708 - val_mean_squared_error: 1.7708
+Epoch 24/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0562 - mean_squared_error: 1.0562
+720/720 [==============================] - 0s 43us/step - loss: 1.1290 - mean_squared_error: 1.1290 - val_loss: 1.5505 - val_mean_squared_error: 1.5505
+Epoch 25/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8902 - mean_squared_error: 0.8902
+720/720 [==============================] - 0s 26us/step - loss: 1.0826 - mean_squared_error: 1.0826 - val_loss: 0.2133 - val_mean_squared_error: 0.2133
+Epoch 26/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9146 - mean_squared_error: 0.9146
+720/720 [==============================] - 0s 26us/step - loss: 1.0256 - mean_squared_error: 1.0256 - val_loss: 0.6473 - val_mean_squared_error: 0.6473
+Epoch 27/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2698 - mean_squared_error: 1.2698
+720/720 [==============================] - 0s 27us/step - loss: 1.0847 - mean_squared_error: 1.0847 - val_loss: 0.6476 - val_mean_squared_error: 0.6476
+Epoch 28/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0235 - mean_squared_error: 1.0235
+720/720 [==============================] - 0s 22us/step - loss: 1.0087 - mean_squared_error: 1.0087 - val_loss: 0.6491 - val_mean_squared_error: 0.6491
+Epoch 29/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0855 - mean_squared_error: 1.0855
+720/720 [==============================] - 0s 22us/step - loss: 0.9924 - mean_squared_error: 0.9924 - val_loss: 0.6503 - val_mean_squared_error: 0.6503
+Epoch 30/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0667 - mean_squared_error: 1.0667
+720/720 [==============================] - 0s 22us/step - loss: 1.0648 - mean_squared_error: 1.0648 - val_loss: 0.6503 - val_mean_squared_error: 0.6503
+Epoch 31/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8537 - mean_squared_error: 0.8537
+720/720 [==============================] - 0s 43us/step - loss: 1.0209 - mean_squared_error: 1.0209 - val_loss: 0.6489 - val_mean_squared_error: 0.6489
+Epoch 32/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3711 - mean_squared_error: 1.3711
+720/720 [==============================] - 0s 22us/step - loss: 1.0965 - mean_squared_error: 1.0965 - val_loss: 0.6494 - val_mean_squared_error: 0.6494
+Epoch 33/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9237 - mean_squared_error: 0.9237
+720/720 [==============================] - 0s 22us/step - loss: 0.9860 - mean_squared_error: 0.9860 - val_loss: 0.6496 - val_mean_squared_error: 0.6496
+Epoch 34/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7176 - mean_squared_error: 0.7176
+720/720 [==============================] - 0s 22us/step - loss: 1.0975 - mean_squared_error: 1.0975 - val_loss: 0.6521 - val_mean_squared_error: 0.6521
+Epoch 35/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9919 - mean_squared_error: 0.9919
+720/720 [==============================] - 0s 22us/step - loss: 1.0500 - mean_squared_error: 1.0500 - val_loss: 0.6522 - val_mean_squared_error: 0.6522
+Epoch 36/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2594 - mean_squared_error: 1.2594
+720/720 [==============================] - 0s 46us/step - loss: 1.1157 - mean_squared_error: 1.1157 - val_loss: 0.6523 - val_mean_squared_error: 0.6523
+Epoch 37/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8460 - mean_squared_error: 0.8460
+720/720 [==============================] - 0s 7us/step - loss: 0.9246 - mean_squared_error: 0.9246 - val_loss: 0.6531 - val_mean_squared_error: 0.6531
+Epoch 38/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2042 - mean_squared_error: 1.2042
+720/720 [==============================] - 0s 43us/step - loss: 0.9969 - mean_squared_error: 0.9969 - val_loss: 0.6531 - val_mean_squared_error: 0.6531
+Epoch 39/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1101 - mean_squared_error: 1.1101
+720/720 [==============================] - 0s 22us/step - loss: 1.0081 - mean_squared_error: 1.0081 - val_loss: 0.6533 - val_mean_squared_error: 0.6533
+Epoch 40/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0191 - mean_squared_error: 1.0191
+720/720 [==============================] - 0s 22us/step - loss: 1.0095 - mean_squared_error: 1.0095 - val_loss: 0.6536 - val_mean_squared_error: 0.6536
+Epoch 41/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7076 - mean_squared_error: 0.7076
+720/720 [==============================] - 0s 22us/step - loss: 1.0272 - mean_squared_error: 1.0272 - val_loss: 0.6535 - val_mean_squared_error: 0.6535
+Epoch 42/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6956 - mean_squared_error: 0.6956
+720/720 [==============================] - 0s 43us/step - loss: 0.9629 - mean_squared_error: 0.9629 - val_loss: 0.6534 - val_mean_squared_error: 0.6534
+Epoch 43/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9940 - mean_squared_error: 0.9940
+720/720 [==============================] - 0s 22us/step - loss: 1.0550 - mean_squared_error: 1.0550 - val_loss: 0.6542 - val_mean_squared_error: 0.6542
+Epoch 44/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8170 - mean_squared_error: 0.8170
+720/720 [==============================] - 0s 22us/step - loss: 1.0000 - mean_squared_error: 1.0000 - val_loss: 0.6543 - val_mean_squared_error: 0.6543
+Epoch 45/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1376 - mean_squared_error: 1.1376
+720/720 [==============================] - 0s 22us/step - loss: 0.9723 - mean_squared_error: 0.9723 - val_loss: 0.6547 - val_mean_squared_error: 0.6547
+Epoch 46/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4632 - mean_squared_error: 0.4632
+720/720 [==============================] - 0s 46us/step - loss: 0.8907 - mean_squared_error: 0.8907 - val_loss: 0.6545 - val_mean_squared_error: 0.6545
+Epoch 47/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0474 - mean_squared_error: 1.0474
+720/720 [==============================] - 0s 24us/step - loss: 0.9664 - mean_squared_error: 0.9664 - val_loss: 0.6529 - val_mean_squared_error: 0.6529
+Epoch 48/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0508 - mean_squared_error: 1.0508
+720/720 [==============================] - 0s 22us/step - loss: 0.9596 - mean_squared_error: 0.9596 - val_loss: 0.6523 - val_mean_squared_error: 0.6523
+Epoch 49/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9734 - mean_squared_error: 0.9734
+720/720 [==============================] - 0s 22us/step - loss: 0.9661 - mean_squared_error: 0.9661 - val_loss: 0.6524 - val_mean_squared_error: 0.6524
+Epoch 50/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9486 - mean_squared_error: 0.9486
+720/720 [==============================] - 0s 22us/step - loss: 0.9247 - mean_squared_error: 0.9247 - val_loss: 0.6519 - val_mean_squared_error: 0.6519
+Epoch 51/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1271 - mean_squared_error: 1.1271
+720/720 [==============================] - 0s 43us/step - loss: 0.9404 - mean_squared_error: 0.9404 - val_loss: 0.6510 - val_mean_squared_error: 0.6510
+Epoch 52/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1179 - mean_squared_error: 1.1179
+720/720 [==============================] - 0s 22us/step - loss: 0.9218 - mean_squared_error: 0.9218 - val_loss: 0.6503 - val_mean_squared_error: 0.6503
+Epoch 53/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7873 - mean_squared_error: 0.7873
+720/720 [==============================] - 0s 22us/step - loss: 0.8785 - mean_squared_error: 0.8785 - val_loss: 0.6478 - val_mean_squared_error: 0.6478
+Epoch 54/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6691 - mean_squared_error: 0.6691
+720/720 [==============================] - 0s 22us/step - loss: 0.9026 - mean_squared_error: 0.9026 - val_loss: 0.6469 - val_mean_squared_error: 0.6469
+Epoch 55/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7927 - mean_squared_error: 0.7927
+720/720 [==============================] - 0s 43us/step - loss: 0.9119 - mean_squared_error: 0.9119 - val_loss: 0.6466 - val_mean_squared_error: 0.6466
+Epoch 56/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4881 - mean_squared_error: 1.4881
+720/720 [==============================] - 0s 22us/step - loss: 0.9983 - mean_squared_error: 0.9983 - val_loss: 0.6468 - val_mean_squared_error: 0.6468
+Epoch 57/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5324 - mean_squared_error: 0.5324
+720/720 [==============================] - 0s 22us/step - loss: 0.9517 - mean_squared_error: 0.9517 - val_loss: 0.6472 - val_mean_squared_error: 0.6472
+Epoch 58/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8410 - mean_squared_error: 0.8410
+720/720 [==============================] - 0s 22us/step - loss: 0.8856 - mean_squared_error: 0.8856 - val_loss: 0.6478 - val_mean_squared_error: 0.6478
+Epoch 59/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9575 - mean_squared_error: 0.9575
+720/720 [==============================] - 0s 46us/step - loss: 0.8910 - mean_squared_error: 0.8910 - val_loss: 0.6488 - val_mean_squared_error: 0.6488
+Epoch 60/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6211 - mean_squared_error: 0.6211
+720/720 [==============================] - 0s 26us/step - loss: 0.8742 - mean_squared_error: 0.8742 - val_loss: 0.6490 - val_mean_squared_error: 0.6490
+====November 16, 2018 09:53:36 PM====
+====November 16, 2018 09:53:36 PM====
+--------------------------------- Trial 4 of 10---------------------------------
+====November 16, 2018 09:53:36 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_9 (Dropout)          (None, 3)                 0         
+_________________________________________________________________
+dense_9 (Dense)              (None, 10)                40        
+_________________________________________________________________
+dropout_10 (Dropout)         (None, 10)                0         
+_________________________________________________________________
+dense_10 (Dense)             (None, 5)                 55        
+_________________________________________________________________
+dropout_11 (Dropout)         (None, 5)                 0         
+_________________________________________________________________
+dense_11 (Dense)             (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:36 PM====
+Training   - data: (720, 3) labels: (720,)
+Validation - data: (79, 3) labels: (79,)
+Train on 720 samples, validate on 79 samples
+Epoch 1/60
+
+ 32/720 [>.............................] - ETA: 7s - loss: 1.0741 - mean_squared_error: 1.0741
+720/720 [==============================] - 0s 585us/step - loss: 0.7604 - mean_squared_error: 0.7604 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 2/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8146 - mean_squared_error: 0.8146
+720/720 [==============================] - 0s 22us/step - loss: 0.7485 - mean_squared_error: 0.7485 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 3/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5730 - mean_squared_error: 0.5730
+720/720 [==============================] - 0s 22us/step - loss: 0.7489 - mean_squared_error: 0.7489 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 4/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7102 - mean_squared_error: 0.7102
+720/720 [==============================] - 0s 22us/step - loss: 0.6797 - mean_squared_error: 0.6797 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 5/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6091 - mean_squared_error: 0.6091
+720/720 [==============================] - 0s 43us/step - loss: 0.7405 - mean_squared_error: 0.7405 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 6/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5590 - mean_squared_error: 0.5590
+720/720 [==============================] - 0s 32us/step - loss: 0.7053 - mean_squared_error: 0.7053 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 7/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6101 - mean_squared_error: 0.6101
+720/720 [==============================] - 0s 26us/step - loss: 0.6952 - mean_squared_error: 0.6952 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 8/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4693 - mean_squared_error: 0.4693
+720/720 [==============================] - 0s 22us/step - loss: 0.6469 - mean_squared_error: 0.6469 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 9/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6101 - mean_squared_error: 0.6101
+720/720 [==============================] - 0s 34us/step - loss: 0.6477 - mean_squared_error: 0.6477 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 10/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8055 - mean_squared_error: 0.8055
+720/720 [==============================] - 0s 23us/step - loss: 0.5950 - mean_squared_error: 0.5950 - val_loss: 0.7884 - val_mean_squared_error: 0.7884
+Epoch 11/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7560 - mean_squared_error: 0.7560
+720/720 [==============================] - 0s 22us/step - loss: 0.6574 - mean_squared_error: 0.6574 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 12/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9368 - mean_squared_error: 0.9368
+720/720 [==============================] - 0s 22us/step - loss: 0.5943 - mean_squared_error: 0.5943 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 13/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4204 - mean_squared_error: 0.4204
+720/720 [==============================] - 0s 43us/step - loss: 0.5761 - mean_squared_error: 0.5761 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 14/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8284 - mean_squared_error: 0.8284
+720/720 [==============================] - 0s 22us/step - loss: 0.6387 - mean_squared_error: 0.6387 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 15/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5734 - mean_squared_error: 0.5734
+720/720 [==============================] - 0s 22us/step - loss: 0.6261 - mean_squared_error: 0.6261 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 16/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4291 - mean_squared_error: 0.4291
+720/720 [==============================] - 0s 22us/step - loss: 0.5539 - mean_squared_error: 0.5539 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 17/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3311 - mean_squared_error: 0.3311
+720/720 [==============================] - 0s 43us/step - loss: 0.5519 - mean_squared_error: 0.5519 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 18/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3980 - mean_squared_error: 0.3980
+720/720 [==============================] - 0s 22us/step - loss: 0.5518 - mean_squared_error: 0.5518 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 19/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7146 - mean_squared_error: 0.7146
+720/720 [==============================] - 0s 22us/step - loss: 0.5913 - mean_squared_error: 0.5913 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 20/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7383 - mean_squared_error: 0.7383
+720/720 [==============================] - 0s 43us/step - loss: 0.5607 - mean_squared_error: 0.5607 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 21/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4904 - mean_squared_error: 0.4904
+720/720 [==============================] - 0s 22us/step - loss: 0.4874 - mean_squared_error: 0.4874 - val_loss: 0.7883 - val_mean_squared_error: 0.7883
+Epoch 22/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4447 - mean_squared_error: 0.4447
+720/720 [==============================] - 0s 22us/step - loss: 0.5062 - mean_squared_error: 0.5062 - val_loss: 0.7881 - val_mean_squared_error: 0.7881
+Epoch 23/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5836 - mean_squared_error: 0.5836
+720/720 [==============================] - 0s 22us/step - loss: 0.5642 - mean_squared_error: 0.5642 - val_loss: 0.7878 - val_mean_squared_error: 0.7878
+Epoch 24/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4780 - mean_squared_error: 0.4780
+720/720 [==============================] - 0s 43us/step - loss: 0.5586 - mean_squared_error: 0.5586 - val_loss: 0.7873 - val_mean_squared_error: 0.7873
+Epoch 25/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4728 - mean_squared_error: 0.4728
+720/720 [==============================] - 0s 26us/step - loss: 0.4660 - mean_squared_error: 0.4660 - val_loss: 0.7866 - val_mean_squared_error: 0.7866
+Epoch 26/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4165 - mean_squared_error: 0.4165
+720/720 [==============================] - 0s 28us/step - loss: 0.5252 - mean_squared_error: 0.5252 - val_loss: 0.7868 - val_mean_squared_error: 0.7868
+Epoch 27/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4884 - mean_squared_error: 0.4884
+720/720 [==============================] - 0s 15us/step - loss: 0.4258 - mean_squared_error: 0.4258 - val_loss: 0.7870 - val_mean_squared_error: 0.7870
+Epoch 28/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5144 - mean_squared_error: 0.5144
+720/720 [==============================] - 0s 22us/step - loss: 0.4808 - mean_squared_error: 0.4808 - val_loss: 0.7869 - val_mean_squared_error: 0.7869
+Epoch 29/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5320 - mean_squared_error: 0.5320
+720/720 [==============================] - 0s 22us/step - loss: 0.4898 - mean_squared_error: 0.4898 - val_loss: 0.7862 - val_mean_squared_error: 0.7862
+Epoch 30/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5020 - mean_squared_error: 0.5020
+720/720 [==============================] - 0s 43us/step - loss: 0.4606 - mean_squared_error: 0.4606 - val_loss: 0.7852 - val_mean_squared_error: 0.7852
+Epoch 31/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3831 - mean_squared_error: 0.3831
+720/720 [==============================] - 0s 22us/step - loss: 0.4136 - mean_squared_error: 0.4136 - val_loss: 0.7844 - val_mean_squared_error: 0.7844
+Epoch 32/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3175 - mean_squared_error: 0.3175
+720/720 [==============================] - 0s 22us/step - loss: 0.4665 - mean_squared_error: 0.4665 - val_loss: 0.7837 - val_mean_squared_error: 0.7837
+Epoch 33/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2278 - mean_squared_error: 0.2278
+720/720 [==============================] - 0s 22us/step - loss: 0.4354 - mean_squared_error: 0.4354 - val_loss: 0.7831 - val_mean_squared_error: 0.7831
+Epoch 34/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5560 - mean_squared_error: 0.5560
+720/720 [==============================] - 0s 43us/step - loss: 0.4555 - mean_squared_error: 0.4555 - val_loss: 0.7803 - val_mean_squared_error: 0.7803
+Epoch 35/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4139 - mean_squared_error: 0.4139
+720/720 [==============================] - 0s 22us/step - loss: 0.4320 - mean_squared_error: 0.4320 - val_loss: 0.7751 - val_mean_squared_error: 0.7751
+Epoch 36/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5543 - mean_squared_error: 0.5543
+720/720 [==============================] - 0s 38us/step - loss: 0.4560 - mean_squared_error: 0.4560 - val_loss: 0.7661 - val_mean_squared_error: 0.7661
+Epoch 37/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3703 - mean_squared_error: 0.3703
+720/720 [==============================] - 0s 10us/step - loss: 0.4444 - mean_squared_error: 0.4444 - val_loss: 0.7061 - val_mean_squared_error: 0.7061
+Epoch 38/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3293 - mean_squared_error: 0.3293
+720/720 [==============================] - 0s 22us/step - loss: 0.4313 - mean_squared_error: 0.4313 - val_loss: 0.6002 - val_mean_squared_error: 0.6002
+Epoch 39/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5131 - mean_squared_error: 0.5131
+720/720 [==============================] - 0s 22us/step - loss: 0.4368 - mean_squared_error: 0.4368 - val_loss: 0.3041 - val_mean_squared_error: 0.3041
+Epoch 40/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4207 - mean_squared_error: 0.4207
+720/720 [==============================] - 0s 22us/step - loss: 0.3902 - mean_squared_error: 0.3902 - val_loss: 0.3036 - val_mean_squared_error: 0.3036
+Epoch 41/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5145 - mean_squared_error: 0.5145
+720/720 [==============================] - 0s 22us/step - loss: 0.3987 - mean_squared_error: 0.3987 - val_loss: 0.3041 - val_mean_squared_error: 0.3041
+Epoch 42/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4993 - mean_squared_error: 0.4993
+720/720 [==============================] - 0s 22us/step - loss: 0.4080 - mean_squared_error: 0.4080 - val_loss: 0.3035 - val_mean_squared_error: 0.3035
+Epoch 43/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3637 - mean_squared_error: 0.3637
+720/720 [==============================] - 0s 43us/step - loss: 0.3679 - mean_squared_error: 0.3679 - val_loss: 0.3040 - val_mean_squared_error: 0.3040
+Epoch 44/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4557 - mean_squared_error: 0.4557
+720/720 [==============================] - 0s 22us/step - loss: 0.3776 - mean_squared_error: 0.3776 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 45/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3873 - mean_squared_error: 0.3873
+720/720 [==============================] - 0s 22us/step - loss: 0.3744 - mean_squared_error: 0.3744 - val_loss: 0.3034 - val_mean_squared_error: 0.3034
+Epoch 46/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3892 - mean_squared_error: 0.3892
+720/720 [==============================] - 0s 22us/step - loss: 0.3716 - mean_squared_error: 0.3716 - val_loss: 0.3042 - val_mean_squared_error: 0.3042
+Epoch 47/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4913 - mean_squared_error: 0.4913
+720/720 [==============================] - 0s 48us/step - loss: 0.3739 - mean_squared_error: 0.3739 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 48/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3612 - mean_squared_error: 0.3612
+720/720 [==============================] - 0s 27us/step - loss: 0.3441 - mean_squared_error: 0.3441 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 49/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2782 - mean_squared_error: 0.2782
+720/720 [==============================] - 0s 22us/step - loss: 0.3596 - mean_squared_error: 0.3596 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 50/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4084 - mean_squared_error: 0.4084
+720/720 [==============================] - 0s 22us/step - loss: 0.3596 - mean_squared_error: 0.3596 - val_loss: 0.3037 - val_mean_squared_error: 0.3037
+Epoch 51/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2237 - mean_squared_error: 0.2237
+720/720 [==============================] - 0s 22us/step - loss: 0.3683 - mean_squared_error: 0.3683 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 52/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2364 - mean_squared_error: 0.2364
+720/720 [==============================] - 0s 43us/step - loss: 0.3648 - mean_squared_error: 0.3648 - val_loss: 0.3039 - val_mean_squared_error: 0.3039
+Epoch 53/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2529 - mean_squared_error: 0.2529
+720/720 [==============================] - 0s 22us/step - loss: 0.3377 - mean_squared_error: 0.3377 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 54/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2527 - mean_squared_error: 0.2527
+720/720 [==============================] - 0s 22us/step - loss: 0.3223 - mean_squared_error: 0.3223 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 55/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4737 - mean_squared_error: 0.4737
+720/720 [==============================] - 0s 22us/step - loss: 0.3565 - mean_squared_error: 0.3565 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 56/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4307 - mean_squared_error: 0.4307
+720/720 [==============================] - 0s 43us/step - loss: 0.3437 - mean_squared_error: 0.3437 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 57/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4305 - mean_squared_error: 0.4305
+720/720 [==============================] - 0s 22us/step - loss: 0.3262 - mean_squared_error: 0.3262 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 58/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4837 - mean_squared_error: 0.4837
+720/720 [==============================] - 0s 22us/step - loss: 0.3362 - mean_squared_error: 0.3362 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 59/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2585 - mean_squared_error: 0.2585
+720/720 [==============================] - 0s 22us/step - loss: 0.3458 - mean_squared_error: 0.3458 - val_loss: 0.3038 - val_mean_squared_error: 0.3038
+Epoch 60/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4642 - mean_squared_error: 0.4642
+720/720 [==============================] - 0s 48us/step - loss: 0.3152 - mean_squared_error: 0.3152 - val_loss: 0.3037 - val_mean_squared_error: 0.3037
+====November 16, 2018 09:53:38 PM====
+====November 16, 2018 09:53:38 PM====
+--------------------------------- Trial 5 of 10---------------------------------
+====November 16, 2018 09:53:38 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_12 (Dropout)         (None, 3)                 0         
+_________________________________________________________________
+dense_12 (Dense)             (None, 10)                40        
+_________________________________________________________________
+dropout_13 (Dropout)         (None, 10)                0         
+_________________________________________________________________
+dense_13 (Dense)             (None, 5)                 55        
+_________________________________________________________________
+dropout_14 (Dropout)         (None, 5)                 0         
+_________________________________________________________________
+dense_14 (Dense)             (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:38 PM====
+Training   - data: (720, 3) labels: (720,)
+Validation - data: (79, 3) labels: (79,)
+Train on 720 samples, validate on 79 samples
+Epoch 1/60
+
+ 32/720 [>.............................] - ETA: 8s - loss: 0.6425 - mean_squared_error: 0.6425
+720/720 [==============================] - 0s 666us/step - loss: 0.4790 - mean_squared_error: 0.4790 - val_loss: 0.2921 - val_mean_squared_error: 0.2921
+Epoch 2/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3665 - mean_squared_error: 0.3665
+720/720 [==============================] - 0s 30us/step - loss: 0.4242 - mean_squared_error: 0.4242 - val_loss: 0.2824 - val_mean_squared_error: 0.2824
+Epoch 3/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3491 - mean_squared_error: 0.3491
+720/720 [==============================] - 0s 23us/step - loss: 0.3904 - mean_squared_error: 0.3904 - val_loss: 0.2742 - val_mean_squared_error: 0.2742
+Epoch 4/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3342 - mean_squared_error: 0.3342
+720/720 [==============================] - 0s 22us/step - loss: 0.4061 - mean_squared_error: 0.4061 - val_loss: 0.2669 - val_mean_squared_error: 0.2669
+Epoch 5/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3592 - mean_squared_error: 0.3592
+720/720 [==============================] - 0s 30us/step - loss: 0.3861 - mean_squared_error: 0.3861 - val_loss: 0.2602 - val_mean_squared_error: 0.2602
+Epoch 6/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4246 - mean_squared_error: 0.4246
+720/720 [==============================] - 0s 22us/step - loss: 0.3879 - mean_squared_error: 0.3879 - val_loss: 0.2549 - val_mean_squared_error: 0.2549
+Epoch 7/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2888 - mean_squared_error: 0.2888
+720/720 [==============================] - 0s 43us/step - loss: 0.3803 - mean_squared_error: 0.3803 - val_loss: 0.2500 - val_mean_squared_error: 0.2500
+Epoch 8/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3698 - mean_squared_error: 0.3698
+720/720 [==============================] - 0s 22us/step - loss: 0.3475 - mean_squared_error: 0.3475 - val_loss: 0.2460 - val_mean_squared_error: 0.2460
+Epoch 9/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3825 - mean_squared_error: 0.3825
+720/720 [==============================] - 0s 22us/step - loss: 0.3265 - mean_squared_error: 0.3265 - val_loss: 0.2426 - val_mean_squared_error: 0.2426
+Epoch 10/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2544 - mean_squared_error: 0.2544
+720/720 [==============================] - 0s 43us/step - loss: 0.3219 - mean_squared_error: 0.3219 - val_loss: 0.2402 - val_mean_squared_error: 0.2402
+Epoch 11/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3860 - mean_squared_error: 0.3860
+720/720 [==============================] - 0s 22us/step - loss: 0.3179 - mean_squared_error: 0.3179 - val_loss: 0.2375 - val_mean_squared_error: 0.2375
+Epoch 12/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3201 - mean_squared_error: 0.3201
+720/720 [==============================] - 0s 32us/step - loss: 0.3008 - mean_squared_error: 0.3008 - val_loss: 0.2360 - val_mean_squared_error: 0.2360
+Epoch 13/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3475 - mean_squared_error: 0.3475
+720/720 [==============================] - 0s 22us/step - loss: 0.2946 - mean_squared_error: 0.2946 - val_loss: 0.2346 - val_mean_squared_error: 0.2346
+Epoch 14/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2923 - mean_squared_error: 0.2923
+720/720 [==============================] - 0s 43us/step - loss: 0.2841 - mean_squared_error: 0.2841 - val_loss: 0.2337 - val_mean_squared_error: 0.2337
+Epoch 15/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3034 - mean_squared_error: 0.3034
+720/720 [==============================] - 0s 22us/step - loss: 0.2914 - mean_squared_error: 0.2914 - val_loss: 0.2329 - val_mean_squared_error: 0.2329
+Epoch 16/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3589 - mean_squared_error: 0.3589
+720/720 [==============================] - 0s 22us/step - loss: 0.2931 - mean_squared_error: 0.2931 - val_loss: 0.2325 - val_mean_squared_error: 0.2325
+Epoch 17/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2320 - mean_squared_error: 0.2320
+720/720 [==============================] - 0s 22us/step - loss: 0.2883 - mean_squared_error: 0.2883 - val_loss: 0.2322 - val_mean_squared_error: 0.2322
+Epoch 18/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3218 - mean_squared_error: 0.3218
+720/720 [==============================] - 0s 43us/step - loss: 0.2895 - mean_squared_error: 0.2895 - val_loss: 0.2321 - val_mean_squared_error: 0.2321
+Epoch 19/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3644 - mean_squared_error: 0.3644
+720/720 [==============================] - 0s 22us/step - loss: 0.2811 - mean_squared_error: 0.2811 - val_loss: 0.2321 - val_mean_squared_error: 0.2321
+Epoch 20/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2836 - mean_squared_error: 0.2836
+720/720 [==============================] - 0s 22us/step - loss: 0.2772 - mean_squared_error: 0.2772 - val_loss: 0.2321 - val_mean_squared_error: 0.2321
+Epoch 21/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2878 - mean_squared_error: 0.2878
+720/720 [==============================] - 0s 22us/step - loss: 0.2817 - mean_squared_error: 0.2817 - val_loss: 0.2323 - val_mean_squared_error: 0.2323
+Epoch 22/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3622 - mean_squared_error: 0.3622
+720/720 [==============================] - 0s 44us/step - loss: 0.2890 - mean_squared_error: 0.2890 - val_loss: 0.2324 - val_mean_squared_error: 0.2324
+Epoch 23/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2863 - mean_squared_error: 0.2863
+720/720 [==============================] - 0s 17us/step - loss: 0.2748 - mean_squared_error: 0.2748 - val_loss: 0.2325 - val_mean_squared_error: 0.2325
+Epoch 24/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2144 - mean_squared_error: 0.2144
+720/720 [==============================] - 0s 22us/step - loss: 0.2708 - mean_squared_error: 0.2708 - val_loss: 0.2327 - val_mean_squared_error: 0.2327
+Epoch 25/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.1679 - mean_squared_error: 0.1679
+720/720 [==============================] - 0s 43us/step - loss: 0.2713 - mean_squared_error: 0.2713 - val_loss: 0.2329 - val_mean_squared_error: 0.2329
+Epoch 26/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2854 - mean_squared_error: 0.2854
+720/720 [==============================] - 0s 22us/step - loss: 0.2665 - mean_squared_error: 0.2665 - val_loss: 0.2330 - val_mean_squared_error: 0.2330
+Epoch 27/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3084 - mean_squared_error: 0.3084
+720/720 [==============================] - 0s 22us/step - loss: 0.2871 - mean_squared_error: 0.2871 - val_loss: 0.2331 - val_mean_squared_error: 0.2331
+Epoch 28/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3190 - mean_squared_error: 0.3190
+720/720 [==============================] - 0s 22us/step - loss: 0.2677 - mean_squared_error: 0.2677 - val_loss: 0.2333 - val_mean_squared_error: 0.2333
+Epoch 29/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3587 - mean_squared_error: 0.3587
+720/720 [==============================] - 0s 44us/step - loss: 0.2735 - mean_squared_error: 0.2735 - val_loss: 0.2333 - val_mean_squared_error: 0.2333
+Epoch 30/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3193 - mean_squared_error: 0.3193
+720/720 [==============================] - 0s 15us/step - loss: 0.2717 - mean_squared_error: 0.2717 - val_loss: 0.2336 - val_mean_squared_error: 0.2336
+Epoch 31/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2476 - mean_squared_error: 0.2476
+720/720 [==============================] - 0s 22us/step - loss: 0.2730 - mean_squared_error: 0.2730 - val_loss: 0.2338 - val_mean_squared_error: 0.2338
+Epoch 32/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.1805 - mean_squared_error: 0.1805
+720/720 [==============================] - 0s 45us/step - loss: 0.2713 - mean_squared_error: 0.2713 - val_loss: 0.2338 - val_mean_squared_error: 0.2338
+Epoch 33/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2609 - mean_squared_error: 0.2609
+720/720 [==============================] - 0s 28us/step - loss: 0.2620 - mean_squared_error: 0.2620 - val_loss: 0.2339 - val_mean_squared_error: 0.2339
+Epoch 34/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2027 - mean_squared_error: 0.2027
+720/720 [==============================] - 0s 7us/step - loss: 0.2720 - mean_squared_error: 0.2720 - val_loss: 0.2341 - val_mean_squared_error: 0.2341
+Epoch 35/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2401 - mean_squared_error: 0.2401
+720/720 [==============================] - 0s 43us/step - loss: 0.2683 - mean_squared_error: 0.2683 - val_loss: 0.2344 - val_mean_squared_error: 0.2344
+Epoch 36/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2373 - mean_squared_error: 0.2373
+720/720 [==============================] - 0s 22us/step - loss: 0.2674 - mean_squared_error: 0.2674 - val_loss: 0.2344 - val_mean_squared_error: 0.2344
+Epoch 37/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2190 - mean_squared_error: 0.2190
+720/720 [==============================] - 0s 22us/step - loss: 0.2644 - mean_squared_error: 0.2644 - val_loss: 0.2346 - val_mean_squared_error: 0.2346
+Epoch 38/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3117 - mean_squared_error: 0.3117
+720/720 [==============================] - 0s 43us/step - loss: 0.2692 - mean_squared_error: 0.2692 - val_loss: 0.2345 - val_mean_squared_error: 0.2345
+Epoch 39/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.1930 - mean_squared_error: 0.1930
+720/720 [==============================] - 0s 22us/step - loss: 0.2658 - mean_squared_error: 0.2658 - val_loss: 0.2346 - val_mean_squared_error: 0.2346
+Epoch 40/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3267 - mean_squared_error: 0.3267
+720/720 [==============================] - 0s 22us/step - loss: 0.2652 - mean_squared_error: 0.2652 - val_loss: 0.2346 - val_mean_squared_error: 0.2346
+Epoch 41/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.1460 - mean_squared_error: 0.1460
+720/720 [==============================] - 0s 22us/step - loss: 0.2661 - mean_squared_error: 0.2661 - val_loss: 0.2348 - val_mean_squared_error: 0.2348
+Epoch 42/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3473 - mean_squared_error: 0.3473
+720/720 [==============================] - 0s 47us/step - loss: 0.2589 - mean_squared_error: 0.2589 - val_loss: 0.2350 - val_mean_squared_error: 0.2350
+Epoch 43/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2550 - mean_squared_error: 0.2550
+720/720 [==============================] - 0s 21us/step - loss: 0.2593 - mean_squared_error: 0.2593 - val_loss: 0.2349 - val_mean_squared_error: 0.2349
+Epoch 44/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2008 - mean_squared_error: 0.2008
+720/720 [==============================] - 0s 22us/step - loss: 0.2624 - mean_squared_error: 0.2624 - val_loss: 0.2348 - val_mean_squared_error: 0.2348
+Epoch 45/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2842 - mean_squared_error: 0.2842
+720/720 [==============================] - 0s 22us/step - loss: 0.2596 - mean_squared_error: 0.2596 - val_loss: 0.2347 - val_mean_squared_error: 0.2347
+Epoch 46/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2549 - mean_squared_error: 0.2549
+720/720 [==============================] - 0s 43us/step - loss: 0.2588 - mean_squared_error: 0.2588 - val_loss: 0.2344 - val_mean_squared_error: 0.2344
+Epoch 47/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2739 - mean_squared_error: 0.2739
+720/720 [==============================] - 0s 22us/step - loss: 0.2668 - mean_squared_error: 0.2668 - val_loss: 0.2346 - val_mean_squared_error: 0.2346
+Epoch 48/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2101 - mean_squared_error: 0.2101
+720/720 [==============================] - 0s 22us/step - loss: 0.2609 - mean_squared_error: 0.2609 - val_loss: 0.2345 - val_mean_squared_error: 0.2345
+Epoch 49/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.1651 - mean_squared_error: 0.1651
+720/720 [==============================] - 0s 43us/step - loss: 0.2580 - mean_squared_error: 0.2580 - val_loss: 0.2345 - val_mean_squared_error: 0.2345
+Epoch 50/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2197 - mean_squared_error: 0.2197
+720/720 [==============================] - 0s 22us/step - loss: 0.2602 - mean_squared_error: 0.2602 - val_loss: 0.2348 - val_mean_squared_error: 0.2348
+Epoch 51/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3046 - mean_squared_error: 0.3046
+720/720 [==============================] - 0s 22us/step - loss: 0.2603 - mean_squared_error: 0.2603 - val_loss: 0.2349 - val_mean_squared_error: 0.2349
+Epoch 52/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2060 - mean_squared_error: 0.2060
+720/720 [==============================] - 0s 22us/step - loss: 0.2619 - mean_squared_error: 0.2619 - val_loss: 0.2348 - val_mean_squared_error: 0.2348
+Epoch 53/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3656 - mean_squared_error: 0.3656
+720/720 [==============================] - 0s 43us/step - loss: 0.2624 - mean_squared_error: 0.2624 - val_loss: 0.2347 - val_mean_squared_error: 0.2347
+Epoch 54/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2224 - mean_squared_error: 0.2224
+720/720 [==============================] - 0s 22us/step - loss: 0.2600 - mean_squared_error: 0.2600 - val_loss: 0.2347 - val_mean_squared_error: 0.2347
+Epoch 55/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2362 - mean_squared_error: 0.2362
+720/720 [==============================] - 0s 35us/step - loss: 0.2596 - mean_squared_error: 0.2596 - val_loss: 0.2348 - val_mean_squared_error: 0.2348
+Epoch 56/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2378 - mean_squared_error: 0.2378
+720/720 [==============================] - 0s 22us/step - loss: 0.2608 - mean_squared_error: 0.2608 - val_loss: 0.2347 - val_mean_squared_error: 0.2347
+Epoch 57/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3092 - mean_squared_error: 0.3092
+720/720 [==============================] - 0s 22us/step - loss: 0.2627 - mean_squared_error: 0.2627 - val_loss: 0.2346 - val_mean_squared_error: 0.2346
+Epoch 58/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3254 - mean_squared_error: 0.3254
+720/720 [==============================] - 0s 43us/step - loss: 0.2604 - mean_squared_error: 0.2604 - val_loss: 0.2345 - val_mean_squared_error: 0.2345
+Epoch 59/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5505 - mean_squared_error: 0.5505
+720/720 [==============================] - 0s 22us/step - loss: 0.2625 - mean_squared_error: 0.2625 - val_loss: 0.2346 - val_mean_squared_error: 0.2346
+Epoch 60/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3318 - mean_squared_error: 0.3318
+720/720 [==============================] - 0s 22us/step - loss: 0.2574 - mean_squared_error: 0.2574 - val_loss: 0.2348 - val_mean_squared_error: 0.2348
+====November 16, 2018 09:53:40 PM====
+====November 16, 2018 09:53:40 PM====
+--------------------------------- Trial 6 of 10---------------------------------
+====November 16, 2018 09:53:40 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_15 (Dropout)         (None, 3)                 0         
+_________________________________________________________________
+dense_15 (Dense)             (None, 10)                40        
+_________________________________________________________________
+dropout_16 (Dropout)         (None, 10)                0         
+_________________________________________________________________
+dense_16 (Dense)             (None, 5)                 55        
+_________________________________________________________________
+dropout_17 (Dropout)         (None, 5)                 0         
+_________________________________________________________________
+dense_17 (Dense)             (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:41 PM====
+Training   - data: (720, 3) labels: (720,)
+Validation - data: (79, 3) labels: (79,)
+Train on 720 samples, validate on 79 samples
+Epoch 1/60
+
+ 32/720 [>.............................] - ETA: 9s - loss: 0.8507 - mean_squared_error: 0.8507
+720/720 [==============================] - 1s 703us/step - loss: 1.1022 - mean_squared_error: 1.1022 - val_loss: 1.9384 - val_mean_squared_error: 1.9384
+Epoch 2/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1600 - mean_squared_error: 1.1600
+720/720 [==============================] - 0s 43us/step - loss: 1.1346 - mean_squared_error: 1.1346 - val_loss: 1.9314 - val_mean_squared_error: 1.9314
+Epoch 3/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0041 - mean_squared_error: 1.0041
+720/720 [==============================] - 0s 22us/step - loss: 1.0816 - mean_squared_error: 1.0816 - val_loss: 1.9237 - val_mean_squared_error: 1.9237
+Epoch 4/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2278 - mean_squared_error: 1.2278
+720/720 [==============================] - 0s 43us/step - loss: 1.1288 - mean_squared_error: 1.1288 - val_loss: 1.9149 - val_mean_squared_error: 1.9149
+Epoch 5/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6130 - mean_squared_error: 0.6130
+720/720 [==============================] - 0s 22us/step - loss: 1.1320 - mean_squared_error: 1.1320 - val_loss: 1.8950 - val_mean_squared_error: 1.8950
+Epoch 6/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3180 - mean_squared_error: 1.3180
+720/720 [==============================] - 0s 22us/step - loss: 1.0963 - mean_squared_error: 1.0963 - val_loss: 1.8515 - val_mean_squared_error: 1.8515
+Epoch 7/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0067 - mean_squared_error: 1.0067
+720/720 [==============================] - 0s 43us/step - loss: 1.0252 - mean_squared_error: 1.0252 - val_loss: 1.8433 - val_mean_squared_error: 1.8433
+Epoch 8/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2367 - mean_squared_error: 1.2367
+720/720 [==============================] - 0s 22us/step - loss: 1.0820 - mean_squared_error: 1.0820 - val_loss: 1.7917 - val_mean_squared_error: 1.7917
+Epoch 9/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0472 - mean_squared_error: 1.0472
+720/720 [==============================] - 0s 22us/step - loss: 1.0172 - mean_squared_error: 1.0172 - val_loss: 1.7149 - val_mean_squared_error: 1.7149
+Epoch 10/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8933 - mean_squared_error: 0.8933
+720/720 [==============================] - 0s 22us/step - loss: 1.0458 - mean_squared_error: 1.0458 - val_loss: 1.4151 - val_mean_squared_error: 1.4151
+Epoch 11/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3573 - mean_squared_error: 1.3573
+720/720 [==============================] - 0s 43us/step - loss: 0.9352 - mean_squared_error: 0.9352 - val_loss: 0.3285 - val_mean_squared_error: 0.3285
+Epoch 12/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9127 - mean_squared_error: 0.9127
+720/720 [==============================] - 0s 22us/step - loss: 0.8240 - mean_squared_error: 0.8240 - val_loss: 0.2897 - val_mean_squared_error: 0.2897
+Epoch 13/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6365 - mean_squared_error: 0.6365
+720/720 [==============================] - 0s 22us/step - loss: 0.7963 - mean_squared_error: 0.7963 - val_loss: 0.3492 - val_mean_squared_error: 0.3492
+Epoch 14/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6368 - mean_squared_error: 0.6368
+720/720 [==============================] - 0s 43us/step - loss: 0.8309 - mean_squared_error: 0.8309 - val_loss: 0.3785 - val_mean_squared_error: 0.3785
+Epoch 15/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7445 - mean_squared_error: 0.7445
+720/720 [==============================] - 0s 22us/step - loss: 0.8173 - mean_squared_error: 0.8173 - val_loss: 0.2910 - val_mean_squared_error: 0.2910
+Epoch 16/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4818 - mean_squared_error: 0.4818
+720/720 [==============================] - 0s 37us/step - loss: 0.7801 - mean_squared_error: 0.7801 - val_loss: 0.2816 - val_mean_squared_error: 0.2816
+Epoch 17/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6846 - mean_squared_error: 0.6846
+720/720 [==============================] - 0s 28us/step - loss: 0.7399 - mean_squared_error: 0.7399 - val_loss: 0.4316 - val_mean_squared_error: 0.4316
+Epoch 18/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0561 - mean_squared_error: 1.0561
+720/720 [==============================] - 0s 26us/step - loss: 0.7955 - mean_squared_error: 0.7955 - val_loss: 0.5017 - val_mean_squared_error: 0.5017
+Epoch 19/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8393 - mean_squared_error: 0.8393
+720/720 [==============================] - 0s 22us/step - loss: 0.7606 - mean_squared_error: 0.7606 - val_loss: 0.5063 - val_mean_squared_error: 0.5063
+Epoch 20/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9821 - mean_squared_error: 0.9821
+720/720 [==============================] - 0s 22us/step - loss: 0.7645 - mean_squared_error: 0.7645 - val_loss: 0.4873 - val_mean_squared_error: 0.4873
+Epoch 21/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5978 - mean_squared_error: 0.5978
+720/720 [==============================] - 0s 43us/step - loss: 0.7007 - mean_squared_error: 0.7007 - val_loss: 0.4528 - val_mean_squared_error: 0.4528
+Epoch 22/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7492 - mean_squared_error: 0.7492
+720/720 [==============================] - 0s 22us/step - loss: 0.7578 - mean_squared_error: 0.7578 - val_loss: 0.3466 - val_mean_squared_error: 0.3466
+Epoch 23/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7363 - mean_squared_error: 0.7363
+720/720 [==============================] - 0s 22us/step - loss: 0.7227 - mean_squared_error: 0.7227 - val_loss: 0.2855 - val_mean_squared_error: 0.2855
+Epoch 24/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5078 - mean_squared_error: 0.5078
+720/720 [==============================] - 0s 43us/step - loss: 0.6968 - mean_squared_error: 0.6968 - val_loss: 0.2773 - val_mean_squared_error: 0.2773
+Epoch 25/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5350 - mean_squared_error: 0.5350
+720/720 [==============================] - 0s 22us/step - loss: 0.8086 - mean_squared_error: 0.8086 - val_loss: 0.2763 - val_mean_squared_error: 0.2763
+Epoch 26/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9021 - mean_squared_error: 0.9021
+720/720 [==============================] - 0s 22us/step - loss: 0.7464 - mean_squared_error: 0.7464 - val_loss: 0.2888 - val_mean_squared_error: 0.2888
+Epoch 27/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5163 - mean_squared_error: 0.5163
+720/720 [==============================] - 0s 26us/step - loss: 0.7740 - mean_squared_error: 0.7740 - val_loss: 0.3632 - val_mean_squared_error: 0.3632
+Epoch 28/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8451 - mean_squared_error: 0.8451
+720/720 [==============================] - 0s 43us/step - loss: 0.7523 - mean_squared_error: 0.7523 - val_loss: 0.3021 - val_mean_squared_error: 0.3021
+Epoch 29/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8026 - mean_squared_error: 0.8026
+720/720 [==============================] - 0s 22us/step - loss: 0.7694 - mean_squared_error: 0.7694 - val_loss: 0.2804 - val_mean_squared_error: 0.2804
+Epoch 30/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6618 - mean_squared_error: 0.6618
+720/720 [==============================] - 0s 22us/step - loss: 0.7448 - mean_squared_error: 0.7448 - val_loss: 0.3412 - val_mean_squared_error: 0.3412
+Epoch 31/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9033 - mean_squared_error: 0.9033
+720/720 [==============================] - 0s 22us/step - loss: 0.7770 - mean_squared_error: 0.7770 - val_loss: 0.2852 - val_mean_squared_error: 0.2852
+Epoch 32/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9018 - mean_squared_error: 0.9018
+720/720 [==============================] - 0s 43us/step - loss: 0.7426 - mean_squared_error: 0.7426 - val_loss: 0.2744 - val_mean_squared_error: 0.2744
+Epoch 33/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8277 - mean_squared_error: 0.8277
+720/720 [==============================] - 0s 22us/step - loss: 0.7205 - mean_squared_error: 0.7205 - val_loss: 0.3246 - val_mean_squared_error: 0.3246
+Epoch 34/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6882 - mean_squared_error: 0.6882
+720/720 [==============================] - 0s 22us/step - loss: 0.6861 - mean_squared_error: 0.6861 - val_loss: 0.2737 - val_mean_squared_error: 0.2737
+Epoch 35/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0320 - mean_squared_error: 1.0320
+720/720 [==============================] - 0s 43us/step - loss: 0.7174 - mean_squared_error: 0.7174 - val_loss: 0.2740 - val_mean_squared_error: 0.2740
+Epoch 36/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7285 - mean_squared_error: 0.7285
+720/720 [==============================] - 0s 32us/step - loss: 0.7082 - mean_squared_error: 0.7082 - val_loss: 0.2710 - val_mean_squared_error: 0.2710
+Epoch 37/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8121 - mean_squared_error: 0.8121
+720/720 [==============================] - 0s 21us/step - loss: 0.7149 - mean_squared_error: 0.7149 - val_loss: 0.2932 - val_mean_squared_error: 0.2932
+Epoch 38/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5580 - mean_squared_error: 0.5580
+720/720 [==============================] - 0s 22us/step - loss: 0.7521 - mean_squared_error: 0.7521 - val_loss: 0.3754 - val_mean_squared_error: 0.3754
+Epoch 39/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6396 - mean_squared_error: 0.6396
+720/720 [==============================] - 0s 43us/step - loss: 0.7058 - mean_squared_error: 0.7058 - val_loss: 0.2728 - val_mean_squared_error: 0.2728
+Epoch 40/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4697 - mean_squared_error: 0.4697
+720/720 [==============================] - 0s 22us/step - loss: 0.6801 - mean_squared_error: 0.6801 - val_loss: 0.2708 - val_mean_squared_error: 0.2708
+Epoch 41/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8288 - mean_squared_error: 0.8288
+720/720 [==============================] - 0s 22us/step - loss: 0.7487 - mean_squared_error: 0.7487 - val_loss: 0.3376 - val_mean_squared_error: 0.3376
+Epoch 42/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0479 - mean_squared_error: 1.0479
+720/720 [==============================] - 0s 22us/step - loss: 0.7336 - mean_squared_error: 0.7336 - val_loss: 0.2830 - val_mean_squared_error: 0.2830
+Epoch 43/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9460 - mean_squared_error: 0.9460
+720/720 [==============================] - 0s 43us/step - loss: 0.7736 - mean_squared_error: 0.7736 - val_loss: 0.2793 - val_mean_squared_error: 0.2793
+Epoch 44/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7702 - mean_squared_error: 0.7702
+720/720 [==============================] - 0s 22us/step - loss: 0.7286 - mean_squared_error: 0.7286 - val_loss: 0.2697 - val_mean_squared_error: 0.2697
+Epoch 45/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4856 - mean_squared_error: 0.4856
+720/720 [==============================] - 0s 22us/step - loss: 0.7496 - mean_squared_error: 0.7496 - val_loss: 0.2703 - val_mean_squared_error: 0.2703
+Epoch 46/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6797 - mean_squared_error: 0.6797
+720/720 [==============================] - 0s 43us/step - loss: 0.7312 - mean_squared_error: 0.7312 - val_loss: 0.2721 - val_mean_squared_error: 0.2721
+Epoch 47/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7574 - mean_squared_error: 0.7574
+720/720 [==============================] - 0s 29us/step - loss: 0.7178 - mean_squared_error: 0.7178 - val_loss: 0.2712 - val_mean_squared_error: 0.2712
+Epoch 48/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7883 - mean_squared_error: 0.7883
+720/720 [==============================] - 0s 25us/step - loss: 0.7084 - mean_squared_error: 0.7084 - val_loss: 0.2739 - val_mean_squared_error: 0.2739
+Epoch 49/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7688 - mean_squared_error: 0.7688
+720/720 [==============================] - 0s 29us/step - loss: 0.6797 - mean_squared_error: 0.6797 - val_loss: 0.2741 - val_mean_squared_error: 0.2741
+Epoch 50/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7284 - mean_squared_error: 0.7284
+720/720 [==============================] - 0s 22us/step - loss: 0.6557 - mean_squared_error: 0.6557 - val_loss: 0.2688 - val_mean_squared_error: 0.2688
+Epoch 51/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7364 - mean_squared_error: 0.7364
+720/720 [==============================] - 0s 22us/step - loss: 0.6344 - mean_squared_error: 0.6344 - val_loss: 0.2776 - val_mean_squared_error: 0.2776
+Epoch 52/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5812 - mean_squared_error: 0.5812
+720/720 [==============================] - 0s 43us/step - loss: 0.7059 - mean_squared_error: 0.7059 - val_loss: 0.2836 - val_mean_squared_error: 0.2836
+Epoch 53/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7346 - mean_squared_error: 0.7346
+720/720 [==============================] - 0s 22us/step - loss: 0.7176 - mean_squared_error: 0.7176 - val_loss: 0.3867 - val_mean_squared_error: 0.3867
+Epoch 54/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5250 - mean_squared_error: 0.5250
+720/720 [==============================] - 0s 22us/step - loss: 0.7328 - mean_squared_error: 0.7328 - val_loss: 0.3496 - val_mean_squared_error: 0.3496
+Epoch 55/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4564 - mean_squared_error: 0.4564
+720/720 [==============================] - 0s 22us/step - loss: 0.7362 - mean_squared_error: 0.7362 - val_loss: 0.2737 - val_mean_squared_error: 0.2737
+Epoch 56/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6682 - mean_squared_error: 0.6682
+720/720 [==============================] - 0s 47us/step - loss: 0.6766 - mean_squared_error: 0.6766 - val_loss: 0.2669 - val_mean_squared_error: 0.2669
+Epoch 57/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6972 - mean_squared_error: 0.6972
+720/720 [==============================] - 0s 28us/step - loss: 0.7390 - mean_squared_error: 0.7390 - val_loss: 0.2803 - val_mean_squared_error: 0.2803
+Epoch 58/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7193 - mean_squared_error: 0.7193
+720/720 [==============================] - 0s 8us/step - loss: 0.7536 - mean_squared_error: 0.7536 - val_loss: 0.2904 - val_mean_squared_error: 0.2904
+Epoch 59/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0662 - mean_squared_error: 1.0662
+720/720 [==============================] - 0s 43us/step - loss: 0.7779 - mean_squared_error: 0.7779 - val_loss: 0.3168 - val_mean_squared_error: 0.3168
+Epoch 60/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4512 - mean_squared_error: 0.4512
+720/720 [==============================] - 0s 22us/step - loss: 0.7295 - mean_squared_error: 0.7295 - val_loss: 0.3626 - val_mean_squared_error: 0.3626
+====November 16, 2018 09:53:43 PM====
+====November 16, 2018 09:53:43 PM====
+--------------------------------- Trial 7 of 10---------------------------------
+====November 16, 2018 09:53:43 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_18 (Dropout)         (None, 3)                 0         
+_________________________________________________________________
+dense_18 (Dense)             (None, 10)                40        
+_________________________________________________________________
+dropout_19 (Dropout)         (None, 10)                0         
+_________________________________________________________________
+dense_19 (Dense)             (None, 5)                 55        
+_________________________________________________________________
+dropout_20 (Dropout)         (None, 5)                 0         
+_________________________________________________________________
+dense_20 (Dense)             (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:43 PM====
+Training   - data: (720, 3) labels: (720,)
+Validation - data: (79, 3) labels: (79,)
+Train on 720 samples, validate on 79 samples
+Epoch 1/60
+
+ 32/720 [>.............................] - ETA: 9s - loss: 1.3448 - mean_squared_error: 1.3448
+720/720 [==============================] - 1s 763us/step - loss: 1.1512 - mean_squared_error: 1.1512 - val_loss: 1.8548 - val_mean_squared_error: 1.8548
+Epoch 2/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1721 - mean_squared_error: 1.1721
+720/720 [==============================] - 0s 43us/step - loss: 1.2039 - mean_squared_error: 1.2039 - val_loss: 1.8546 - val_mean_squared_error: 1.8546
+Epoch 3/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0677 - mean_squared_error: 1.0677
+720/720 [==============================] - 0s 22us/step - loss: 1.1954 - mean_squared_error: 1.1954 - val_loss: 1.8543 - val_mean_squared_error: 1.8543
+Epoch 4/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6922 - mean_squared_error: 0.6922
+720/720 [==============================] - 0s 22us/step - loss: 1.1345 - mean_squared_error: 1.1345 - val_loss: 1.8539 - val_mean_squared_error: 1.8539
+Epoch 5/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9883 - mean_squared_error: 0.9883
+720/720 [==============================] - 0s 43us/step - loss: 1.1548 - mean_squared_error: 1.1548 - val_loss: 1.8536 - val_mean_squared_error: 1.8536
+Epoch 6/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1243 - mean_squared_error: 1.1243
+720/720 [==============================] - 0s 22us/step - loss: 1.0871 - mean_squared_error: 1.0871 - val_loss: 1.8519 - val_mean_squared_error: 1.8519
+Epoch 7/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3384 - mean_squared_error: 1.3384
+720/720 [==============================] - 0s 22us/step - loss: 1.0787 - mean_squared_error: 1.0787 - val_loss: 1.8506 - val_mean_squared_error: 1.8506
+Epoch 8/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4768 - mean_squared_error: 1.4768
+720/720 [==============================] - 0s 43us/step - loss: 1.1076 - mean_squared_error: 1.1076 - val_loss: 1.8480 - val_mean_squared_error: 1.8480
+Epoch 9/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3945 - mean_squared_error: 1.3945
+720/720 [==============================] - 0s 29us/step - loss: 1.0835 - mean_squared_error: 1.0835 - val_loss: 1.8408 - val_mean_squared_error: 1.8408
+Epoch 10/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7303 - mean_squared_error: 0.7303
+720/720 [==============================] - 0s 28us/step - loss: 1.0950 - mean_squared_error: 1.0950 - val_loss: 1.8280 - val_mean_squared_error: 1.8280
+Epoch 11/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1717 - mean_squared_error: 1.1717
+720/720 [==============================] - 0s 11us/step - loss: 1.0999 - mean_squared_error: 1.0999 - val_loss: 1.7550 - val_mean_squared_error: 1.7550
+Epoch 12/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1912 - mean_squared_error: 1.1912
+720/720 [==============================] - 0s 43us/step - loss: 1.0564 - mean_squared_error: 1.0564 - val_loss: 0.3730 - val_mean_squared_error: 0.3730
+Epoch 13/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1020 - mean_squared_error: 1.1020
+720/720 [==============================] - 0s 22us/step - loss: 0.9844 - mean_squared_error: 0.9844 - val_loss: 0.7895 - val_mean_squared_error: 0.7895
+Epoch 14/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8833 - mean_squared_error: 0.8833
+720/720 [==============================] - 0s 22us/step - loss: 1.0035 - mean_squared_error: 1.0035 - val_loss: 0.7938 - val_mean_squared_error: 0.7938
+Epoch 15/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7238 - mean_squared_error: 0.7238
+720/720 [==============================] - 0s 43us/step - loss: 0.9313 - mean_squared_error: 0.9313 - val_loss: 0.7938 - val_mean_squared_error: 0.7938
+Epoch 16/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8239 - mean_squared_error: 0.8239
+720/720 [==============================] - 0s 22us/step - loss: 0.8742 - mean_squared_error: 0.8742 - val_loss: 0.7938 - val_mean_squared_error: 0.7938
+Epoch 17/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1217 - mean_squared_error: 1.1217
+720/720 [==============================] - 0s 22us/step - loss: 0.9522 - mean_squared_error: 0.9522 - val_loss: 0.7938 - val_mean_squared_error: 0.7938
+Epoch 18/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9283 - mean_squared_error: 0.9283
+720/720 [==============================] - 0s 43us/step - loss: 0.9663 - mean_squared_error: 0.9663 - val_loss: 0.7937 - val_mean_squared_error: 0.7937
+Epoch 19/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8955 - mean_squared_error: 0.8955
+720/720 [==============================] - 0s 22us/step - loss: 0.9297 - mean_squared_error: 0.9297 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 20/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8016 - mean_squared_error: 0.8016
+720/720 [==============================] - 0s 32us/step - loss: 0.8411 - mean_squared_error: 0.8411 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 21/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7376 - mean_squared_error: 0.7376
+720/720 [==============================] - 0s 22us/step - loss: 0.8684 - mean_squared_error: 0.8684 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 22/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6480 - mean_squared_error: 0.6480
+720/720 [==============================] - 0s 22us/step - loss: 0.7739 - mean_squared_error: 0.7739 - val_loss: 0.7934 - val_mean_squared_error: 0.7934
+Epoch 23/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7064 - mean_squared_error: 0.7064
+720/720 [==============================] - 0s 43us/step - loss: 0.8009 - mean_squared_error: 0.8009 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 24/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2338 - mean_squared_error: 1.2338
+720/720 [==============================] - 0s 22us/step - loss: 0.7678 - mean_squared_error: 0.7678 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 25/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7343 - mean_squared_error: 0.7343
+720/720 [==============================] - 0s 22us/step - loss: 0.7842 - mean_squared_error: 0.7842 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 26/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8821 - mean_squared_error: 0.8821
+720/720 [==============================] - 0s 43us/step - loss: 0.7529 - mean_squared_error: 0.7529 - val_loss: 0.7934 - val_mean_squared_error: 0.7934
+Epoch 27/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7545 - mean_squared_error: 0.7545
+720/720 [==============================] - 0s 22us/step - loss: 0.7725 - mean_squared_error: 0.7725 - val_loss: 0.7934 - val_mean_squared_error: 0.7934
+Epoch 28/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9804 - mean_squared_error: 0.9804
+720/720 [==============================] - 0s 22us/step - loss: 0.7614 - mean_squared_error: 0.7614 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 29/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5732 - mean_squared_error: 0.5732
+720/720 [==============================] - 0s 46us/step - loss: 0.7119 - mean_squared_error: 0.7119 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 30/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8861 - mean_squared_error: 0.8861
+720/720 [==============================] - 0s 21us/step - loss: 0.7596 - mean_squared_error: 0.7596 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 31/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8995 - mean_squared_error: 0.8995
+720/720 [==============================] - 0s 22us/step - loss: 0.7286 - mean_squared_error: 0.7286 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 32/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5497 - mean_squared_error: 0.5497
+720/720 [==============================] - 0s 43us/step - loss: 0.6805 - mean_squared_error: 0.6805 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 33/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8509 - mean_squared_error: 0.8509
+720/720 [==============================] - 0s 22us/step - loss: 0.6990 - mean_squared_error: 0.6990 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 34/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6500 - mean_squared_error: 0.6500
+720/720 [==============================] - 0s 22us/step - loss: 0.6992 - mean_squared_error: 0.6992 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 35/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5398 - mean_squared_error: 0.5398
+720/720 [==============================] - 0s 22us/step - loss: 0.7062 - mean_squared_error: 0.7062 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 36/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6034 - mean_squared_error: 0.6034
+720/720 [==============================] - 0s 43us/step - loss: 0.6784 - mean_squared_error: 0.6784 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 37/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5682 - mean_squared_error: 0.5682
+720/720 [==============================] - 0s 22us/step - loss: 0.6962 - mean_squared_error: 0.6962 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 38/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6213 - mean_squared_error: 0.6213
+720/720 [==============================] - 0s 22us/step - loss: 0.6493 - mean_squared_error: 0.6493 - val_loss: 0.7936 - val_mean_squared_error: 0.7936
+Epoch 39/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4988 - mean_squared_error: 0.4988
+720/720 [==============================] - 0s 43us/step - loss: 0.6793 - mean_squared_error: 0.6793 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 40/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6490 - mean_squared_error: 0.6490
+720/720 [==============================] - 0s 22us/step - loss: 0.6531 - mean_squared_error: 0.6531 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 41/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5013 - mean_squared_error: 0.5013
+720/720 [==============================] - 0s 22us/step - loss: 0.6914 - mean_squared_error: 0.6914 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 42/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5328 - mean_squared_error: 0.5328
+720/720 [==============================] - 0s 31us/step - loss: 0.6162 - mean_squared_error: 0.6162 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 43/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6870 - mean_squared_error: 0.6870
+720/720 [==============================] - 0s 22us/step - loss: 0.6400 - mean_squared_error: 0.6400 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 44/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4428 - mean_squared_error: 0.4428
+720/720 [==============================] - 0s 43us/step - loss: 0.6475 - mean_squared_error: 0.6475 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 45/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8284 - mean_squared_error: 0.8284
+720/720 [==============================] - 0s 22us/step - loss: 0.6624 - mean_squared_error: 0.6624 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 46/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9282 - mean_squared_error: 0.9282
+720/720 [==============================] - 0s 22us/step - loss: 0.7067 - mean_squared_error: 0.7067 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 47/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3373 - mean_squared_error: 0.3373
+720/720 [==============================] - 0s 44us/step - loss: 0.6537 - mean_squared_error: 0.6537 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 48/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5811 - mean_squared_error: 0.5811
+720/720 [==============================] - 0s 30us/step - loss: 0.6316 - mean_squared_error: 0.6316 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 49/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5770 - mean_squared_error: 0.5770
+720/720 [==============================] - 0s 17us/step - loss: 0.6517 - mean_squared_error: 0.6517 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 50/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5131 - mean_squared_error: 0.5131
+720/720 [==============================] - 0s 22us/step - loss: 0.6442 - mean_squared_error: 0.6442 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 51/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7435 - mean_squared_error: 0.7435
+720/720 [==============================] - 0s 43us/step - loss: 0.6354 - mean_squared_error: 0.6354 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 52/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5717 - mean_squared_error: 0.5717
+720/720 [==============================] - 0s 22us/step - loss: 0.6859 - mean_squared_error: 0.6859 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 53/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6998 - mean_squared_error: 0.6998
+720/720 [==============================] - 0s 22us/step - loss: 0.5964 - mean_squared_error: 0.5964 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 54/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5943 - mean_squared_error: 0.5943
+720/720 [==============================] - 0s 43us/step - loss: 0.6155 - mean_squared_error: 0.6155 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 55/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5316 - mean_squared_error: 0.5316
+720/720 [==============================] - 0s 22us/step - loss: 0.6105 - mean_squared_error: 0.6105 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 56/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5822 - mean_squared_error: 0.5822
+720/720 [==============================] - 0s 22us/step - loss: 0.6553 - mean_squared_error: 0.6553 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 57/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7949 - mean_squared_error: 0.7949
+720/720 [==============================] - 0s 45us/step - loss: 0.6176 - mean_squared_error: 0.6176 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 58/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6132 - mean_squared_error: 0.6132
+720/720 [==============================] - 0s 22us/step - loss: 0.5911 - mean_squared_error: 0.5911 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 59/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6663 - mean_squared_error: 0.6663
+720/720 [==============================] - 0s 22us/step - loss: 0.6144 - mean_squared_error: 0.6144 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+Epoch 60/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4286 - mean_squared_error: 0.4286
+720/720 [==============================] - 0s 22us/step - loss: 0.6121 - mean_squared_error: 0.6121 - val_loss: 0.7935 - val_mean_squared_error: 0.7935
+====November 16, 2018 09:53:45 PM====
+====November 16, 2018 09:53:45 PM====
+--------------------------------- Trial 8 of 10---------------------------------
+====November 16, 2018 09:53:45 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_21 (Dropout)         (None, 3)                 0         
+_________________________________________________________________
+dense_21 (Dense)             (None, 10)                40        
+_________________________________________________________________
+dropout_22 (Dropout)         (None, 10)                0         
+_________________________________________________________________
+dense_22 (Dense)             (None, 5)                 55        
+_________________________________________________________________
+dropout_23 (Dropout)         (None, 5)                 0         
+_________________________________________________________________
+dense_23 (Dense)             (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:45 PM====
+Training   - data: (720, 3) labels: (720,)
+Validation - data: (79, 3) labels: (79,)
+Train on 720 samples, validate on 79 samples
+Epoch 1/60
+
+ 32/720 [>.............................] - ETA: 10s - loss: 0.9876 - mean_squared_error: 0.9876
+720/720 [==============================] - 1s 850us/step - loss: 1.2358 - mean_squared_error: 1.2358 - val_loss: 2.1994 - val_mean_squared_error: 2.1994
+Epoch 2/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3518 - mean_squared_error: 1.3518
+720/720 [==============================] - 0s 22us/step - loss: 1.3298 - mean_squared_error: 1.3298 - val_loss: 2.1994 - val_mean_squared_error: 2.1994
+Epoch 3/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4097 - mean_squared_error: 1.4097
+720/720 [==============================] - 0s 43us/step - loss: 1.3645 - mean_squared_error: 1.3645 - val_loss: 2.1993 - val_mean_squared_error: 2.1993
+Epoch 4/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3275 - mean_squared_error: 1.3275
+720/720 [==============================] - 0s 22us/step - loss: 1.3224 - mean_squared_error: 1.3224 - val_loss: 2.1993 - val_mean_squared_error: 2.1993
+Epoch 5/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2000 - mean_squared_error: 1.2000
+720/720 [==============================] - 0s 22us/step - loss: 1.3044 - mean_squared_error: 1.3044 - val_loss: 2.1992 - val_mean_squared_error: 2.1992
+Epoch 6/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3468 - mean_squared_error: 1.3468
+720/720 [==============================] - 0s 43us/step - loss: 1.3159 - mean_squared_error: 1.3159 - val_loss: 2.1992 - val_mean_squared_error: 2.1992
+Epoch 7/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.6303 - mean_squared_error: 1.6303
+720/720 [==============================] - 0s 22us/step - loss: 1.2986 - mean_squared_error: 1.2986 - val_loss: 2.1991 - val_mean_squared_error: 2.1991
+Epoch 8/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2037 - mean_squared_error: 1.2037
+720/720 [==============================] - 0s 22us/step - loss: 1.2801 - mean_squared_error: 1.2801 - val_loss: 2.1991 - val_mean_squared_error: 2.1991
+Epoch 9/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4740 - mean_squared_error: 1.4740
+720/720 [==============================] - 0s 43us/step - loss: 1.2052 - mean_squared_error: 1.2052 - val_loss: 2.1990 - val_mean_squared_error: 2.1990
+Epoch 10/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.6586 - mean_squared_error: 1.6586
+720/720 [==============================] - 0s 22us/step - loss: 1.2505 - mean_squared_error: 1.2505 - val_loss: 2.1990 - val_mean_squared_error: 2.1990
+Epoch 11/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0375 - mean_squared_error: 1.0375
+720/720 [==============================] - 0s 22us/step - loss: 1.2220 - mean_squared_error: 1.2220 - val_loss: 2.1990 - val_mean_squared_error: 2.1990
+Epoch 12/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0831 - mean_squared_error: 1.0831
+720/720 [==============================] - 0s 48us/step - loss: 1.2106 - mean_squared_error: 1.2106 - val_loss: 2.1990 - val_mean_squared_error: 2.1990
+Epoch 13/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1067 - mean_squared_error: 1.1067
+720/720 [==============================] - 0s 28us/step - loss: 1.2202 - mean_squared_error: 1.2202 - val_loss: 2.1990 - val_mean_squared_error: 2.1990
+Epoch 14/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8044 - mean_squared_error: 0.8044
+720/720 [==============================] - 0s 22us/step - loss: 1.1780 - mean_squared_error: 1.1780 - val_loss: 2.1990 - val_mean_squared_error: 2.1990
+Epoch 15/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0118 - mean_squared_error: 1.0118
+720/720 [==============================] - 0s 22us/step - loss: 1.2266 - mean_squared_error: 1.2266 - val_loss: 2.1989 - val_mean_squared_error: 2.1989
+Epoch 16/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3511 - mean_squared_error: 1.3511
+720/720 [==============================] - 0s 43us/step - loss: 1.2604 - mean_squared_error: 1.2604 - val_loss: 2.1989 - val_mean_squared_error: 2.1989
+Epoch 17/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.5091 - mean_squared_error: 1.5091
+720/720 [==============================] - 0s 22us/step - loss: 1.2332 - mean_squared_error: 1.2332 - val_loss: 2.1989 - val_mean_squared_error: 2.1989
+Epoch 18/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2433 - mean_squared_error: 1.2433
+720/720 [==============================] - 0s 22us/step - loss: 1.1434 - mean_squared_error: 1.1434 - val_loss: 2.1988 - val_mean_squared_error: 2.1988
+Epoch 19/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4699 - mean_squared_error: 1.4699
+720/720 [==============================] - 0s 43us/step - loss: 1.2298 - mean_squared_error: 1.2298 - val_loss: 2.1987 - val_mean_squared_error: 2.1987
+Epoch 20/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1953 - mean_squared_error: 1.1953
+720/720 [==============================] - 0s 22us/step - loss: 1.1890 - mean_squared_error: 1.1890 - val_loss: 2.1987 - val_mean_squared_error: 2.1987
+Epoch 21/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5684 - mean_squared_error: 0.5684
+720/720 [==============================] - 0s 22us/step - loss: 1.2551 - mean_squared_error: 1.2551 - val_loss: 2.1985 - val_mean_squared_error: 2.1985
+Epoch 22/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3234 - mean_squared_error: 1.3234
+720/720 [==============================] - 0s 46us/step - loss: 1.1720 - mean_squared_error: 1.1720 - val_loss: 2.1984 - val_mean_squared_error: 2.1984
+Epoch 23/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4437 - mean_squared_error: 1.4437
+720/720 [==============================] - 0s 30us/step - loss: 1.3275 - mean_squared_error: 1.3275 - val_loss: 2.1983 - val_mean_squared_error: 2.1983
+Epoch 24/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3746 - mean_squared_error: 1.3746
+720/720 [==============================] - 0s 14us/step - loss: 1.1033 - mean_squared_error: 1.1033 - val_loss: 2.1979 - val_mean_squared_error: 2.1979
+Epoch 25/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1503 - mean_squared_error: 1.1503
+720/720 [==============================] - 0s 43us/step - loss: 1.2119 - mean_squared_error: 1.2119 - val_loss: 2.1978 - val_mean_squared_error: 2.1978
+Epoch 26/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8082 - mean_squared_error: 0.8082
+720/720 [==============================] - 0s 29us/step - loss: 1.1780 - mean_squared_error: 1.1780 - val_loss: 2.1976 - val_mean_squared_error: 2.1976
+Epoch 27/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2067 - mean_squared_error: 1.2067
+720/720 [==============================] - 0s 22us/step - loss: 1.2037 - mean_squared_error: 1.2037 - val_loss: 2.1976 - val_mean_squared_error: 2.1976
+Epoch 28/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1555 - mean_squared_error: 1.1555
+720/720 [==============================] - 0s 22us/step - loss: 1.2242 - mean_squared_error: 1.2242 - val_loss: 2.1975 - val_mean_squared_error: 2.1975
+Epoch 29/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.5611 - mean_squared_error: 1.5611
+720/720 [==============================] - 0s 43us/step - loss: 1.3446 - mean_squared_error: 1.3446 - val_loss: 2.1975 - val_mean_squared_error: 2.1975
+Epoch 30/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1885 - mean_squared_error: 1.1885
+720/720 [==============================] - 0s 22us/step - loss: 1.2197 - mean_squared_error: 1.2197 - val_loss: 2.1975 - val_mean_squared_error: 2.1975
+Epoch 31/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9928 - mean_squared_error: 0.9928
+720/720 [==============================] - 0s 43us/step - loss: 1.2578 - mean_squared_error: 1.2578 - val_loss: 2.1975 - val_mean_squared_error: 2.1975
+Epoch 32/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1103 - mean_squared_error: 1.1103
+720/720 [==============================] - 0s 32us/step - loss: 1.2059 - mean_squared_error: 1.2059 - val_loss: 2.1975 - val_mean_squared_error: 2.1975
+Epoch 33/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1081 - mean_squared_error: 1.1081
+720/720 [==============================] - 0s 15us/step - loss: 1.2167 - mean_squared_error: 1.2167 - val_loss: 2.1975 - val_mean_squared_error: 2.1975
+Epoch 34/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1648 - mean_squared_error: 1.1648
+720/720 [==============================] - 0s 43us/step - loss: 1.1637 - mean_squared_error: 1.1637 - val_loss: 2.1974 - val_mean_squared_error: 2.1974
+Epoch 35/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0088 - mean_squared_error: 1.0088
+720/720 [==============================] - 0s 22us/step - loss: 1.1833 - mean_squared_error: 1.1833 - val_loss: 2.1974 - val_mean_squared_error: 2.1974
+Epoch 36/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.3167 - mean_squared_error: 1.3167
+720/720 [==============================] - 0s 22us/step - loss: 1.1853 - mean_squared_error: 1.1853 - val_loss: 2.1974 - val_mean_squared_error: 2.1974
+Epoch 37/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7107 - mean_squared_error: 0.7107
+720/720 [==============================] - 0s 43us/step - loss: 1.1489 - mean_squared_error: 1.1489 - val_loss: 2.1974 - val_mean_squared_error: 2.1974
+Epoch 38/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.2821 - mean_squared_error: 1.2821
+720/720 [==============================] - 0s 22us/step - loss: 1.2167 - mean_squared_error: 1.2167 - val_loss: 2.1973 - val_mean_squared_error: 2.1973
+Epoch 39/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.4312 - mean_squared_error: 1.4312
+720/720 [==============================] - 0s 22us/step - loss: 1.2602 - mean_squared_error: 1.2602 - val_loss: 2.1972 - val_mean_squared_error: 2.1972
+Epoch 40/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8563 - mean_squared_error: 0.8563
+720/720 [==============================] - 0s 43us/step - loss: 1.1256 - mean_squared_error: 1.1256 - val_loss: 2.1971 - val_mean_squared_error: 2.1971
+Epoch 41/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0347 - mean_squared_error: 1.0347
+720/720 [==============================] - 0s 22us/step - loss: 1.1675 - mean_squared_error: 1.1675 - val_loss: 2.1970 - val_mean_squared_error: 2.1970
+Epoch 42/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8150 - mean_squared_error: 0.8150
+720/720 [==============================] - 0s 22us/step - loss: 1.1213 - mean_squared_error: 1.1213 - val_loss: 2.1969 - val_mean_squared_error: 2.1969
+Epoch 43/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0724 - mean_squared_error: 1.0724
+720/720 [==============================] - 0s 43us/step - loss: 1.1534 - mean_squared_error: 1.1534 - val_loss: 2.1968 - val_mean_squared_error: 2.1968
+Epoch 44/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9096 - mean_squared_error: 0.9096
+720/720 [==============================] - 0s 22us/step - loss: 1.1104 - mean_squared_error: 1.1104 - val_loss: 2.1964 - val_mean_squared_error: 2.1964
+Epoch 45/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1433 - mean_squared_error: 1.1433
+720/720 [==============================] - 0s 22us/step - loss: 1.1282 - mean_squared_error: 1.1282 - val_loss: 2.1958 - val_mean_squared_error: 2.1958
+Epoch 46/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8968 - mean_squared_error: 0.8968
+720/720 [==============================] - 0s 43us/step - loss: 1.0373 - mean_squared_error: 1.0373 - val_loss: 2.1952 - val_mean_squared_error: 2.1952
+Epoch 47/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.6094 - mean_squared_error: 1.6094
+720/720 [==============================] - 0s 22us/step - loss: 1.0540 - mean_squared_error: 1.0540 - val_loss: 2.1947 - val_mean_squared_error: 2.1947
+Epoch 48/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1608 - mean_squared_error: 1.1608
+720/720 [==============================] - 0s 22us/step - loss: 1.0342 - mean_squared_error: 1.0342 - val_loss: 2.1929 - val_mean_squared_error: 2.1929
+Epoch 49/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0775 - mean_squared_error: 1.0775
+720/720 [==============================] - 0s 43us/step - loss: 1.0280 - mean_squared_error: 1.0280 - val_loss: 2.1894 - val_mean_squared_error: 2.1894
+Epoch 50/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5471 - mean_squared_error: 0.5471
+720/720 [==============================] - 0s 22us/step - loss: 1.0335 - mean_squared_error: 1.0335 - val_loss: 2.1836 - val_mean_squared_error: 2.1836
+Epoch 51/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6763 - mean_squared_error: 0.6763
+720/720 [==============================] - 0s 22us/step - loss: 0.9587 - mean_squared_error: 0.9587 - val_loss: 2.1746 - val_mean_squared_error: 2.1746
+Epoch 52/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.1802 - mean_squared_error: 1.1802
+720/720 [==============================] - 0s 47us/step - loss: 1.0633 - mean_squared_error: 1.0633 - val_loss: 2.1728 - val_mean_squared_error: 2.1728
+Epoch 53/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9228 - mean_squared_error: 0.9228
+720/720 [==============================] - 0s 10us/step - loss: 0.9136 - mean_squared_error: 0.9136 - val_loss: 2.1606 - val_mean_squared_error: 2.1606
+Epoch 54/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9604 - mean_squared_error: 0.9604
+720/720 [==============================] - 0s 43us/step - loss: 0.9354 - mean_squared_error: 0.9354 - val_loss: 2.1567 - val_mean_squared_error: 2.1567
+Epoch 55/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8887 - mean_squared_error: 0.8887
+720/720 [==============================] - 0s 22us/step - loss: 0.9382 - mean_squared_error: 0.9382 - val_loss: 2.0919 - val_mean_squared_error: 2.0919
+Epoch 56/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.9235 - mean_squared_error: 0.9235
+720/720 [==============================] - 0s 22us/step - loss: 0.9507 - mean_squared_error: 0.9507 - val_loss: 2.0223 - val_mean_squared_error: 2.0223
+Epoch 57/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8044 - mean_squared_error: 0.8044
+720/720 [==============================] - 0s 43us/step - loss: 0.9106 - mean_squared_error: 0.9106 - val_loss: 2.0528 - val_mean_squared_error: 2.0528
+Epoch 58/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0602 - mean_squared_error: 1.0602
+720/720 [==============================] - 0s 22us/step - loss: 0.8612 - mean_squared_error: 0.8612 - val_loss: 2.0538 - val_mean_squared_error: 2.0538
+Epoch 59/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 1.0476 - mean_squared_error: 1.0476
+720/720 [==============================] - 0s 43us/step - loss: 0.8678 - mean_squared_error: 0.8678 - val_loss: 2.0516 - val_mean_squared_error: 2.0516
+Epoch 60/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5384 - mean_squared_error: 0.5384
+720/720 [==============================] - 0s 22us/step - loss: 0.8393 - mean_squared_error: 0.8393 - val_loss: 2.0386 - val_mean_squared_error: 2.0386
+====November 16, 2018 09:53:47 PM====
+====November 16, 2018 09:53:47 PM====
+--------------------------------- Trial 9 of 10---------------------------------
+====November 16, 2018 09:53:47 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_24 (Dropout)         (None, 3)                 0         
+_________________________________________________________________
+dense_24 (Dense)             (None, 10)                40        
+_________________________________________________________________
+dropout_25 (Dropout)         (None, 10)                0         
+_________________________________________________________________
+dense_25 (Dense)             (None, 5)                 55        
+_________________________________________________________________
+dropout_26 (Dropout)         (None, 5)                 0         
+_________________________________________________________________
+dense_26 (Dense)             (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:47 PM====
+Training   - data: (720, 3) labels: (720,)
+Validation - data: (79, 3) labels: (79,)
+Train on 720 samples, validate on 79 samples
+Epoch 1/60
+
+ 32/720 [>.............................] - ETA: 11s - loss: 0.6720 - mean_squared_error: 0.6720
+720/720 [==============================] - 1s 904us/step - loss: 0.7717 - mean_squared_error: 0.7717 - val_loss: 0.3441 - val_mean_squared_error: 0.3441
+Epoch 2/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.5817 - mean_squared_error: 0.5817
+720/720 [==============================] - 0s 22us/step - loss: 0.7507 - mean_squared_error: 0.7507 - val_loss: 0.3327 - val_mean_squared_error: 0.3327
+Epoch 3/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7853 - mean_squared_error: 0.7853
+720/720 [==============================] - 0s 43us/step - loss: 0.7515 - mean_squared_error: 0.7515 - val_loss: 0.3238 - val_mean_squared_error: 0.3238
+Epoch 4/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7847 - mean_squared_error: 0.7847
+720/720 [==============================] - 0s 22us/step - loss: 0.6948 - mean_squared_error: 0.6948 - val_loss: 0.3162 - val_mean_squared_error: 0.3162
+Epoch 5/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8466 - mean_squared_error: 0.8466
+720/720 [==============================] - 0s 22us/step - loss: 0.7119 - mean_squared_error: 0.7119 - val_loss: 0.3086 - val_mean_squared_error: 0.3086
+Epoch 6/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7884 - mean_squared_error: 0.7884
+720/720 [==============================] - 0s 43us/step - loss: 0.6882 - mean_squared_error: 0.6882 - val_loss: 0.3017 - val_mean_squared_error: 0.3017
+Epoch 7/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7311 - mean_squared_error: 0.7311
+720/720 [==============================] - 0s 22us/step - loss: 0.6727 - mean_squared_error: 0.6727 - val_loss: 0.2955 - val_mean_squared_error: 0.2955
+Epoch 8/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6881 - mean_squared_error: 0.6881
+720/720 [==============================] - 0s 22us/step - loss: 0.6655 - mean_squared_error: 0.6655 - val_loss: 0.2897 - val_mean_squared_error: 0.2897
+Epoch 9/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6693 - mean_squared_error: 0.6693
+720/720 [==============================] - 0s 43us/step - loss: 0.6321 - mean_squared_error: 0.6321 - val_loss: 0.2848 - val_mean_squared_error: 0.2848
+Epoch 10/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7755 - mean_squared_error: 0.7755
+720/720 [==============================] - 0s 22us/step - loss: 0.6370 - mean_squared_error: 0.6370 - val_loss: 0.2810 - val_mean_squared_error: 0.2810
+Epoch 11/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.8520 - mean_squared_error: 0.8520
+720/720 [==============================] - 0s 22us/step - loss: 0.6661 - mean_squared_error: 0.6661 - val_loss: 0.2771 - val_mean_squared_error: 0.2771
+Epoch 12/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2516 - mean_squared_error: 0.2516
+720/720 [==============================] - 0s 30us/step - loss: 0.6328 - mean_squared_error: 0.6328 - val_loss: 0.2739 - val_mean_squared_error: 0.2739
+Epoch 13/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3954 - mean_squared_error: 0.3954
+720/720 [==============================] - 0s 43us/step - loss: 0.6402 - mean_squared_error: 0.6402 - val_loss: 0.2714 - val_mean_squared_error: 0.2714
+Epoch 14/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.7265 - mean_squared_error: 0.7265
+720/720 [==============================] - 0s 22us/step - loss: 0.6998 - mean_squared_error: 0.6998 - val_loss: 0.2690 - val_mean_squared_error: 0.2690
+Epoch 15/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6301 - mean_squared_error: 0.6301
+720/720 [==============================] - 0s 22us/step - loss: 0.5611 - mean_squared_error: 0.5611 - val_loss: 0.2670 - val_mean_squared_error: 0.2670
+Epoch 16/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.6242 - mean_squared_error: 0.6242
+720/720 [==============================] - 0s 43us/step - loss: 0.3693 - mean_squared_error: 0.3693 - val_loss: 0.2634 - val_mean_squared_error: 0.2634
+Epoch 17/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3663 - mean_squared_error: 0.3663
+720/720 [==============================] - 0s 22us/step - loss: 0.3076 - mean_squared_error: 0.3076 - val_loss: 0.2610 - val_mean_squared_error: 0.2610
+Epoch 18/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2230 - mean_squared_error: 0.2230
+720/720 [==============================] - 0s 37us/step - loss: 0.2689 - mean_squared_error: 0.2689 - val_loss: 0.2589 - val_mean_squared_error: 0.2589
+Epoch 19/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3450 - mean_squared_error: 0.3450
+720/720 [==============================] - 0s 15us/step - loss: 0.2665 - mean_squared_error: 0.2665 - val_loss: 0.2581 - val_mean_squared_error: 0.2581
+Epoch 20/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2630 - mean_squared_error: 0.2630
+720/720 [==============================] - 0s 43us/step - loss: 0.2625 - mean_squared_error: 0.2625 - val_loss: 0.2569 - val_mean_squared_error: 0.2569
+Epoch 21/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2696 - mean_squared_error: 0.2696
+720/720 [==============================] - 0s 22us/step - loss: 0.2638 - mean_squared_error: 0.2638 - val_loss: 0.2558 - val_mean_squared_error: 0.2558
+Epoch 22/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2942 - mean_squared_error: 0.2942
+720/720 [==============================] - 0s 22us/step - loss: 0.2605 - mean_squared_error: 0.2605 - val_loss: 0.2552 - val_mean_squared_error: 0.2552
+Epoch 23/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2256 - mean_squared_error: 0.2256
+720/720 [==============================] - 0s 43us/step - loss: 0.2617 - mean_squared_error: 0.2617 - val_loss: 0.2548 - val_mean_squared_error: 0.2548
+Epoch 24/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2314 - mean_squared_error: 0.2314
+720/720 [==============================] - 0s 22us/step - loss: 0.2592 - mean_squared_error: 0.2592 - val_loss: 0.2544 - val_mean_squared_error: 0.2544
+Epoch 25/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2186 - mean_squared_error: 0.2186
+720/720 [==============================] - 0s 22us/step - loss: 0.2564 - mean_squared_error: 0.2564 - val_loss: 0.2543 - val_mean_squared_error: 0.2543
+Epoch 26/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.1880 - mean_squared_error: 0.1880
+720/720 [==============================] - 0s 43us/step - loss: 0.2639 - mean_squared_error: 0.2639 - val_loss: 0.2539 - val_mean_squared_error: 0.2539
+Epoch 27/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2581 - mean_squared_error: 0.2581
+720/720 [==============================] - 0s 22us/step - loss: 0.2600 - mean_squared_error: 0.2600 - val_loss: 0.2526 - val_mean_squared_error: 0.2526
+Epoch 28/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2739 - mean_squared_error: 0.2739
+720/720 [==============================] - 0s 39us/step - loss: 0.2616 - mean_squared_error: 0.2616 - val_loss: 0.2522 - val_mean_squared_error: 0.2522
+Epoch 29/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2015 - mean_squared_error: 0.2015
+720/720 [==============================] - 0s 14us/step - loss: 0.2633 - mean_squared_error: 0.2633 - val_loss: 0.2505 - val_mean_squared_error: 0.2505
+Epoch 30/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2113 - mean_squared_error: 0.2113
+720/720 [==============================] - 0s 43us/step - loss: 0.2555 - mean_squared_error: 0.2555 - val_loss: 0.2481 - val_mean_squared_error: 0.2481
+Epoch 31/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3145 - mean_squared_error: 0.3145
+720/720 [==============================] - 0s 22us/step - loss: 0.2576 - mean_squared_error: 0.2576 - val_loss: 0.2475 - val_mean_squared_error: 0.2475
+Epoch 32/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2224 - mean_squared_error: 0.2224
+720/720 [==============================] - 0s 22us/step - loss: 0.2595 - mean_squared_error: 0.2595 - val_loss: 0.2453 - val_mean_squared_error: 0.2453
+Epoch 33/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3112 - mean_squared_error: 0.3112
+720/720 [==============================] - 0s 43us/step - loss: 0.2628 - mean_squared_error: 0.2628 - val_loss: 0.2444 - val_mean_squared_error: 0.2444
+Epoch 34/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3037 - mean_squared_error: 0.3037
+720/720 [==============================] - 0s 22us/step - loss: 0.2601 - mean_squared_error: 0.2601 - val_loss: 0.2441 - val_mean_squared_error: 0.2441
+Epoch 35/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2111 - mean_squared_error: 0.2111
+720/720 [==============================] - 0s 22us/step - loss: 0.2580 - mean_squared_error: 0.2580 - val_loss: 0.2436 - val_mean_squared_error: 0.2436
+Epoch 36/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2841 - mean_squared_error: 0.2841
+720/720 [==============================] - 0s 43us/step - loss: 0.2631 - mean_squared_error: 0.2631 - val_loss: 0.2429 - val_mean_squared_error: 0.2429
+Epoch 37/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2194 - mean_squared_error: 0.2194
+720/720 [==============================] - 0s 33us/step - loss: 0.2602 - mean_squared_error: 0.2602 - val_loss: 0.2426 - val_mean_squared_error: 0.2426
+Epoch 38/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2075 - mean_squared_error: 0.2075
+720/720 [==============================] - 0s 28us/step - loss: 0.2576 - mean_squared_error: 0.2576 - val_loss: 0.2409 - val_mean_squared_error: 0.2409
+Epoch 39/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2832 - mean_squared_error: 0.2832
+720/720 [==============================] - 0s 27us/step - loss: 0.2669 - mean_squared_error: 0.2669 - val_loss: 0.2407 - val_mean_squared_error: 0.2407
+Epoch 40/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2003 - mean_squared_error: 0.2003
+720/720 [==============================] - 0s 22us/step - loss: 0.2650 - mean_squared_error: 0.2650 - val_loss: 0.2408 - val_mean_squared_error: 0.2408
+Epoch 41/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.4348 - mean_squared_error: 0.4348
+720/720 [==============================] - 0s 22us/step - loss: 0.2607 - mean_squared_error: 0.2607 - val_loss: 0.2412 - val_mean_squared_error: 0.2412
+Epoch 42/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2350 - mean_squared_error: 0.2350
+720/720 [==============================] - 0s 43us/step - loss: 0.2601 - mean_squared_error: 0.2601 - val_loss: 0.2408 - val_mean_squared_error: 0.2408
+Epoch 43/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2800 - mean_squared_error: 0.2800
+720/720 [==============================] - 0s 22us/step - loss: 0.2662 - mean_squared_error: 0.2662 - val_loss: 0.2406 - val_mean_squared_error: 0.2406
+Epoch 44/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2712 - mean_squared_error: 0.2712
+720/720 [==============================] - 0s 22us/step - loss: 0.2566 - mean_squared_error: 0.2566 - val_loss: 0.2404 - val_mean_squared_error: 0.2404
+Epoch 45/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.1817 - mean_squared_error: 0.1817
+720/720 [==============================] - 0s 43us/step - loss: 0.2642 - mean_squared_error: 0.2642 - val_loss: 0.2406 - val_mean_squared_error: 0.2406
+Epoch 46/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2901 - mean_squared_error: 0.2901
+720/720 [==============================] - 0s 22us/step - loss: 0.2583 - mean_squared_error: 0.2583 - val_loss: 0.2407 - val_mean_squared_error: 0.2407
+Epoch 47/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2103 - mean_squared_error: 0.2103
+720/720 [==============================] - 0s 22us/step - loss: 0.2585 - mean_squared_error: 0.2585 - val_loss: 0.2407 - val_mean_squared_error: 0.2407
+Epoch 48/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2041 - mean_squared_error: 0.2041
+720/720 [==============================] - 0s 43us/step - loss: 0.2571 - mean_squared_error: 0.2571 - val_loss: 0.2405 - val_mean_squared_error: 0.2405
+Epoch 49/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3804 - mean_squared_error: 0.3804
+720/720 [==============================] - 0s 22us/step - loss: 0.2664 - mean_squared_error: 0.2664 - val_loss: 0.2404 - val_mean_squared_error: 0.2404
+Epoch 50/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.1696 - mean_squared_error: 0.1696
+720/720 [==============================] - 0s 22us/step - loss: 0.2611 - mean_squared_error: 0.2611 - val_loss: 0.2406 - val_mean_squared_error: 0.2406
+Epoch 51/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3453 - mean_squared_error: 0.3453
+720/720 [==============================] - 0s 43us/step - loss: 0.2626 - mean_squared_error: 0.2626 - val_loss: 0.2412 - val_mean_squared_error: 0.2412
+Epoch 52/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2171 - mean_squared_error: 0.2171
+720/720 [==============================] - 0s 22us/step - loss: 0.2562 - mean_squared_error: 0.2562 - val_loss: 0.2411 - val_mean_squared_error: 0.2411
+Epoch 53/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3106 - mean_squared_error: 0.3106
+720/720 [==============================] - 0s 22us/step - loss: 0.2590 - mean_squared_error: 0.2590 - val_loss: 0.2413 - val_mean_squared_error: 0.2413
+Epoch 54/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2324 - mean_squared_error: 0.2324
+720/720 [==============================] - 0s 43us/step - loss: 0.2619 - mean_squared_error: 0.2619 - val_loss: 0.2411 - val_mean_squared_error: 0.2411
+Epoch 55/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2227 - mean_squared_error: 0.2227
+720/720 [==============================] - 0s 36us/step - loss: 0.2578 - mean_squared_error: 0.2578 - val_loss: 0.2412 - val_mean_squared_error: 0.2412
+Epoch 56/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3001 - mean_squared_error: 0.3001
+720/720 [==============================] - 0s 28us/step - loss: 0.2636 - mean_squared_error: 0.2636 - val_loss: 0.2422 - val_mean_squared_error: 0.2422
+Epoch 57/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2106 - mean_squared_error: 0.2106
+720/720 [==============================] - 0s 13us/step - loss: 0.2547 - mean_squared_error: 0.2547 - val_loss: 0.2430 - val_mean_squared_error: 0.2430
+Epoch 58/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.3953 - mean_squared_error: 0.3953
+720/720 [==============================] - 0s 43us/step - loss: 0.2589 - mean_squared_error: 0.2589 - val_loss: 0.2428 - val_mean_squared_error: 0.2428
+Epoch 59/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2656 - mean_squared_error: 0.2656
+720/720 [==============================] - 0s 28us/step - loss: 0.2560 - mean_squared_error: 0.2560 - val_loss: 0.2421 - val_mean_squared_error: 0.2421
+Epoch 60/60
+
+ 32/720 [>.............................] - ETA: 0s - loss: 0.2523 - mean_squared_error: 0.2523
+720/720 [==============================] - 0s 22us/step - loss: 0.2605 - mean_squared_error: 0.2605 - val_loss: 0.2419 - val_mean_squared_error: 0.2419
+====November 16, 2018 09:53:49 PM====
+====November 16, 2018 09:53:49 PM====
+-------------------------------- Trial 10 of 10---------------------------------
+====November 16, 2018 09:53:49 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_27 (Dropout)         (None, 3)                 0         
+_________________________________________________________________
+dense_27 (Dense)             (None, 10)                40        
+_________________________________________________________________
+dropout_28 (Dropout)         (None, 10)                0         
+_________________________________________________________________
+dense_28 (Dense)             (None, 5)                 55        
+_________________________________________________________________
+dropout_29 (Dropout)         (None, 5)                 0         
+_________________________________________________________________
+dense_29 (Dense)             (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:49 PM====
+Training   - data: (711, 3) labels: (711,)
+Validation - data: (88, 3) labels: (88,)
+Train on 711 samples, validate on 88 samples
+Epoch 1/60
+
+ 32/711 [>.............................] - ETA: 12s - loss: 0.6694 - mean_squared_error: 0.6694
+711/711 [==============================] - 1s 967us/step - loss: 0.6698 - mean_squared_error: 0.6698 - val_loss: 0.6312 - val_mean_squared_error: 0.6312
+Epoch 2/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4761 - mean_squared_error: 0.4761
+711/711 [==============================] - 0s 44us/step - loss: 0.6603 - mean_squared_error: 0.6603 - val_loss: 0.6308 - val_mean_squared_error: 0.6308
+Epoch 3/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.6277 - mean_squared_error: 0.6277
+711/711 [==============================] - 0s 37us/step - loss: 0.6689 - mean_squared_error: 0.6689 - val_loss: 0.6299 - val_mean_squared_error: 0.6299
+Epoch 4/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.6190 - mean_squared_error: 0.6190
+711/711 [==============================] - 0s 33us/step - loss: 0.6747 - mean_squared_error: 0.6747 - val_loss: 0.6262 - val_mean_squared_error: 0.6262
+Epoch 5/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.8041 - mean_squared_error: 0.8041
+711/711 [==============================] - 0s 22us/step - loss: 0.6439 - mean_squared_error: 0.6439 - val_loss: 0.6201 - val_mean_squared_error: 0.6201
+Epoch 6/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.6779 - mean_squared_error: 0.6779
+711/711 [==============================] - 0s 22us/step - loss: 0.6991 - mean_squared_error: 0.6991 - val_loss: 0.6227 - val_mean_squared_error: 0.6227
+Epoch 7/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.7117 - mean_squared_error: 0.7117
+711/711 [==============================] - 0s 44us/step - loss: 0.6266 - mean_squared_error: 0.6266 - val_loss: 0.6235 - val_mean_squared_error: 0.6235
+Epoch 8/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5362 - mean_squared_error: 0.5362
+711/711 [==============================] - 0s 22us/step - loss: 0.6337 - mean_squared_error: 0.6337 - val_loss: 0.6220 - val_mean_squared_error: 0.6220
+Epoch 9/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.6299 - mean_squared_error: 0.6299
+711/711 [==============================] - 0s 44us/step - loss: 0.6201 - mean_squared_error: 0.6201 - val_loss: 0.6181 - val_mean_squared_error: 0.6181
+Epoch 10/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5555 - mean_squared_error: 0.5555
+711/711 [==============================] - 0s 22us/step - loss: 0.5806 - mean_squared_error: 0.5806 - val_loss: 0.6122 - val_mean_squared_error: 0.6122
+Epoch 11/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.6351 - mean_squared_error: 0.6351
+711/711 [==============================] - 0s 22us/step - loss: 0.6146 - mean_squared_error: 0.6146 - val_loss: 0.5959 - val_mean_squared_error: 0.5959
+Epoch 12/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3914 - mean_squared_error: 0.3914
+711/711 [==============================] - 0s 44us/step - loss: 0.6158 - mean_squared_error: 0.6158 - val_loss: 0.5923 - val_mean_squared_error: 0.5923
+Epoch 13/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4015 - mean_squared_error: 0.4015
+711/711 [==============================] - 0s 22us/step - loss: 0.5888 - mean_squared_error: 0.5888 - val_loss: 0.5886 - val_mean_squared_error: 0.5886
+Epoch 14/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4117 - mean_squared_error: 0.4117
+711/711 [==============================] - 0s 44us/step - loss: 0.5705 - mean_squared_error: 0.5705 - val_loss: 0.5809 - val_mean_squared_error: 0.5809
+Epoch 15/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.7281 - mean_squared_error: 0.7281
+711/711 [==============================] - 0s 22us/step - loss: 0.5935 - mean_squared_error: 0.5935 - val_loss: 0.5738 - val_mean_squared_error: 0.5738
+Epoch 16/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4724 - mean_squared_error: 0.4724
+711/711 [==============================] - 0s 22us/step - loss: 0.5345 - mean_squared_error: 0.5345 - val_loss: 0.5629 - val_mean_squared_error: 0.5629
+Epoch 17/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4331 - mean_squared_error: 0.4331
+711/711 [==============================] - 0s 44us/step - loss: 0.5795 - mean_squared_error: 0.5795 - val_loss: 0.4451 - val_mean_squared_error: 0.4451
+Epoch 18/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4678 - mean_squared_error: 0.4678
+711/711 [==============================] - 0s 22us/step - loss: 0.5501 - mean_squared_error: 0.5501 - val_loss: 0.2616 - val_mean_squared_error: 0.2616
+Epoch 19/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4336 - mean_squared_error: 0.4336
+711/711 [==============================] - 0s 22us/step - loss: 0.5194 - mean_squared_error: 0.5194 - val_loss: 0.2587 - val_mean_squared_error: 0.2587
+Epoch 20/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5614 - mean_squared_error: 0.5614
+711/711 [==============================] - 0s 47us/step - loss: 0.5463 - mean_squared_error: 0.5463 - val_loss: 0.2570 - val_mean_squared_error: 0.2570
+Epoch 21/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4867 - mean_squared_error: 0.4867
+711/711 [==============================] - 0s 28us/step - loss: 0.5200 - mean_squared_error: 0.5200 - val_loss: 0.2554 - val_mean_squared_error: 0.2554
+Epoch 22/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4720 - mean_squared_error: 0.4720
+711/711 [==============================] - 0s 24us/step - loss: 0.5498 - mean_squared_error: 0.5498 - val_loss: 0.2535 - val_mean_squared_error: 0.2535
+Epoch 23/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.6384 - mean_squared_error: 0.6384
+711/711 [==============================] - 0s 22us/step - loss: 0.5684 - mean_squared_error: 0.5684 - val_loss: 0.2520 - val_mean_squared_error: 0.2520
+Epoch 24/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5789 - mean_squared_error: 0.5789
+711/711 [==============================] - 0s 44us/step - loss: 0.5609 - mean_squared_error: 0.5609 - val_loss: 0.2507 - val_mean_squared_error: 0.2507
+Epoch 25/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.2647 - mean_squared_error: 0.2647
+711/711 [==============================] - 0s 22us/step - loss: 0.5395 - mean_squared_error: 0.5395 - val_loss: 0.2496 - val_mean_squared_error: 0.2496
+Epoch 26/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5437 - mean_squared_error: 0.5437
+711/711 [==============================] - 0s 22us/step - loss: 0.5168 - mean_squared_error: 0.5168 - val_loss: 0.2493 - val_mean_squared_error: 0.2493
+Epoch 27/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3951 - mean_squared_error: 0.3951
+711/711 [==============================] - 0s 44us/step - loss: 0.4881 - mean_squared_error: 0.4881 - val_loss: 0.2500 - val_mean_squared_error: 0.2500
+Epoch 28/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5607 - mean_squared_error: 0.5607
+711/711 [==============================] - 0s 22us/step - loss: 0.4727 - mean_squared_error: 0.4727 - val_loss: 0.2506 - val_mean_squared_error: 0.2506
+Epoch 29/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4873 - mean_squared_error: 0.4873
+711/711 [==============================] - 0s 22us/step - loss: 0.4827 - mean_squared_error: 0.4827 - val_loss: 0.2496 - val_mean_squared_error: 0.2496
+Epoch 30/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.6536 - mean_squared_error: 0.6536
+711/711 [==============================] - 0s 50us/step - loss: 0.4928 - mean_squared_error: 0.4928 - val_loss: 0.2494 - val_mean_squared_error: 0.2494
+Epoch 31/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3949 - mean_squared_error: 0.3949
+711/711 [==============================] - 0s 18us/step - loss: 0.4796 - mean_squared_error: 0.4796 - val_loss: 0.2487 - val_mean_squared_error: 0.2487
+Epoch 32/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4948 - mean_squared_error: 0.4948
+711/711 [==============================] - 0s 22us/step - loss: 0.4627 - mean_squared_error: 0.4627 - val_loss: 0.2486 - val_mean_squared_error: 0.2486
+Epoch 33/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3499 - mean_squared_error: 0.3499
+711/711 [==============================] - 0s 44us/step - loss: 0.4382 - mean_squared_error: 0.4382 - val_loss: 0.2484 - val_mean_squared_error: 0.2484
+Epoch 34/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3637 - mean_squared_error: 0.3637
+711/711 [==============================] - 0s 22us/step - loss: 0.4479 - mean_squared_error: 0.4479 - val_loss: 0.2482 - val_mean_squared_error: 0.2482
+Epoch 35/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5547 - mean_squared_error: 0.5547
+711/711 [==============================] - 0s 44us/step - loss: 0.4605 - mean_squared_error: 0.4605 - val_loss: 0.2479 - val_mean_squared_error: 0.2479
+Epoch 36/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5124 - mean_squared_error: 0.5124
+711/711 [==============================] - 0s 22us/step - loss: 0.4764 - mean_squared_error: 0.4764 - val_loss: 0.2480 - val_mean_squared_error: 0.2480
+Epoch 37/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3913 - mean_squared_error: 0.3913
+711/711 [==============================] - 0s 22us/step - loss: 0.4553 - mean_squared_error: 0.4553 - val_loss: 0.2480 - val_mean_squared_error: 0.2480
+Epoch 38/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5321 - mean_squared_error: 0.5321
+711/711 [==============================] - 0s 44us/step - loss: 0.4657 - mean_squared_error: 0.4657 - val_loss: 0.2483 - val_mean_squared_error: 0.2483
+Epoch 39/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4246 - mean_squared_error: 0.4246
+711/711 [==============================] - 0s 22us/step - loss: 0.4783 - mean_squared_error: 0.4783 - val_loss: 0.2481 - val_mean_squared_error: 0.2481
+Epoch 40/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4066 - mean_squared_error: 0.4066
+711/711 [==============================] - 0s 40us/step - loss: 0.4677 - mean_squared_error: 0.4677 - val_loss: 0.2472 - val_mean_squared_error: 0.2472
+Epoch 41/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5167 - mean_squared_error: 0.5167
+711/711 [==============================] - 0s 20us/step - loss: 0.4163 - mean_squared_error: 0.4163 - val_loss: 0.2470 - val_mean_squared_error: 0.2470
+Epoch 42/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4090 - mean_squared_error: 0.4090
+711/711 [==============================] - 0s 22us/step - loss: 0.4296 - mean_squared_error: 0.4296 - val_loss: 0.2464 - val_mean_squared_error: 0.2464
+Epoch 43/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4314 - mean_squared_error: 0.4314
+711/711 [==============================] - 0s 44us/step - loss: 0.4215 - mean_squared_error: 0.4215 - val_loss: 0.2466 - val_mean_squared_error: 0.2466
+Epoch 44/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3965 - mean_squared_error: 0.3965
+711/711 [==============================] - 0s 32us/step - loss: 0.4233 - mean_squared_error: 0.4233 - val_loss: 0.2461 - val_mean_squared_error: 0.2461
+Epoch 45/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3958 - mean_squared_error: 0.3958
+711/711 [==============================] - 0s 22us/step - loss: 0.4175 - mean_squared_error: 0.4175 - val_loss: 0.2463 - val_mean_squared_error: 0.2463
+Epoch 46/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3518 - mean_squared_error: 0.3518
+711/711 [==============================] - 0s 22us/step - loss: 0.4206 - mean_squared_error: 0.4206 - val_loss: 0.2469 - val_mean_squared_error: 0.2469
+Epoch 47/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.2409 - mean_squared_error: 0.2409
+711/711 [==============================] - 0s 44us/step - loss: 0.4134 - mean_squared_error: 0.4134 - val_loss: 0.2467 - val_mean_squared_error: 0.2467
+Epoch 48/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4546 - mean_squared_error: 0.4546
+711/711 [==============================] - 0s 22us/step - loss: 0.4187 - mean_squared_error: 0.4187 - val_loss: 0.2462 - val_mean_squared_error: 0.2462
+Epoch 49/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5084 - mean_squared_error: 0.5084
+711/711 [==============================] - 0s 44us/step - loss: 0.4024 - mean_squared_error: 0.4024 - val_loss: 0.2458 - val_mean_squared_error: 0.2458
+Epoch 50/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3615 - mean_squared_error: 0.3615
+711/711 [==============================] - 0s 22us/step - loss: 0.3792 - mean_squared_error: 0.3792 - val_loss: 0.2463 - val_mean_squared_error: 0.2463
+Epoch 51/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.2171 - mean_squared_error: 0.2171
+711/711 [==============================] - 0s 22us/step - loss: 0.4152 - mean_squared_error: 0.4152 - val_loss: 0.2464 - val_mean_squared_error: 0.2464
+Epoch 52/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.5246 - mean_squared_error: 0.5246
+711/711 [==============================] - 0s 44us/step - loss: 0.3932 - mean_squared_error: 0.3932 - val_loss: 0.2459 - val_mean_squared_error: 0.2459
+Epoch 53/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3516 - mean_squared_error: 0.3516
+711/711 [==============================] - 0s 22us/step - loss: 0.4015 - mean_squared_error: 0.4015 - val_loss: 0.2457 - val_mean_squared_error: 0.2457
+Epoch 54/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4253 - mean_squared_error: 0.4253
+711/711 [==============================] - 0s 44us/step - loss: 0.3919 - mean_squared_error: 0.3919 - val_loss: 0.2454 - val_mean_squared_error: 0.2454
+Epoch 55/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4119 - mean_squared_error: 0.4119
+711/711 [==============================] - 0s 22us/step - loss: 0.3683 - mean_squared_error: 0.3683 - val_loss: 0.2451 - val_mean_squared_error: 0.2451
+Epoch 56/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.2674 - mean_squared_error: 0.2674
+711/711 [==============================] - 0s 22us/step - loss: 0.3673 - mean_squared_error: 0.3673 - val_loss: 0.2453 - val_mean_squared_error: 0.2453
+Epoch 57/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.3025 - mean_squared_error: 0.3025
+711/711 [==============================] - 0s 44us/step - loss: 0.3625 - mean_squared_error: 0.3625 - val_loss: 0.2456 - val_mean_squared_error: 0.2456
+Epoch 58/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4770 - mean_squared_error: 0.4770
+711/711 [==============================] - 0s 22us/step - loss: 0.3904 - mean_squared_error: 0.3904 - val_loss: 0.2458 - val_mean_squared_error: 0.2458
+Epoch 59/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.2877 - mean_squared_error: 0.2877
+711/711 [==============================] - 0s 40us/step - loss: 0.3696 - mean_squared_error: 0.3696 - val_loss: 0.2452 - val_mean_squared_error: 0.2452
+Epoch 60/60
+
+ 32/711 [>.............................] - ETA: 0s - loss: 0.4087 - mean_squared_error: 0.4087
+711/711 [==============================] - 0s 24us/step - loss: 0.3616 - mean_squared_error: 0.3616 - val_loss: 0.2457 - val_mean_squared_error: 0.2457
+====November 16, 2018 09:53:52 PM====
+====November 16, 2018 09:53:52 PM====
+Trial ID: _fluency_full_10_epochs_10-relu_5-relu_1-tanh_(0.0,0.5)_
+  output: fluency, 10-fold cross-validation, 10 epochs
+  H1: 10 relu, H2: 5, relu, OUT: 1, tanh, dropout: IN=0.0 OUT=0.5
+====November 16, 2018 09:53:52 PM====
+--- Model ---
+Input    : 1 x 3
+Layer h1 : 3 x 10 relu
+Layer h2 : 10 x 5 relu
+Output   : 5 x 1 tanh
+----------
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dropout_30 (Dropout)         (None, 3)                 0         
+_________________________________________________________________
+dense_30 (Dense)             (None, 10)                40        
+_________________________________________________________________
+dropout_31 (Dropout)         (None, 10)                0         
+_________________________________________________________________
+dense_31 (Dense)             (None, 5)                 55        
+_________________________________________________________________
+dropout_32 (Dropout)         (None, 5)                 0         
+_________________________________________________________________
+dense_32 (Dense)             (None, 1)                 6         
+=================================================================
+Total params: 101
+Trainable params: 101
+Non-trainable params: 0
+_________________________________________________________________
+====November 16, 2018 09:53:52 PM====
+Training   - data: (799, 3) labels: (799,)
+Validation - data: (0,) labels: (0,)
+Epoch 1/10
+
+ 32/799 [>.............................] - ETA: 15s - loss: 1.6389 - mean_squared_error: 1.6389
+799/799 [==============================] - 1s 869us/step - loss: 1.2940 - mean_squared_error: 1.2940
+Epoch 2/10
+
+ 32/799 [>.............................] - ETA: 0s - loss: 1.6011 - mean_squared_error: 1.6011
+799/799 [==============================] - 0s 28us/step - loss: 1.1448 - mean_squared_error: 1.1448
+Epoch 3/10
+
+ 32/799 [>.............................] - ETA: 0s - loss: 1.2684 - mean_squared_error: 1.2684
+799/799 [==============================] - 0s 20us/step - loss: 1.1719 - mean_squared_error: 1.1719
+Epoch 4/10
+
+ 32/799 [>.............................] - ETA: 0s - loss: 1.2234 - mean_squared_error: 1.2234
+799/799 [==============================] - 0s 41us/step - loss: 1.0877 - mean_squared_error: 1.0877
+Epoch 5/10
+
+ 32/799 [>.............................] - ETA: 0s - loss: 1.1329 - mean_squared_error: 1.1329
+799/799 [==============================] - 0s 28us/step - loss: 1.0214 - mean_squared_error: 1.0214
+Epoch 6/10
+
+ 32/799 [>.............................] - ETA: 0s - loss: 1.3215 - mean_squared_error: 1.3215
+799/799 [==============================] - 0s 20us/step - loss: 0.9617 - mean_squared_error: 0.9617
+Epoch 7/10
+
+ 32/799 [>.............................] - ETA: 0s - loss: 0.7975 - mean_squared_error: 0.7975
+799/799 [==============================] - 0s 20us/step - loss: 0.7680 - mean_squared_error: 0.7680
+Epoch 8/10
+
+ 32/799 [>.............................] - ETA: 0s - loss: 0.7120 - mean_squared_error: 0.7120
+799/799 [==============================] - 0s 39us/step - loss: 0.6893 - mean_squared_error: 0.6893
+Epoch 9/10
+
+ 32/799 [>.............................] - ETA: 0s - loss: 0.5492 - mean_squared_error: 0.5492
+799/799 [==============================] - 0s 39us/step - loss: 0.6983 - mean_squared_error: 0.6983
+Epoch 10/10
+
+ 32/799 [>.............................] - ETA: 0s - loss: 0.4760 - mean_squared_error: 0.4760
+799/799 [==============================] - 0s 20us/step - loss: 0.7317 - mean_squared_error: 0.7317
+====November 16, 2018 09:53:54 PM====
+Model predictions, training: (799, 1) [0.20687501]
+====November 16, 2018 09:53:54 PM====
+Model predictions, test: (200, 1) [0.22032131]
+====November 16, 2018 09:53:55 PM====

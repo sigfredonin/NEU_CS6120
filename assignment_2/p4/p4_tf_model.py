@@ -283,8 +283,9 @@ def save_results_of_trials(scores, model_parameters, trial_parameters, trial_ID,
             val_acc_min = val_acc_mean = val_acc_max = None
 
     # Plot loss and accuracy or mean squared error over the trials
-    heading = "Keras MLP: %s:Lin, %d:%s, 10:%s, 1:tanh; epochs=%d" % \
-        (output_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial)
+    heading = "Keras MLP: %s:Lin, %d:%s, %d:%s, %d:%s; epochs=%d" % \
+        (output_type, num_h1_units, h1_activation, num_h2_units, h2_activation, \
+            num_output_units, output_activation, num_epochs_per_trial)
     if val_mse_min != None and val_mse_mean != None and val_mse_max != None:
         subheading = "validation mean squared error: %7.4f %7.4f %7.4f" % \
             (val_mse_min, val_mse_mean, val_mse_max)
@@ -331,16 +332,20 @@ def save_model_predictions(trial_type, features, gold_labels, predicted_labels, 
         f.write("--i- --Features--- --Gold- --Pred- --Summary-----------------------------------\n")
         #           1 [3 3  0.7410]  0.0000  1.0000 UKIP has fallen 18 points behind the Tories
         for i, prediction in enumerate(predicted_labels):
-            _f = "[%d %d %7.4f]" % features[i]
+            if output_type == 'nonrep' or output_type == 'nonrepQ':
+                _f = "[%d %d %7.4f %d %d]" % features[i]
+            elif output_type == 'fluency' or output_type == 'fluencyQ':
+                _f = "[%d %d %7.4f %d]" % features[i]
             f.write("%4d %s %7.4f %7.4f %s\n" % (i, _f, gold_labels[i], prediction, summaries[i]))
 
     # Plot gold labels vs. predicted labels, together with least square fit line
-    heading = "Keras MLP: %s:Lin, %d:%s, 10:%s, 1:tanh; epochs=%d" % \
-        (output_type, num_h1_units, h1_activation, h2_activation, num_epochs_per_trial)
+    heading = "Keras MLP: %s:Lin, %d:%s, %d:%s, %d:%s; epochs=%d" % \
+        (output_type, num_h1_units, h1_activation, num_h2_units, h2_activation, \
+            num_output_units, output_activation, num_epochs_per_trial)
     subheading = "test data pearson r, p; mse: %7.4f %7.4f %7.4f" % (r, p, mse)
     plotName='tests/p4_tf_MLP_test_comp' + trial_ID + timestamp
     p4_utils.plot_compare(gold_labels, predicted_labels, line.slope, line.intercept, \
-        heading, subheading, plotName)
+        heading=heading, subheading=subheading, plotName=plotName)
 
 # ------------------------------------------------------------------------
 # Tests ---
@@ -356,10 +361,10 @@ if __name__ == '__main__':
     # Set parameters for this set of trials
     #   output types -  1 tanh      : nonrep, fluency
     #                   13 softmax  : nonrepQ, fluencyQ
-    output_type = 'fluency'
+    output_type = 'nonrep'
     num_cross_validation_trials = 10
     num_epochs_per_trial = 60       # ... for 10-fold cross-validatin training
-    num_epochs_for_training = 60    # ... for training on the full training set
+    num_epochs_for_training = 10    # ... for training on the full training set
 
     # set model parameters for this set of trials
     num_h1_units = 10
