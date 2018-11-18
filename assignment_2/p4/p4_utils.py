@@ -39,6 +39,7 @@ from scipy import spatial
 from scipy.stats import pearsonr
 from scipy.stats import linregress
 from sklearn.metrics import mean_squared_error
+from stanfordcorenlp import StanfordCoreNLP
 
 import matplotlib.pyplot as plt
 
@@ -335,6 +336,37 @@ def max_cosine_similarity(wva_sents, DEBUG=False):
                 max_similarity = similarity
                 max_similarity_indices = (i, j)
     return max_similarity, max_similarity_indices
+
+# ------------------------------------------------------------------------
+# Sentence constituency parsing ---
+# ------------------------------------------------------------------------
+
+def parse(sentence):
+    with StanfordCoreNLP('../stanford-corenlp-full-2016-10-31') as nlp:
+        parsetree = nlp.parse(sentence)
+        print('Constituency Parsing:', parsetree)
+    return parsetree
+
+def max_parse_tree_depth(sentence):
+    """
+    ... a la StackOverflow ...
+    https://stackoverflow.com/questions/40710664/get-the-depth-of-words-from-a-nltk-tree
+    """
+    with StanfordCoreNLP('../stanford-corenlp-full-2016-10-31') as nlp:
+        parsetree = nlp.parse(sentence)
+    tree = nltk.Tree.fromstring(parsetree)
+    n_leaves = len(tree.leaves())
+    leavepos = set(tree.leaf_treeposition(n) for n in range(n_leaves))
+    depths = []
+    for pos in tree.treepositions():
+        if pos in leavepos:
+    return max(depths)
+
+def parse_tree_height(sentence):
+    with StanfordCoreNLP('../stanford-corenlp-full-2016-10-31') as nlp:
+        parsetree = nlp.parse(sentence)
+    tree = nltk.Tree.fromstring(parsetree)
+    return tree.height()
 
 # ------------------------------------------------------------------------
 # Non-redundancy features (for problem 4.1) ---
