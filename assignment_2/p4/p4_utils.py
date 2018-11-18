@@ -360,6 +360,7 @@ def max_parse_tree_depth(sentence):
     depths = []
     for pos in tree.treepositions():
         if pos in leavepos:
+            depths.append(len(pos))
     return max(depths)
 
 def parse_tree_height(sentence):
@@ -367,6 +368,11 @@ def parse_tree_height(sentence):
         parsetree = nlp.parse(sentence)
     tree = nltk.Tree.fromstring(parsetree)
     return tree.height()
+
+def max_tree_height_summary(summary):
+    sents = nltk.sent_tokenize(summary)
+    heights = [ parse_tree_height(s) for s in sents]
+    return max(heights)
 
 # ------------------------------------------------------------------------
 # Non-redundancy features (for problem 4.1) ---
@@ -396,7 +402,15 @@ def get_non_redundancy_features_summary(vectors, iSummary, summary, DEBUG=False)
     max_similarity, (s1, s2) = max_cosine_similarity(wva_sents)
     if DEBUG:
         print("Max cosine similarity: %7.4f : (%d,%d)" % (max_similarity, s1, s2))
-    return mf_unigram_count, mf_bigram_count, max_similarity
+    skip_1s = get_skip_grams_words(nltk.word_tokenize(summary), 1)
+    mf_skip_1, mf_skip_1_count = get_most_frequent(skip_1s)
+    if DEBUG:
+        print("Most frequent skip-unigram: %s : %d" % (mf_skip_1, mf_skip_1_count))
+    skip_2s = get_skip_grams_words(nltk.word_tokenize(summary), 2)
+    mf_skip_2, mf_skip_2_count = get_most_frequent(skip_2s)
+    if DEBUG:
+        print("Most frequent skip-bigram: %s : %d" % (mf_skip_2, mf_skip_2_count))
+    return mf_unigram_count, mf_bigram_count, max_similarity, mf_skip_1, mf_skip_2
 
 def get_non_redundancy_features(vectors, summaries, DEBUG=False):
     features = []
@@ -437,13 +451,22 @@ def get_fluency_features_summary(iSummary, summary, DEBUG=False):
     min_Flesch_score = get_min_Flesch_reading_ease_summary(iSummary, words_in_sents)
     if DEBUG:
         print("Min Flesch reading ease: %7.4f" % min_Flesch_score)
-    return repeated_unigrams_count, repeated_bigrams_count, min_Flesch_score
+    max_tree_height = max_tree_height_summary(summary)
+    if DEBUG:
+        print("Max sentence parse tree height: %d" % max_tree_height)
+    return repeated_unigrams_count, repeated_bigrams_count, min_Flesch_score, max_tree_height
 
 def get_fluency_features(summaries, DEBUG=False):
     features = []
     for iSummary, summary in enumerate(summaries):
         summary_features = get_fluency_features_summary(iSummary, summary, DEBUG=DEBUG)
         features.append(summary_features)
+        if DEBUG:
+            if len(features) % 20 == 0:
+                print(".", end='')
+            if len(features) % 100 == 0:
+                print(iSummary)
+            print()
     return features
 
 # ------------------------------------------------------------------------
