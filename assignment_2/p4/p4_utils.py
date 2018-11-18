@@ -410,7 +410,8 @@ def get_non_redundancy_features_summary(vectors, iSummary, summary, DEBUG=False)
     mf_skip_2, mf_skip_2_count = get_most_frequent(skip_2s)
     if DEBUG:
         print("Most frequent skip-bigram: %s : %d" % (mf_skip_2, mf_skip_2_count))
-    return mf_unigram_count, mf_bigram_count, max_similarity, mf_skip_1, mf_skip_2
+    return mf_unigram_count, mf_bigram_count, max_similarity, \
+        mf_skip_1_count, mf_skip_2_count
 
 def get_non_redundancy_features(vectors, summaries, DEBUG=False):
     features = []
