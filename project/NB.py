@@ -3,6 +3,8 @@ import nltk
 import math
 from nltk.corpus import sentiwordnet
 
+from datetime import datetime
+
 COUNT_SARCASTIC_TRAINING_TWEETS = 20000
 COUNT_NON_SARCASTIC_TRAINING_TWEETS = 100000
 
@@ -54,7 +56,7 @@ def _get_unigram_counts(tweets, unique_unigram_count, other_unigram_counts):
 
     return unigram_counts, total_unigram_count, unique_unigram_count
 
-def get_unigram_counts(training_sarcastic_tweets, testing_non_sarcastic_tweets):
+def get_unigram_counts(sarcastic_tweets, non_sarcastic_tweets):
     sarcastic_unigram_counts = {}
     non_sarcastic_unigram_counts = {}
 
@@ -64,13 +66,12 @@ def get_unigram_counts(training_sarcastic_tweets, testing_non_sarcastic_tweets):
 
     # get unigram counts for sarcastic tweets
     sarcastic_unigram_counts, total_sarcastic_unigram_count, unique_unigram_count = \
-        _get_unigram_counts(training_sarcastic_tweets, unique_unigram_count, non_sarcastic_unigram_counts)
+        _get_unigram_counts(sarcastic_tweets, unique_unigram_count, non_sarcastic_unigram_counts)
 
     # get unigram counts for non sarcastic tweets
     non_sarcastic_unigram_counts, total_non_sarcastic_unigram_count, unique_unigram_count = \
-        _get_unigram_counts(training_non_sarcastic_tweets, unique_unigram_count, sarcastic_unigram_counts)
+        _get_unigram_counts(non_sarcastic_tweets, unique_unigram_count, sarcastic_unigram_counts)
 
-    print('')
     print('unique unigram count: ' + str(unique_unigram_count))
     print('total sarcastic unigram count: ' + str(total_sarcastic_unigram_count))
     print('total non sarcastic unigram count: ' + str(total_non_sarcastic_unigram_count))
@@ -100,7 +101,7 @@ def _get_bigram_counts(tweets, unique_bigram_count, other_bigram_counts):
 
     return bigram_counts, total_bigram_count, unique_bigram_count
 
-def get_bigram_counts(training_sarcastic_tweets, testing_non_sarcastic_tweets):
+def get_bigram_counts(sarcastic_tweets, non_sarcastic_tweets):
     sarcastic_bigram_counts = {}
     non_sarcastic_bigram_counts = {}
 
@@ -110,13 +111,12 @@ def get_bigram_counts(training_sarcastic_tweets, testing_non_sarcastic_tweets):
 
     # get bigram counts for sarcastic tweets
     sarcastic_bigram_counts, total_sarcastic_bigram_count, unique_bigram_count = \
-        _get_bigram_counts(training_sarcastic_tweets, unique_bigram_count, non_sarcastic_bigram_counts)
+        _get_bigram_counts(sarcastic_tweets, unique_bigram_count, non_sarcastic_bigram_counts)
 
     # get bigram counts for non sarcastic tweets
     non_sarcastic_bigram_counts, total_non_sarcastic_bigram_count, unique_bigram_count = \
-        _get_bigram_counts(training_non_sarcastic_tweets, unique_bigram_count, sarcastic_bigram_counts)
+        _get_bigram_counts(non_sarcastic_tweets, unique_bigram_count, sarcastic_bigram_counts)
 
-    print('')
     print('unique bigram count: ' + str(unique_bigram_count))
     print('total sarcastic bigram count: ' + str(total_sarcastic_bigram_count))
     print('total non sarcastic bigram count: ' + str(total_non_sarcastic_bigram_count))
@@ -145,19 +145,18 @@ def _get_repeated_character_count(tweets):
         repeated_character_count += _get_repeated_character_count_tweet(tweet)
     return repeated_character_count
 
-def get_repeated_character_counts(training_sarcastic_tweets, testing_non_sarcastic_tweets):
+def get_repeated_character_counts(sarcastic_tweets, non_sarcastic_tweets):
     sarcastic_repeated_character_count = 0
     non_sarcastic_repeated_character_count = 0
 
     # get repeated character count for sarcastic tweets
     sarcastic_repeated_character_count = \
-        _get_repeated_character_count(training_sarcastic_tweets)
+        _get_repeated_character_count(sarcastic_tweets)
 
     # get repeated character count for non sarcastic tweets
     non_sarcastic_repeated_character_count = \
-        _get_repeated_character_count(training_non_sarcastic_tweets)
+        _get_repeated_character_count(non_sarcastic_tweets)
 
-    print('')
     print('sarcastic repeated character count: ' + str(sarcastic_repeated_character_count))
     print('non sarcastic repeated character count: ' + str(non_sarcastic_repeated_character_count))
 
@@ -213,16 +212,22 @@ def get_senti_score(sentence):
 
 def _get_sentiments(tweets):
     sentiments = {}
-    for tweet in training_sarcastic_tweets:
+    print("Scoring sentiment in %d tweets ..." % len(tweets))
+    for i, tweet in enumerate(tweets):
         score = get_senti_score(tweet)
         count = sentiments.get(score) or 0
         count += 1
         sentiments[score] = count
+        if i+1 % 100 == 0:
+            print(".", end='')
+        if i+1 % 1000 == 0:
+            print()
+    print()
     return sentiments
 
-def get_sentiments(training_sarcastic_tweets, testing_non_sarcastic_tweets):
-    sarcastic_sentiments = _get_sentiments(training_sarcastic_tweets)
-    non_sarcastic_sentiments = _get_sentiments(training_sarcastic_tweets)
+def get_sentiments(sarcastic_tweets, non_sarcastic_tweets):
+    sarcastic_sentiments = _get_sentiments(sarcastic_tweets)
+    non_sarcastic_sentiments = _get_sentiments(sarcastic_tweets)
     return sarcastic_sentiments, non_sarcastic_sentiments
 
 # - Capitalization -
@@ -244,12 +249,13 @@ def _get_caps(tweets):
         caps[percent] = count
     return caps
 
-def get_caps(training_sarcastic_tweets, testing_non_sarcastic_tweets):
-    sarcastic_caps = _get_caps(training_sarcastic_tweets)
-    non_sarcastic_caps = _get_caps(training_non_sarcastic_tweets)
+def get_caps(sarcastic_tweets, non_sarcastic_tweets):
+    sarcastic_caps = _get_caps(sarcastic_tweets)
+    non_sarcastic_caps = _get_caps(non_sarcastic_tweets)
     return sarcastic_caps, non_sarcastic_caps
 
-# --- Testing ---
+# --- Predicting ---
+
 def _get_bigrams(tokenized_tweet):
     bigrams = []
     tokenized_tweet.append('<end>')
@@ -269,103 +275,152 @@ def _get_smoothed_probability_product(tokenized_tweet, counts, total, unique):
         prob *= w_prob
     return prob
 
-# combine sarcastic and non-sarcastic tweets into one testing set
-sarcastic_tweets, non_sarcastic_tweets = load_data()
-training_sarcastic_tweets, training_non_sarcastic_tweets, \
-    testing_sarcastic_tweets, testing_non_sarcastic_tweets = \
-    get_data(sarcastic_tweets, non_sarcastic_tweets)
+def sarcasm_on_test():
 
-testing_tweets = testing_sarcastic_tweets
-testing_tweets.extend(testing_non_sarcastic_tweets)
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+    print(" TRAINING ".center(40,'='))
 
-# results matrix (true positive, false positive, false negative, true negative)
-results = {
-    'tp': 0, 'fp': 0,
-    'fn': 0, 'tn': 0
-}
+    sarcastic_tweets, non_sarcastic_tweets = load_data()
 
-# determine result of each tweet in testing set
-for tweet in testing_tweets:
-    tokenized_tweet = nltk.word_tokenize(tweet)
+    training_sarcastic_tweets, training_non_sarcastic_tweets, \
+        testing_sarcastic_tweets, testing_non_sarcastic_tweets = \
+        get_data(sarcastic_tweets, non_sarcastic_tweets)
 
-    # unigram testing
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+    print(" UNIGRAM COUNTS ".center(40,'-'))
+
     (sarcastic_unigram_counts, total_sarcastic_unigram_count, unique_unigram_count), \
            (non_sarcastic_unigram_counts, total_non_sarcastic_unigram_count, unique_unigram_count) = \
-           get_unigram_counts(training_sarcastic_tweets, testing_non_sarcastic_tweets)
-    sarcastic_prob = \
-        _get_smoothed_probability_product(tokenized_tweet, \
-            sarcastic_unigram_counts, total_sarcastic_unigram_count, unique_unigram_count)
-    non_sarcastic_prob = \
-        _get_smoothed_probability_product(tokenized_tweet, \
-            non_sarcastic_unigram_counts, total_non_sarcastic_unigram_count, unique_unigram_count)
+           get_unigram_counts(training_sarcastic_tweets, training_non_sarcastic_tweets)
 
-    # bigram testing
-    bigrams = _get_bigrams(tokenized_tweet)
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+    print(" BIGRAM COUNTS ".center(40,'-'))
+
     (sarcastic_bigram_counts, total_sarcastic_bigram_count, unique_bigram_count), \
            (non_sarcastic_bigram_counts, total_non_sarcastic_bigram_count, unique_bigram_count) = \
-           get_bigram_counts(training_sarcastic_tweets, testing_non_sarcastic_tweets)
-    sarcastic_prob *= \
-        _get_smoothed_probability_product(tokenized_tweet, \
-            sarcastic_bigram_counts, total_sarcastic_bigram_count, unique_bigram_count)
-    non_sarcastic_prob *= \
-        _get_smoothed_probability_product(tokenized_tweet, \
-            non_sarcastic_bigram_counts, total_non_sarcastic_bigram_count, unique_bigram_count)
+           get_bigram_counts(training_sarcastic_tweets, training_non_sarcastic_tweets)
 
-    # repeated character testing
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+    print(" REPEATED CHARACTER COUNTS ".center(40,'-'))
+
     sarcastic_repeated_character_count, non_sarcastic_repeated_character_count = \
-           get_repeated_character_counts(training_sarcastic_tweets, testing_non_sarcastic_tweets)
-    repeated_characters_count = _get_repeated_character_count(tweet)
-    if repeated_characters_count > 0:
-        sarcastic_prob *= (sarcastic_repeated_character_count / COUNT_SARCASTIC_TRAINING_TWEETS)
-        non_sarcastic_prob *= (non_sarcastic_repeated_character_count / COUNT_NON_SARCASTIC_TRAINING_TWEETS)
-    else:
-        sarcastic_prob *= ((COUNT_SARCASTIC_TRAINING_TWEETS - sarcastic_repeated_character_count) / COUNT_SARCASTIC_TRAINING_TWEETS)
-        non_sarcastic_prob *= ((COUNT_NON_SARCASTIC_TRAINING_TWEETS - non_sarcastic_repeated_character_count) / COUNT_NON_SARCASTIC_TRAINING_TWEETS)
+           get_repeated_character_counts(training_sarcastic_tweets, training_non_sarcastic_tweets)
 
-    # sentiment testing
-    senti_score = get_senti_score(tweet)
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+    print(" SENTIMENTS ".center(40,'-'))
+
     sarcastic_sentiments, non_sarcastic_sentiments = \
-        get_sentiments(training_sarcastic_tweets, testing_non_sarcastic_tweets)
-    sarcastic_senti_count = (sarcastic_sentiments.get(senti_score) or 0) + 1
-    non_sarcastic_senti_count = (non_sarcastic_sentiments.get(senti_score) or 0) + 1
+        get_sentiments(training_sarcastic_tweets, training_non_sarcastic_tweets)
 
-    sarcastic_prob *= (sarcastic_senti_count / COUNT_SARCASTIC_TRAINING_TWEETS)
-    non_sarcastic_prob *= (non_sarcastic_senti_count / COUNT_NON_SARCASTIC_TRAINING_TWEETS)
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+    print(" CAPITALIZED WORDS ".center(40,'-'))
 
-    # capitalization testing
-    percent = get_percent_caps(tweet)
     sarcastic_caps, non_sarcastic_caps = \
-        get_caps(training_sarcastic_tweets, testing_non_sarcastic_tweets)
-    sarcastic_caps_count = (sarcastic_caps.get(percent) or 0) + 1
-    non_sarcastic_caps_count = (non_sarcastic_caps.get(percent) or 0) + 1
+        get_caps(training_sarcastic_tweets, training_non_sarcastic_tweets)
 
-    sarcastic_prob *= (sarcastic_caps_count / COUNT_SARCASTIC_TRAINING_TWEETS)
-    non_sarcastic_prob *= (non_sarcastic_caps_count / COUNT_NON_SARCASTIC_TRAINING_TWEETS)
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+    print(" PROCESS TEST SET TWEETS ".center(80,'='))
 
+    # combine sarcastic and non-sarcastic tweets into one testing set
+    testing_tweets = testing_sarcastic_tweets
+    testing_tweets.extend(testing_non_sarcastic_tweets)
 
-    # results
-    result = 's'
-    if non_sarcastic_prob > sarcastic_prob:
-        result = 'ns'
+    # results matrix (true positive, false positive, false negative, true negative)
+    results = {
+        'tp': 0, 'fp': 0,
+        'fn': 0, 'tn': 0
+    }
 
-    if result == 's':
-        if tweet in sarcastic_tweets:
-            results['tp'] = results.get('tp') + 1
+    # determine result of each tweet in testing set
+    for i, tweet in enumerate(testing_tweets):
+        tokenized_tweet = nltk.word_tokenize(tweet)
+
+        # unigram testing
+        sarcastic_prob = \
+            _get_smoothed_probability_product(tokenized_tweet, \
+                sarcastic_unigram_counts, total_sarcastic_unigram_count, unique_unigram_count)
+        non_sarcastic_prob = \
+            _get_smoothed_probability_product(tokenized_tweet, \
+                non_sarcastic_unigram_counts, total_non_sarcastic_unigram_count, unique_unigram_count)
+
+        # bigram testing
+        bigrams = _get_bigrams(tokenized_tweet)
+        sarcastic_prob *= \
+            _get_smoothed_probability_product(tokenized_tweet, \
+                sarcastic_bigram_counts, total_sarcastic_bigram_count, unique_bigram_count)
+        non_sarcastic_prob *= \
+            _get_smoothed_probability_product(tokenized_tweet, \
+                non_sarcastic_bigram_counts, total_non_sarcastic_bigram_count, unique_bigram_count)
+
+        # repeated character testing
+        repeated_characters_count = _get_repeated_character_count(tweet)
+        if repeated_characters_count > 0:
+            sarcastic_prob *= (sarcastic_repeated_character_count / COUNT_SARCASTIC_TRAINING_TWEETS)
+            non_sarcastic_prob *= (non_sarcastic_repeated_character_count / COUNT_NON_SARCASTIC_TRAINING_TWEETS)
         else:
-            results['fp'] = results.get('fp') + 1
-    else:
-        if tweet in sarcastic_tweets:
-            results['fn'] = results.get('fn') + 1
+            sarcastic_prob *= ((COUNT_SARCASTIC_TRAINING_TWEETS - sarcastic_repeated_character_count) / COUNT_SARCASTIC_TRAINING_TWEETS)
+            non_sarcastic_prob *= ((COUNT_NON_SARCASTIC_TRAINING_TWEETS - non_sarcastic_repeated_character_count) / COUNT_NON_SARCASTIC_TRAINING_TWEETS)
+
+        # sentiment testing
+        senti_score = get_senti_score(tweet)
+        sarcastic_senti_count = (sarcastic_sentiments.get(senti_score) or 0) + 1
+        non_sarcastic_senti_count = (non_sarcastic_sentiments.get(senti_score) or 0) + 1
+
+        sarcastic_prob *= (sarcastic_senti_count / COUNT_SARCASTIC_TRAINING_TWEETS)
+        non_sarcastic_prob *= (non_sarcastic_senti_count / COUNT_NON_SARCASTIC_TRAINING_TWEETS)
+
+        # capitalization testing
+        percent = get_percent_caps(tweet)
+        sarcastic_caps_count = (sarcastic_caps.get(percent) or 0) + 1
+        non_sarcastic_caps_count = (non_sarcastic_caps.get(percent) or 0) + 1
+
+        sarcastic_prob *= (sarcastic_caps_count / COUNT_SARCASTIC_TRAINING_TWEETS)
+        non_sarcastic_prob *= (non_sarcastic_caps_count / COUNT_NON_SARCASTIC_TRAINING_TWEETS)
+
+        # results
+        result = 's'
+        if non_sarcastic_prob > sarcastic_prob:
+            result = 'ns'
+
+        if result == 's':
+            if tweet in sarcastic_tweets:
+                results['tp'] = results.get('tp') + 1
+            else:
+                results['fp'] = results.get('fp') + 1
         else:
-            results['tn'] = results.get('tn') + 1
+            if tweet in sarcastic_tweets:
+                results['fn'] = results.get('fn') + 1
+            else:
+                results['tn'] = results.get('tn') + 1
 
+        if i+1 % 100 == 0:
+            print(".", end='')
+        if i+1 % 1000 == 0:
+            print()
+    print()
 
-precision = results.get('tp') / (results.get('tp') + results.get('fp'))
-recall = results.get('tp') / (results.get('tp') + results.get('fn'))
-f_score = (2 * precision * recall) / (precision + recall)
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+    print(" EVALUATE ".center(80,'='))
 
+    precision = results.get('tp') / (results.get('tp') + results.get('fp'))
+    recall = results.get('tp') / (results.get('tp') + results.get('fn'))
+    f_score = (2 * precision * recall) / (precision + recall)
 
-print('')
-print('precision: ' + str(precision))
-print('recall: ' + str(recall))
-print('f-score: ' + str(f_score))
+    print('precision: ' + str(precision))
+    print('recall: ' + str(recall))
+    print('f-score: ' + str(f_score))
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+if __name__ == '__main__':
+
+    sarcasm_on_test()
