@@ -1,0 +1,34 @@
+====November 24, 2018 11:18:15 AM====
+=============== TRAINING ===============
+num sarcastic tweets: 25273
+num non sarcastic tweets: 117825
+====November 24, 2018 11:18:15 AM====
+------------ UNIGRAM COUNTS-------------
+
+unique unigram count: 83042
+total sarcastic unigram count: 287871
+total non sarcastic unigram count: 1368080
+====November 24, 2018 11:18:33 AM====
+------------- BIGRAM COUNTS-------------
+
+unique bigram count: 561757
+total sarcastic bigram count: 307871
+total non sarcastic bigram count: 1468080
+====November 24, 2018 11:18:52 AM====
+------- REPEATED CHARACTER COUNTS-------
+
+sarcastic repeated character count: 3611
+non sarcastic repeated character count: 13069
+====November 24, 2018 11:18:53 AM====
+---------------SENTIMENTS---------------
+====November 24, 2018 12:56:45 PM====
+------------------CAPS------------------
+====November 24, 2018 12:56:46 PM====
+============================ PROCESS TEST SET TWEETS============================
+====November 24, 2018 01:54:03 PM====
+=================================== EVALUATE ===================================
+
+precision: 0.23007963793028416
+recall: 1.0
+f-score: 0.3740890115332909
+====November 24, 2018 01:54:03 PM====
