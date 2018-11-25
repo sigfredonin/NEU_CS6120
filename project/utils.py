@@ -64,13 +64,13 @@ def get_tweet_words_in_sents_lowercase(tweets):
                              nltk.sent_tokenize(tweet)]  for tweet in tweets ]
     return tweet_sentences
 
-def n_grams(n, tokens):
+def ngrams(n, tokens):
     return [tuple(tokens[i:i+n]) for i in range (len(tokens)-(n-1))]
 
-def find_n_grams_in_tweets(n, tokenized_tweets):
+def find_ngrams_in_tweets(n, tokenized_tweets):
     ngrams = []
     for tokens in tokenized_tweets:
-        tweet_ngrams = n_grams(n, tokens)
+        tweet_ngrams = ngrams(n, tokens)
         ngrams.append(tweet_ngrams)
     return ngrams
 
@@ -116,28 +116,15 @@ def index_vector_tweets(grams_in_tweets, vocab_dict):
         index_vectors.append(vector)
     return index_vectors
 
-############################## Unigram Features ###############################
+######################## Unigram and Bigram Features #########################
 
 # converts tokens into a list of word index vectors
-def train_tokens_to_word_indices(unigrams_in_tweets, train_tokens):
-    vocab_dict = create_vocab_dict(train_tokens)
-    index_vectors = index_vector_tweets(unigrams_in_tweets, vocab_dict)
+def train_ngrams_to_indices(ngrams_in_tweets, train_ngrams):
+    vocab_dict = create_vocab_dict(train_ngrams)
+    index_vectors = index_vector_tweets(ngrams_in_tweets, vocab_dict)
     return index_vectors, vocab_dict
 
 # converts tokens into a list of word index vectors using an existing dictionary
-def test_tokens_to_word_indices(unigrams_in_tweets, vocab_dict):
-    index_vectors = index_vector_tweets(unigrams_in_tweets, vocab_dict)
-    return index_vectors
-
-############################## Bigram Features ###############################
-
-# converts bigrams into a list of word index vectors
-def train_bigrams_to_word_indices(bigrams_in_tweets, train_bigrams):
-    vocab_dict = create_vocab_dict(train_bigrams)
-    index_vectors = index_vector_tweets(bigrams_in_tweets, vocab_dict)
-    return index_vectors, vocab_dict
-
-# converts bigrams into a list of word index vectors using an existing dictionary
-def test_bigrams_to_word_indices(bigrams_in_tweets, vocab_dict):
-    index_vectors = index_vector_tweets(bigrams_in_tweets, vocab_dict)
+def test_ngrams_to_indices(ngrams_in_tweets, vocab_dict):
+    index_vectors = index_vector_tweets(ngrams_in_tweets, vocab_dict)
     return index_vectors
