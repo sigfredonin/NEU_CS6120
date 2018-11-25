@@ -119,7 +119,7 @@ def word_index_vector_tweets(tokenized_tweets, vocab_dict):
 ############################## Unigram Features ###############################
 
 # converts tokens into a list of word index vectors
-def train_tokens_to_word_indices(train_tokens, tokenized_tweets):
+def train_tokens_to_word_indices(tokenized_tweets, train_tokens):
     vocab_dict = create_vocab_dict(train_tokens)
     word_index_vectors = word_index_vector_tweets(tokenized_tweets, vocab_dict)
     return word_index_vectors, vocab_dict
