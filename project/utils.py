@@ -165,6 +165,70 @@ def get_percent_caps_tweets(tweets)(tweets):
         caps[percent] = count
     return caps
 
+########################## Sentiment Score Features ###########################
+
+def convert_tag(tag):
+    if tag.startswith('NN'):
+        return 'n'
+    elif tag.startswith('VB'):
+        return 'v'
+    elif tag.startswith('JJ'):
+        return 'a'
+    elif tag.startswith('RB'):
+        return 'r'
+    else:
+        return ''
+
+def get_senti_score(sentence):
+    token = nltk.word_tokenize(sentence)
+    tagged = nltk.pos_tag(token)
+
+    avg_senti_score = 0
+    num_senti_words = 0
+
+    for pair in tagged:
+        word = pair[0]
+        tag = convert_tag(pair[1])
+        if tag != '':
+            senti_word_1 = word + '.' + tag + '.01'
+            senti_word_2 = word + '.' + tag + '.02'
+            senti_word_3 = word + '.' + tag + '.03'
+            try:
+                senti_score_1 = sentiwordnet.senti_synset(senti_word_1)
+                senti_score_2 = sentiwordnet.senti_synset(senti_word_2)
+                senti_score_3 = sentiwordnet.senti_synset(senti_word_3)
+                senti_score_pos = (senti_score_1.pos_score() + senti_score_2.pos_score() + senti_score_3.pos_score()) / 3
+                senti_score_neg = (senti_score_1.neg_score() + senti_score_2.neg_score() + senti_score_3.neg_score()) / 3
+                avg_senti_score += (senti_score_pos - senti_score_neg)
+                num_senti_words += 1
+            except:
+                avg_senti_score += 0
+
+    if num_senti_words > 0:
+        avg_senti_score /= num_senti_words
+
+    if avg_senti_score >= 0:
+        adjusted_score = math.ceil(avg_senti_score * 100)
+    else:
+        adjusted_score = math.floor(avg_senti_score * 100)
+
+    return adjusted_score
+
+def get_sentiments_tweets(tweets):
+    sentiments = {}
+    print("Scoring sentiment in %d tweets ..." % len(tweets))
+    for i, tweet in enumerate(tweets):
+        score = get_senti_score(tweet)
+        count = sentiments.get(score) or 0
+        count += 1
+        sentiments[score] = count
+        if i+1 % 100 == 0:
+            print(".", end='')
+        if i+1 % 1000 == 0:
+            print()
+    print()
+    return sentiments
+
 ############################## Assemble Features ##############################
 
 # Assemble the features for tweets
@@ -176,9 +240,7 @@ def get_train_features_tweets(tweets, word_dict, bigram_dict):
     index_vectors_bigrams = ngrams_to_indices(bigrams_in_tweets, bigram_dict)
     repeated_character_counts = get_repeated_character_count_tweets(tweets)
     percent_caps = get_percent_caps_tweets(tweets)
+    sentiment_scores = get_sentiments_tweets(tweets)
 
-    repetitive_unigram_counts = summary_repetive_ngram_counts(1, tokenized_tweets)
-    repetitive_bigram_counts = summary_repetive_ngram_counts(2, tokenized_tweets)
-    min_Flesch_scores = summary_min_Flesch_scores(summaries)
     return zip_features(repetitive_unigram_counts, repetitive_bigram_counts, \
                         min_Flesch_scores)
