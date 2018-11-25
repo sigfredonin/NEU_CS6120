@@ -301,10 +301,10 @@ if __name__ == '__main__':
     assert(len(test_tweets) == len(test_labels))
 
     # abbreviate the tweets for testing ...
-    _train_tweets = train_tweets[:100]
-    _train_labels = train_labels[:100]
-    _test_tweets = test_tweets[:100]
-    _test_labels = test_labels[:100]
+    _train_tweets = train_tweets[:200] + train_tweets[-200:]
+    _train_labels = train_labels[:200] + train_labels[-200:]
+    _test_tweets = test_tweets[:200] + test_tweets[-200:]
+    _test_labels = test_labels[:200] + test_labels[-200:]
 
     np_train_features, word_dict, bigram_dict = \
         get_train_features_tweets(_train_tweets)
@@ -312,6 +312,15 @@ if __name__ == '__main__':
         get_test_features_tweets(_test_tweets, word_dict, bigram_dict)
     np_train_labels = np.array(_train_labels)
     np_test_labels = np.array(_test_labels)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    import svm
+    print("Train and predict ...")
+    mse, pearson = svm.train_and_validate_svm( \
+        np_train_features, np_train_labels, np_test_features, np_test_labels)
+    print("... MSE: %f PEARSON: %f")
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
