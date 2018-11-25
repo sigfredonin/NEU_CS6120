@@ -132,12 +132,9 @@ def ngrams_to_indices(ngrams_in_tweets, vocab_dict):
     return index_vectors
 
 # Compute training vocabulary
-def get_training_vocabulary(training_sarcastic_tweets, training_non_sarcastic_tweets):
-    words_in_tweets = get_tweet_words(training_sarcastic_tweets) + \
-        get_tweet_words(training_non_sarcastic_tweets)
+def get_training_vocabulary(words_in_tweets, bigrams_in_tweets):
     words = [ word for tweet in words_in_tweets for word in tweet ]
     word_dict = create_vocab_dict(words)
-    bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
     bigrams = [ bigram for tweet in bigrams_in_tweets for bigram in tweet ]
     bigram_dict = create_vocab_dict(bigrams)
     return word_dict, bigram_dict
@@ -148,6 +145,7 @@ def get_training_vocabulary(training_sarcastic_tweets, training_non_sarcastic_tw
 def get_train_features_tweets(tweets, word_dict, bigram_dict):
     words_in_tweets = get_tweet_words(tweets)
     bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
+    word_dict, bigram_dict = get_training_vocabulary(words_in_tweets, bigrams_in_tweets)
     index_vectors_unigrams = ngrams_to_indices(words_in_tweets, word_dict)
     index_vectors_bigrams = ngrams_to_indices(bigrams_in_tweets, bigram_dict)
 
