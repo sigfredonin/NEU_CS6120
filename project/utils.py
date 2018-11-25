@@ -139,6 +139,32 @@ def get_training_vocabulary(words_in_tweets, bigrams_in_tweets):
     bigram_dict = create_vocab_dict(bigrams)
     return word_dict, bigram_dict
 
+############# Repeated Characters and Capitalized Words Features ###############
+
+def get_repeated_character_count_tweets(tweets):
+    repeated_character_count = 0
+    for tweet in tweets:
+        repeated_character_count += _get_repeated_character_count_tweet(tweet)
+    return repeated_character_count
+
+def get_percent_caps(tweet):
+    num_caps = 0
+    for letter in tweet:
+        if letter.isupper():
+            num_caps += 1
+    percent_caps = num_caps / len(tweet)
+    adjusted_percent_caps = math.ceil(percent_caps * 100)
+    return adjusted_percent_caps
+
+def get_percent_caps_tweets(tweets)(tweets):
+    caps = {}
+    for tweet in tweets:
+        percent = get_percent_caps(tweet)
+        count = caps.get(percent) or 0
+        count += 1
+        caps[percent] = count
+    return caps
+
 ############################## Assemble Features ##############################
 
 # Assemble the features for tweets
@@ -148,7 +174,8 @@ def get_train_features_tweets(tweets, word_dict, bigram_dict):
     word_dict, bigram_dict = get_training_vocabulary(words_in_tweets, bigrams_in_tweets)
     index_vectors_unigrams = ngrams_to_indices(words_in_tweets, word_dict)
     index_vectors_bigrams = ngrams_to_indices(bigrams_in_tweets, bigram_dict)
-
+    repeated_character_counts = get_repeated_character_count_tweets(tweets)
+    percent_caps = get_percent_caps_tweets(tweets)
 
     repetitive_unigram_counts = summary_repetive_ngram_counts(1, tokenized_tweets)
     repetitive_bigram_counts = summary_repetive_ngram_counts(2, tokenized_tweets)
