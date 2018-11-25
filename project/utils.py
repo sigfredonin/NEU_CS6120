@@ -66,16 +66,20 @@ def get_freq_ngram_sets(ngrams_in_sarcastic_tweets, ngrams_in_non_sarcastic_twee
     non_sarcastic_set = get_most_common_ngrams_set(fd_just_non_sarcastic_ngrams)
     return sarcastic_set, non_sarcastic_set
 
-def get_freq_word_and_bigram_sets(training_sarcastic_tweets, training_non_sarcastic_tweets):
-    words_in_sarcastic_tweets = [ nltk.word_tokenize(tweet) for tweet in training_sarcastic_tweets ]
-    words_in_non_sarcastic_tweets = [ nltk.word_tokenize(tweet) for tweet in training_non_sarcastic_tweets ]
-    # TODO: make bigrams
-    sarcastic_words_set, non_sarcastic_words_set = \
-        get_freq_ngram_sets(words_in_sarcastic_tweets, words_in_non_sarcastic_tweets)
+def get_freq_unigram_and_bigram_sets(training_sarcastic_tweets, training_non_sarcastic_tweets):
+    # unigrams
+    unigrams_in_sarcastic_tweets = [ nltk.word_tokenize(tweet) for tweet in training_sarcastic_tweets ]
+    unigrams_in_non_sarcastic_tweets = [ nltk.word_tokenize(tweet) for tweet in training_non_sarcastic_tweets ]
+    sarcastic_unigrams_set, non_sarcastic_unigrams_set = \
+        get_freq_ngram_sets(unigrams_in_sarcastic_tweets, unigrams_in_non_sarcastic_tweets)
+    # bigrams
+    bigrams_in_sarcastic_tweets = find_ngrams_in_tweets(n, unigrams_in_sarcastic_tweets)
+    bigrams_in_non_sarcastic_tweets = find_ngrams_in_tweets(n, unigrams_in_non_sarcastic_tweets)
     sarcastic_bigrams_set, non_sarcastic_bigrams_set = \
         get_freq_ngram_sets(bigrams_in_sarcastic_tweets, bigrams_in_non_sarcastic_tweets)
-    sarcastic_set = sarcastic_words_set + sarcastic_bigrams_set
-    non_sarcastic_set = sarcastic_words_set + non_sarcastic_bigrams_set
+    # combined sets of most frequent unigrams and bigrams
+    sarcastic_set = sarcastic_unigrams_set + sarcastic_bigrams_set
+    non_sarcastic_set = sarcastic_unigrams_set + non_sarcastic_bigrams_set
     return sarcastic_set, non_sarcastic_set
 
 # Separate training and testing data
@@ -93,7 +97,7 @@ def get_data(sarcastic_tweets, non_sarcastic_tweets):
     test_tweets, test_labels = zip(*labeled_test_tweets)
 
     sarcastic_freqs, non_sarcastic_freqs = \
-        get_freq_word_and_bigram_sets(training_sarcastic_tweets, training_non_sarcastic_tweets)
+        get_freq_unigram_and_bigram_sets(training_sarcastic_tweets, training_non_sarcastic_tweets)
 
     return train_tweets, train_labels, test_tweets, test_labels,
         sarcastic_freqs, non_sarcastic_freqs
