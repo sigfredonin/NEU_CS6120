@@ -98,9 +98,9 @@ def create_vocab_dict(freq_tokens):
 # creates a list of one hot vectors from tweets
 def one_hot_vector_tweets(tokenized_tweets, vocab_dict):
     one_hot_vectors = []
-    for review in tokenized_tweets:
+    for tweet in tokenized_tweets:
         one_hot = [0] * len(vocab_dict)
-        for token in review:
+        for token in tweet:
             one_hot[vocab_dict.get(token, 0)] = 1
         one_hot_vectors.append(one_hot)
     return one_hot_vectors
@@ -109,9 +109,22 @@ def one_hot_vector_tweets(tokenized_tweets, vocab_dict):
 LEN_WORD_INDEX_VECTORS = 128
 def word_index_vector_tweets(tokenized_tweets, vocab_dict):
     word_index_vectors = []
-    for review in tokenized_tweets:
+    for tweet in tokenized_tweets:
         vector = [0] * LEN_WORD_INDEX_VECTORS
-        for i, token in enumerate(review):
+        for i, token in enumerate(tweet):
             vector[i] = vocab_dict.get(token, 0)
         word_index_vectors.append(vector)
+    return word_index_vectors
+
+############################## Unigram Features ###############################
+
+# converts tokens into a list of word index vectors
+def train_tokens_to_word_indices(train_tokens, tokenized_tweets):
+    vocab_dict = create_vocab_dict(train_tokens)
+    word_index_vectors = word_index_vector_tweets(tokenized_tweets, vocab_dict)
+    return word_index_vectors, vocab_dict
+
+# converts tokens into a list of word index vectors using an existing dictionary
+def test_tokens_to_word_indices(tokenized_tweets, vocab_dict):
+    word_index_vectors = word_index_vector_tweets(tokenized_tweets, vocab_dict)
     return word_index_vectors
