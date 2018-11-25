@@ -232,8 +232,8 @@ def get_sentiments_tweets(tweets):
 
 ############################## Assemble Features ##############################
 
-# Assemble the features for tweets
-def get_train_features_tweets(tweets, word_dict, bigram_dict):
+# Assemble the features for training tweets
+def get_train_features_tweets(tweets):
     words_in_tweets = get_tweet_words(tweets)
     bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
     word_dict, bigram_dict = get_training_vocabulary(words_in_tweets, bigrams_in_tweets)
@@ -253,3 +253,24 @@ def get_train_features_tweets(tweets, word_dict, bigram_dict):
         feature.append(feature_vector)
 
     return np.array(features), word_dict, bigram_dict
+
+# Assemble the features for test tweets
+def get_test_features_tweets(tweets, word_dict, bigram_dict):
+    words_in_tweets = get_tweet_words(tweets)
+    bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
+    index_vectors_unigrams = ngrams_to_indices(words_in_tweets, word_dict)
+    index_vectors_bigrams = ngrams_to_indices(bigrams_in_tweets, bigram_dict)
+    repeated_character_counts = get_repeated_character_count_tweets(tweets)
+    percent_caps = get_percent_caps_tweets(tweets)
+    sentiment_scores = get_sentiments_tweets(tweets)
+
+    features = []
+    for i, uv in enumerate(index_vectors_unigrams):
+        bv = index_vectors_bigrams[i]
+        rc = [ repeated_character_counts[i] ]
+        pc = [ percent_caps[i] ]
+        ss = [ sentiment_scores[i] ]
+        feature_vector = uv + bv + rc + pc + ss
+        feature.append(feature_vector)
+
+    return np.array(features)
