@@ -1,5 +1,6 @@
 import re
 import nltk
+import numpy as np
 from nltk.corpus import stopwords
 
 ################################## Load Data ###################################
@@ -156,7 +157,7 @@ def get_percent_caps(tweet):
     adjusted_percent_caps = math.ceil(percent_caps * 100)
     return adjusted_percent_caps
 
-def get_percent_caps_tweets(tweets)(tweets):
+def get_percent_caps_tweets(tweets):
     caps = {}
     for tweet in tweets:
         percent = get_percent_caps(tweet)
@@ -242,5 +243,13 @@ def get_train_features_tweets(tweets, word_dict, bigram_dict):
     percent_caps = get_percent_caps_tweets(tweets)
     sentiment_scores = get_sentiments_tweets(tweets)
 
-    return zip_features(repetitive_unigram_counts, repetitive_bigram_counts, \
-                        min_Flesch_scores)
+    features = []
+    for i, uv in enumerate(index_vectors_unigrams):
+        bv = index_vectors_bigrams[i]
+        rc = [ repeated_character_counts[i] ]
+        pc = [ percent_caps[i] ]
+        ss = [ sentiment_scores[i] ]
+        feature_vector = uv + bv + rc + pc + ss
+        feature.append(feature_vector)
+
+    return np.array(features), word_dict, bigram_dict
