@@ -78,7 +78,7 @@ def find_n_grams_in_tweets(n, tokenized_tweets):
 STOPWORDS = set(stopwords.words('english'))
 PUNCTUATION = { ',', '.', '?', '!', ';', ':' }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ One-Hot Vectors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tweet Vectors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # find all words with frequency less than threshold
 def find_freq(tokens, THRESHOLD):
@@ -96,9 +96,9 @@ def create_vocab_dict(freq_tokens):
     return vocab_dict
 
 # creates a list of one hot vectors from tweets
-def one_hot_vector_tweets(tokenized_tweets, vocab_dict):
+def one_hot_vector_tweets(grams_in_tweets, vocab_dict):
     one_hot_vectors = []
-    for tweet in tokenized_tweets:
+    for tweet in grams_in_tweets:
         one_hot = [0] * len(vocab_dict)
         for token in tweet:
             one_hot[vocab_dict.get(token, 0)] = 1
@@ -106,25 +106,38 @@ def one_hot_vector_tweets(tokenized_tweets, vocab_dict):
     return one_hot_vectors
 
 # creates a list of index vectors from tweets
-LEN_WORD_INDEX_VECTORS = 128
-def word_index_vector_tweets(tokenized_tweets, vocab_dict):
-    word_index_vectors = []
-    for tweet in tokenized_tweets:
-        vector = [0] * LEN_WORD_INDEX_VECTORS
+LEN_INDEX_VECTORS = 128
+def index_vector_tweets(grams_in_tweets, vocab_dict):
+    index_vectors = []
+    for tweet in grams_in_tweets:
+        vector = [0] * LEN_INDEX_VECTORS
         for i, token in enumerate(tweet):
             vector[i] = vocab_dict.get(token, 0)
-        word_index_vectors.append(vector)
-    return word_index_vectors
+        index_vectors.append(vector)
+    return index_vectors
 
 ############################## Unigram Features ###############################
 
 # converts tokens into a list of word index vectors
-def train_tokens_to_word_indices(tokenized_tweets, train_tokens):
+def train_tokens_to_word_indices(unigrams_in_tweets, train_tokens):
     vocab_dict = create_vocab_dict(train_tokens)
-    word_index_vectors = word_index_vector_tweets(tokenized_tweets, vocab_dict)
-    return word_index_vectors, vocab_dict
+    index_vectors = index_vector_tweets(unigrams_in_tweets, vocab_dict)
+    return index_vectors, vocab_dict
 
 # converts tokens into a list of word index vectors using an existing dictionary
-def test_tokens_to_word_indices(tokenized_tweets, vocab_dict):
-    word_index_vectors = word_index_vector_tweets(tokenized_tweets, vocab_dict)
-    return word_index_vectors
+def test_tokens_to_word_indices(unigrams_in_tweets, vocab_dict):
+    index_vectors = index_vector_tweets(unigrams_in_tweets, vocab_dict)
+    return index_vectors
+
+############################## Bigram Features ###############################
+
+# converts bigrams into a list of word index vectors
+def train_bigrams_to_word_indices(bigrams_in_tweets, train_bigrams):
+    vocab_dict = create_vocab_dict(train_bigrams)
+    index_vectors = index_vector_tweets(bigrams_in_tweets, vocab_dict)
+    return index_vectors, vocab_dict
+
+# converts bigrams into a list of word index vectors using an existing dictionary
+def test_bigrams_to_word_indices(bigrams_in_tweets, vocab_dict):
+    index_vectors = index_vector_tweets(bigrams_in_tweets, vocab_dict)
+    return index_vectors
