@@ -1,7 +1,10 @@
 import re
 import nltk
+import math
 import numpy as np
 from nltk.corpus import stopwords
+
+from datetime import datetime
 
 ################################## Load Data ###################################
 
@@ -18,8 +21,8 @@ def process_whitespace(token_str):
     return no_dup_spaces
 
 def load_data():
-    posproc = numpy.load('posproc.npy')
-    negproc = numpy.load('negproc.npy')
+    posproc = np.load('posproc.npy')
+    negproc = np.load('negproc.npy')
 
     sarcastic_tweets = []
     non_sarcastic_tweets = []
@@ -49,7 +52,7 @@ def get_data(sarcastic_tweets, non_sarcastic_tweets):
     train_tweets, train_labels = zip(*labeled_train_tweets)
     test_tweets, test_labels = zip(*labeled_test_tweets)
 
-    return(train_tweets, train_labels, test_tweets, test_labelss)
+    return train_tweets, train_labels, test_tweets, test_labels
 
 ################################### N-Grams ####################################
 
@@ -73,13 +76,13 @@ def get_tweet_words_in_sents_lowercase(tweets):
                              nltk.sent_tokenize(tweet)]    for tweet in tweets ]
     return tweet_sentences
 
-def ngrams(n, tokens):
+def get_ngrams(n, tokens):
     return [tuple(tokens[i:i+n]) for i in range (len(tokens)-(n-1))]
 
 def find_ngrams_in_tweets(n, tokenized_tweets):
     ngrams = []
     for tokens in tokenized_tweets:
-        tweet_ngrams = ngrams(n, tokens)
+        tweet_ngrams = get_ngrams(n, tokens)
         ngrams.append(tweet_ngrams)
     return ngrams
 
@@ -142,11 +145,25 @@ def get_training_vocabulary(words_in_tweets, bigrams_in_tweets):
 
 ############# Repeated Characters and Capitalized Words Features ###############
 
-def get_repeated_character_count_tweets(tweets):
+def _get_repeated_character_count_tweet(tweet):
     repeated_character_count = 0
-    for tweet in tweets:
-        repeated_character_count += _get_repeated_character_count_tweet(tweet)
+    characters = ['null_1', 'null_2', 'null_3']
+    repeated_characters = False
+    for character in tweet:
+        characters.pop(0)
+        characters.append(character)
+        if characters[0] == characters[1] and characters[1] == characters[2]:
+            repeated_characters = True
+            break
+    if repeated_characters:
+        repeated_character_count += 1
     return repeated_character_count
+
+def get_repeated_character_count_tweets(tweets):
+    repeated_character_counts = []
+    for tweet in tweets:
+        repeated_character_counts.append(_get_repeated_character_count_tweet(tweet))
+    return repeated_character_counts
 
 def get_percent_caps(tweet):
     num_caps = 0
@@ -232,7 +249,7 @@ def get_sentiments_tweets(tweets):
 
 ############################## Assemble Features ##############################
 
-def assemble_features(words_in_tweets, bigrams_in_tweets, word_dict, bigram_dict):
+def assemble_features(tweets, words_in_tweets, bigrams_in_tweets, word_dict, bigram_dict):
     index_vectors_unigrams = ngrams_to_indices(words_in_tweets, word_dict)
     index_vectors_bigrams = ngrams_to_indices(bigrams_in_tweets, bigram_dict)
     repeated_character_counts = get_repeated_character_count_tweets(tweets)
@@ -255,12 +272,42 @@ def get_train_features_tweets(tweets):
     words_in_tweets = get_tweet_words(tweets)
     bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
     word_dict, bigram_dict = get_training_vocabulary(words_in_tweets, bigrams_in_tweets)
-    features = assemble_features(words_in_tweets, bigrams_in_tweets, word_dict, bigram_dict)
+    features = assemble_features(tweets, words_in_tweets, bigrams_in_tweets, word_dict, bigram_dict)
     return np.array(features), word_dict, bigram_dict
 
 # Assemble the features for test tweets
 def get_test_features_tweets(tweets, word_dict, bigram_dict):
     words_in_tweets = get_tweet_words(tweets)
     bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
-    features = assemble_features(words_in_tweets, bigrams_in_tweets, word_dict, bigram_dict)
+    features = assemble_features(tweets, words_in_tweets, bigrams_in_tweets, word_dict, bigram_dict)
     return np.array(features)
+
+if __name__ == '__main__':
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
+
+    sarcastic_tweets, non_sarcastic_tweets = load_data()
+    train_tweets, train_labels, test_tweets, test_labels = \
+        get_data(sarcastic_tweets, non_sarcastic_tweets)
+
+    assert(len(train_tweets) + len(test_tweets) == \
+           len(sarcastic_tweets) + len(non_sarcastic_tweets))
+    assert(len(train_tweets) == len(train_labels))
+    assert(len(test_tweets) == len(test_labels))
+
+    # abbreviate the tweets for testing ...
+    _train_tweets = train_tweets[:100]
+    _train_labels = train_labels[:100]
+    _test_tweets = test_tweets[:100]
+    _test_labels = test_labels[:100]
+
+    np_train_features, word_dict, bigram_dict = \
+        get_train_features_tweets(_train_tweets)
+    np_test_features = \
+        get_test_features_tweets(_test_tweets, word_dict, bigram_dict)
+    np_train_labels = np.array(_train_labels)
+    np_test_labels = np.array(_test_labels)
+
+    nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    print("====" + nowStr + "====")
