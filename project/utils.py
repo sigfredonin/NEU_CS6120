@@ -325,37 +325,35 @@ def get_sentiments_tweets(tweets):
 
 ############################## Assemble Features ##############################
 
-def assemble_features(tweets, words_in_tweets, bigrams_in_tweets, word_dict, bigram_dict):
-    index_vectors_unigrams = ngrams_to_indices(words_in_tweets, word_dict)
-    index_vectors_bigrams = ngrams_to_indices(bigrams_in_tweets, bigram_dict)
+def assemble_features(tweets, words_in_tweets, bigrams_in_tweets, \
+        sarcastic_freqs, non_sarcastic_freqs):
+    count_sarcastic_freq_unigrams, count_sarcastic_freq_bigrams, \
+        count_non_sarcastic_freq_unigrams, count_non_sarcastic_freq_bigrams = \
+        get_ngram_counts(words_in_tweets, bigrams_in_tweets, \
+            sarcastic_freqs, non_sarcastic_freqs)
     repeated_character_counts = get_repeated_character_count_tweets(tweets)
     percent_caps = get_percent_caps_tweets(tweets)
     sentiment_scores = get_sentiments_tweets(tweets)
 
     features = []
-    for i, uv in enumerate(index_vectors_unigrams):
-        bv = index_vectors_bigrams[i]
+    for i, suc in enumerate(count_sarcastic_freq_unigrams):
+        sbc = count_sarcastic_freq_bigrams[i]
+        nuc = count_non_sarcastic_freq_unigrams[i]
+        nbc = count_non_sarcastic_freq_bigrams[i]
         rc = [ repeated_character_counts[i] ]
         pc = [ percent_caps[i] ]
         ss = [ sentiment_scores[i] ]
-        feature_vector = uv + bv + rc + pc + ss
+        feature_vector = suc + sbc + nuc + nbc + rc + pc + ss
         features.append(feature_vector)
 
     return features
 
-# Assemble the features for training tweets
-def get_train_features_tweets(tweets):
+# Assemble the features for training or test tweets
+def get_features_tweets(tweets, sarcastic_freqs, non_sarcastic_freqs):
     words_in_tweets = get_tweet_words(tweets)
     bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
-    word_dict, bigram_dict = get_training_vocabulary(words_in_tweets, bigrams_in_tweets)
-    features = assemble_features(tweets, words_in_tweets, bigrams_in_tweets, word_dict, bigram_dict)
-    return np.array(features), word_dict, bigram_dict
-
-# Assemble the features for test tweets
-def get_test_features_tweets(tweets, word_dict, bigram_dict):
-    words_in_tweets = get_tweet_words(tweets)
-    bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
-    features = assemble_features(tweets, words_in_tweets, bigrams_in_tweets, word_dict, bigram_dict)
+    features = assemble_features(tweets, words_in_tweets, bigrams_in_tweets, \
+            sarcastic_freqs, non_sarcastic_freqs)
     return np.array(features)
 
 if __name__ == '__main__':
@@ -380,9 +378,9 @@ if __name__ == '__main__':
     _test_labels = test_labels[:2000] + test_labels[-2000:]
 
     np_train_features, word_dict, bigram_dict = \
-        get_train_features_tweets(_train_tweets)
+        get_train_features_tweets(_train_tweets, sarcastic_freqs, non_sarcastic_freqs)
     np_test_features = \
-        get_test_features_tweets(_test_tweets, word_dict, bigram_dict)
+        get_test_features_tweets(_test_tweets, sarcastic_freqs, non_sarcastic_freqs)
     np_train_labels = np.array(_train_labels)
     np_test_labels = np.array(_test_labels)
 
