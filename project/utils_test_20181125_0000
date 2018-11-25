@@ -1,0 +1,13 @@
+====November 25, 2018 12:00:33 AM====
+num sarcastic tweets: 25273
+num non sarcastic tweets: 117825
+Scoring sentiment in 400 tweets ...
+
+Scoring sentiment in 400 tweets ...
+
+====November 25, 2018 12:00:36 AM====
+Train and predict ...
+mean squared error: 39669.49068805406
+pearson coefficient: (0.010775096130314726, 0.8298969418372699)
+... MSE: 39669.490688 PEARSON: (0.010775096130314726, 0.8298969418372699)
+====November 25, 2018 02:00:50 AM====

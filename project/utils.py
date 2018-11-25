@@ -124,7 +124,8 @@ def index_vector_tweets(grams_in_tweets, vocab_dict):
     for tweet in grams_in_tweets:
         vector = [0] * LEN_INDEX_VECTORS
         for i, token in enumerate(tweet):
-            vector[i] = vocab_dict.get(token, 0)
+            if i < len(vector):
+                vector[i] = vocab_dict.get(token, 0)
         index_vectors.append(vector)
     return index_vectors
 
@@ -307,11 +308,11 @@ if __name__ == '__main__':
     _test_labels = test_labels[:200] + test_labels[-200:]
 
     np_train_features, word_dict, bigram_dict = \
-        get_train_features_tweets(_train_tweets)
+        get_train_features_tweets(train_tweets)
     np_test_features = \
-        get_test_features_tweets(_test_tweets, word_dict, bigram_dict)
-    np_train_labels = np.array(_train_labels)
-    np_test_labels = np.array(_test_labels)
+        get_test_features_tweets(test_tweets, word_dict, bigram_dict)
+    np_train_labels = np.array(train_labels)
+    np_test_labels = np.array(test_labels)
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
@@ -320,7 +321,7 @@ if __name__ == '__main__':
     print("Train and predict ...")
     mse, pearson = svm.train_and_validate_svm( \
         np_train_features, np_train_labels, np_test_features, np_test_labels)
-    print("... MSE: %f PEARSON: %f")
+    print("... MSE: %f PEARSON: %s"  % (mse, pearson))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
