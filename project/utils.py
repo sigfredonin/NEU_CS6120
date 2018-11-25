@@ -176,12 +176,14 @@ def get_percent_caps(tweet):
 
 def get_percent_caps_tweets(tweets):
     caps = {}
+    percents = []
     for tweet in tweets:
         percent = get_percent_caps(tweet)
         count = caps.get(percent) or 0
         count += 1
         caps[percent] = count
-    return caps
+        percents.append(percent)
+    return percents
 
 ########################## Sentiment Score Features ###########################
 
@@ -234,18 +236,20 @@ def get_senti_score(sentence):
 
 def get_sentiments_tweets(tweets):
     sentiments = {}
+    scores = []
     print("Scoring sentiment in %d tweets ..." % len(tweets))
     for i, tweet in enumerate(tweets):
         score = get_senti_score(tweet)
         count = sentiments.get(score) or 0
         count += 1
         sentiments[score] = count
+        scores.append(score)
         if i+1 % 100 == 0:
             print(".", end='')
         if i+1 % 1000 == 0:
             print()
     print()
-    return sentiments
+    return scores
 
 ############################## Assemble Features ##############################
 
@@ -263,7 +267,7 @@ def assemble_features(tweets, words_in_tweets, bigrams_in_tweets, word_dict, big
         pc = [ percent_caps[i] ]
         ss = [ sentiment_scores[i] ]
         feature_vector = uv + bv + rc + pc + ss
-        feature.append(feature_vector)
+        features.append(feature_vector)
 
     return features
 
