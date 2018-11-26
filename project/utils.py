@@ -376,10 +376,10 @@ if __name__ == '__main__':
     assert(len(test_tweets) == len(test_labels))
 
     # abbreviate the tweets for testing ...
-    _train_tweets = train_tweets[:2000] + train_tweets[-2000:]
-    _train_labels = train_labels[:2000] + train_labels[-2000:]
-    _test_tweets = test_tweets[:2000] + test_tweets[-2000:]
-    _test_labels = test_labels[:2000] + test_labels[-2000:]
+    _train_tweets = train_tweets[:5000] + train_tweets[-5000:]
+    _train_labels = train_labels[:5000] + train_labels[-5000:]
+    _test_tweets = test_tweets[:5000] + test_tweets[-5000:]
+    _test_labels = test_labels[:5000] + test_labels[-5000:]
 
     np_train_features = \
         get_features_tweets(_train_tweets, sarcastic_freqs, non_sarcastic_freqs)
