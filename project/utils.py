@@ -1,9 +1,11 @@
+import sys
 import re
 import nltk
 import math
 import numpy as np
-from nltk.corpus import sentiwordnet
 from nltk.corpus import stopwords
+from nltk.corpus import sentiwordnet
+from nltk.corpus.reader.wordnet import WordNetError
 
 from datetime import datetime
 
@@ -15,7 +17,7 @@ COUNT_NON_SARCASTIC_TRAINING_TWEETS = 100000
 SARCASTIC = 1
 NON_SARCASTIC = 0
 
-NUM_MOST_COMMON_NGRAMS = 50
+NUM_MOST_COMMON_NGRAMS = 100000
 
 # removes blank lines, replaces \n with space, removes duplicate spaces
 def process_whitespace(token_str):
@@ -274,30 +276,44 @@ def convert_tag(tag):
     else:
         return ''
 
-def get_senti_score(sentence):
-    token = nltk.word_tokenize(sentence)
-    tagged = nltk.pos_tag(token)
+SENTI_TAGS = { 'NN':'n', 'VB':'v', 'JJ':'a', 'RB':'r' }
+SENTI_NETS = ['.01', '.02', '.03']
+
+def get_word_tag_senti_score(word_tag_sense, DEBUG=False):
+    try:
+        scores = sentiwordnet.senti_synset(word_tag_sense)
+    except WordNetError:
+        scores = None
+    except:
+        print("Unexpected error getting synset:", sys.exc_info()[0])
+    if DEBUG:
+        print("--- %s : %s" % (word_tag_sense, scores))
+    return scores
+
+def get_senti_score(tweet, DEBUG=False, VERBOSE=False):
+    tokens = nltk.word_tokenize(tweet)
+    tagged = nltk.pos_tag(tokens)
+    senti_tagged = [ w + '.' + SENTI_TAGS[t[:2]] for w, t in tagged if t[:2] in SENTI_TAGS ]
 
     avg_senti_score = 0
     num_senti_words = 0
+    num_exceptions = 0
 
-    for pair in tagged:
-        word = pair[0]
-        tag = convert_tag(pair[1])
-        if tag != '':
-            senti_word_1 = word + '.' + tag + '.01'
-            senti_word_2 = word + '.' + tag + '.02'
-            senti_word_3 = word + '.' + tag + '.03'
-            try:
-                senti_score_1 = sentiwordnet.senti_synset(senti_word_1)
-                senti_score_2 = sentiwordnet.senti_synset(senti_word_2)
-                senti_score_3 = sentiwordnet.senti_synset(senti_word_3)
-                senti_score_pos = (senti_score_1.pos_score() + senti_score_2.pos_score() + senti_score_3.pos_score()) / 3
-                senti_score_neg = (senti_score_1.neg_score() + senti_score_2.neg_score() + senti_score_3.neg_score()) / 3
-                avg_senti_score += (senti_score_pos - senti_score_neg)
-                num_senti_words += 1
-            except:
-                avg_senti_score += 0
+    for word_tag in senti_tagged:
+        senti_scores = [ get_word_tag_senti_score(word_tag + n) for n in SENTI_NETS ]
+        senti_scores_found = [ s for s in senti_scores if s != None ]
+        num_exceptions += len(SENTI_NETS) - len(senti_scores_found)
+        if len(senti_scores_found) > 0:
+            senti_score_pos = np.average([ s.pos_score() for s in senti_scores_found ])
+            senti_score_neg = np.average([ s.neg_score() for s in senti_scores_found])
+            senti_score_dif = (senti_score_pos - senti_score_neg)
+            avg_senti_score += senti_score_dif
+            num_senti_words += 1
+            if VERBOSE:
+                for i, n in enumerate(SENTI_NETS):
+                    print("%s.%s: %s" % (word_tag, n, senti_scores[i]))
+                print("Averages: POS %f NEG %f DIFF %f" % \
+                    (senti_score_pos, senti_score_neg, senti_score_dif))
 
     if num_senti_words > 0:
         avg_senti_score /= num_senti_words
@@ -307,24 +323,41 @@ def get_senti_score(sentence):
     else:
         adjusted_score = math.floor(avg_senti_score * 100)
 
-    return adjusted_score
+    return adjusted_score, num_senti_words, num_exceptions
 
 def get_sentiments_tweets(tweets):
+    DEBUG = False
     sentiments = {}
     scores = []
+    total_words_scored = 0
+    total_exceptions = 0
+    tweets_with_scored_words = 0
+    tweets_with_exceptions = 0
     print("Scoring sentiment in %d tweets ..." % len(tweets))
     for i, tweet in enumerate(tweets):
-        score = get_senti_score(tweet)
+        score, num_words_scored, num_exceptions = get_senti_score(tweet, DEBUG)
         count = sentiments.get(score) or 0
         count += 1
         sentiments[score] = count
         scores.append(score)
+        # monitoring ...
+        total_words_scored += num_words_scored
+        total_exceptions += num_exceptions
+        tweets_with_scored_words += 1 if num_words_scored > 0 else 0
+        tweets_with_exceptions += 1 if num_exceptions > 0 else 0
         if (i+1) % 100 == 0:
 #           print("%d %d %s" % (i, score, tweet))
             print(".", end='')
-        if (i+1) % 1000 == 0:
+            DEBUG = True
+        else:
+            DEBUG = False
+        if (i+1) % 5000 == 0:
             print()
     print((nltk.FreqDist(sentiments)).most_common(20))
+    print("Tweets with scored words: %d; total words scored: %d" % \
+        (tweets_with_scored_words, total_words_scored))
+    print("Tweets with exceptions: %d; total exceptions: %d" % \
+        (tweets_with_exceptions, total_exceptions))
     return scores
 
 ############################## Assemble Features ##############################
@@ -376,26 +409,32 @@ if __name__ == '__main__':
     assert(len(test_tweets) == len(test_labels))
 
     # abbreviate the tweets for testing ...
-    _train_tweets = train_tweets[:5000] + train_tweets[-5000:]
-    _train_labels = train_labels[:5000] + train_labels[-5000:]
-    _test_tweets = test_tweets[:5000] + test_tweets[-5000:]
-    _test_labels = test_labels[:5000] + test_labels[-5000:]
+    TEST_SIZE = 5000
+    _train_tweets = train_tweets[:TEST_SIZE] + train_tweets[-TEST_SIZE:]
+    _train_labels = train_labels[:TEST_SIZE] + train_labels[-TEST_SIZE:]
+    _test_tweets = test_tweets[:TEST_SIZE] + test_tweets[-TEST_SIZE:]
+    _test_labels = test_labels[:TEST_SIZE] + test_labels[-TEST_SIZE:]
 
     np_train_features = \
-        get_features_tweets(_train_tweets, sarcastic_freqs, non_sarcastic_freqs)
+        get_features_tweets(train_tweets, sarcastic_freqs, non_sarcastic_freqs)
     np_test_features = \
-        get_features_tweets(_test_tweets, sarcastic_freqs, non_sarcastic_freqs)
-    np_train_labels = np.array(_train_labels)
-    np_test_labels = np.array(_test_labels)
+        get_features_tweets(test_tweets, sarcastic_freqs, non_sarcastic_freqs)
+    np_train_labels = np.array(train_labels)
+    np_test_labels = np.array(test_labels)
+
+    print("Training features:\n%s" % np_train_features[:2])
+    print("Training labels:\n%s" % np_train_labels[:10])
+    print("Testing features:\n%s" % np_test_features[:2])
+    print("Testing labels:\n%s" % np_test_labels[:10])
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
     import svm
     print("Train and predict ...")
-    mse, pearson = svm.train_and_validate_svm( \
+    mse, pearson, f_score = svm.train_and_validate_svm( \
         np_train_features, np_train_labels, np_test_features, np_test_labels)
-    print("... MSE: %f PEARSON: %s"  % (mse, pearson))
+    print("... MSE: %f PEARSON: %s F-SCORE: %f"  % (mse, pearson, f_score))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")

@@ -7,8 +7,8 @@ from scipy.stats import pearsonr
 
 def train_and_validate_svm(train_data, train_labels, test_data, test_labels, \
                            kernel='rbf', C=1.0, gamma='scale', verbose=False, class_weight='balanced'):
-    print('training svm with kernel=%s, C=%s, gamma=%s, class_weight=%s' % (kernel, C, gamma, class_weight))
-    svm = SVC(kernel=kernel, C=C, gamma='scale', verbose=verbose, \
+    print("training svm with kernel='%s', C=%s, gamma='%s', class_weight='%s'" % (kernel, C, gamma, class_weight))
+    svm = SVC(kernel=kernel, C=C, gamma=gamma, verbose=verbose, \
               class_weight=class_weight, cache_size=1000)
     svm.fit(train_data, train_labels)
     predicted_labels = svm.predict(test_data)
