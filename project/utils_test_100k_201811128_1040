@@ -1,0 +1,50 @@
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>python utils.py
+====November 28, 2018 10:36:46 AM====
+------------------------------- Hyper-parameters -------------------------------
+USE_FULL_TRAIN: False, TRAIN_SIZE: 20000
+Full training set size - sarcastic: 20000, non-sarcastic: 100000
+Senti-scores - # most common n-grams: 15000, remove common n-grams: True
+Senti-scores - min senses: 1, max senses: 3
+Senti-scores - remove stopwords: False remove punctuation: False
+Senti-scores - punctuation: ... , .. ; : .
+--------------------------------------------------------------------------------
+num sarcastic tweets: 25273
+num non sarcastic tweets: 117825
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2849), (3, 1228), (2, 1110), (5, 924), (-3, 765), (-2, 684), (-5, 662), (7, 641), (4, 630), (-1, 593), (1, 587), (6, 570), (9, 455), (-7, 440), (-4, 427), (10, 426), (-6, 361), (8, 359), (13, 355), (12, 333)]
+Tweets with scored words: 19624; total words scored: 95038
+Tweets with exceptions: 19673; total exceptions: 242690
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2947), (3, 1266), (2, 1121), (5, 1031), (-3, 850), (-2, 791), (-5, 662), (4, 628), (1, 608), (-1, 581), (7, 559), (6, 508), (9, 476), (-7, 476), (-4, 438), (-9, 357), (10, 352), (-6, 350), (8, 339), (11, 297)]
+Tweets with scored words: 19604; total words scored: 94442
+Tweets with exceptions: 19718; total exceptions: 243559
+Training features:
+[[  0   1   0   3   0   4 -10]
+ [  0   6   0   6   0   7   5]]
+Training labels:
+[1 1 1 1 1 1 1 1 1 1]
+Testing features:
+[[ 0  0  0  2  0  0 -2]
+ [ 1  2  1  0  0  5  0]]
+Testing labels:
+[1 1 1 1 1 1 1 1 1 1]
+====November 28, 2018 10:40:31 AM====
+Train and predict ...
+training svm with kernel='rbf', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 1 0 1 0 1 0 1 0] [0 0 0 0 0 1 0 0 0 0]
+mean squared error: 0.21925
+pearson coefficient: (0.4505640655164139, 0.0)
+f-score: 0.6006738912667334
+... MSE: 0.219250 PEARSON: (0.4505640655164139, 0.0) F-SCORE: 0.600674
+====November 28, 2018 10:40:47 AM====
+
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>

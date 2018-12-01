@@ -1,0 +1,50 @@
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>python utils.py
+====November 28, 2018 12:39:07 PM====
+------------------------------- Hyper-parameters -------------------------------
+USE_FULL_TRAIN: False, TRAIN_SIZE: 20000
+Full training set size - sarcastic: 20000, non-sarcastic: 100000
+Senti-scores - # most common n-grams: 20000, remove common n-grams: True
+Senti-scores - min senses: 2, max senses: 12
+Senti-scores - remove stopwords: False remove punctuation: False
+Senti-scores - punctuation: ... , . .. : ;
+--------------------------------------------------------------------------------
+num sarcastic tweets: 25273
+num non sarcastic tweets: 117825
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2258), (2, 1290), (1, 1253), (3, 987), (-2, 955), (-1, 944), (4, 922), (-3, 833), (5, 793), (-4, 662), (6, 585), (7, 571), (8, 489), (-5, 480), (10, 394), (9, 390), (-7, 362), (11, 361), (13, 330), (-6, 323)]
+Tweets with scored words: 19160; total words scored: 77105
+Tweets with exceptions: 19985; total exceptions: 1400177
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2350), (2, 1373), (1, 1247), (-2, 1159), (3, 1028), (-1, 1018), (4, 955), (-3, 861), (5, 760), (-4, 666), (6, 623), (-5, 561), (7, 529), (9, 383), (8, 383), (-6, 378), (-7, 365), (10, 317), (11, 315), (13, 280)]
+Tweets with scored words: 19125; total words scored: 76508
+Tweets with exceptions: 19986; total exceptions: 1398836
+Training features:
+[[ 0  1  0  3  0  4 -8]
+ [ 0  6  0  6  0  7 -2]]
+Training labels:
+[1 1 1 1 1 1 1 1 1 1]
+Testing features:
+[[0 0 0 3 0 0 1]
+ [1 2 1 0 0 5 0]]
+Testing labels:
+[1 1 1 1 1 1 1 1 1 1]
+====November 28, 2018 12:43:03 PM====
+Train and predict ...
+training svm with kernel='rbf', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 1 0 1 0 1 0 1 0] [0 0 0 0 0 1 0 0 0 0]
+mean squared error: 0.2173
+pearson coefficient: (0.4541553341077602, 0.0)
+f-score: 0.6028874269005848
+... MSE: 0.217300 PEARSON: (0.4541553341077602, 0.0) F-SCORE: 0.602887
+====November 28, 2018 12:43:18 PM====
+
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>
