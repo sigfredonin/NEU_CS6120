@@ -41,7 +41,7 @@ def cross_validate_svm(data, labels, \
         pearsons.append(pearson_r)
         f_scores.append(f_score)
     print_results_of_trials(mses, pearsons, f_scores)
-    return mses, pearsons
+    return mses, pearsons, f_scores
 
 def print_results_of_trials(mses, pearsons, f_scores):
     print_metric_results_of_trials(mses, "Mean Squared Error")

@@ -9,15 +9,32 @@ from nltk.corpus.reader.wordnet import WordNetError
 
 from datetime import datetime
 
-################################## Load Data ###################################
+################################## Parameters ##################################
+
+STOPWORDS = set(stopwords.words('english'))
+PUNCTUATION = { ',', '.', '?', '!', ';', ':', '..', '...' }
+
+USE_FULL_TRAIN = False
+TRAIN_SIZE = 20000       # when USE_FULL_TRAIN = False
+TUNE = True              # Cross-validate if True, else train and predict on test
 
 COUNT_SARCASTIC_TRAINING_TWEETS = 20000
 COUNT_NON_SARCASTIC_TRAINING_TWEETS = 100000
 
+# Synsets processing
+NUM_MOST_COMMON_NGRAMS = 20000
+MIN_SENSES = 3
+MAX_SENSES = 12
+REMOVE_COMMON_NGRAMS = True
+REMOVE_STOPWORDS = False
+REMOVE_PUNCTUATION = False
+SS_PUNCTUATION = PUNCTUATION - { '?', '!' }
+
+################################## Load Data ###################################
+
+# Tweet labels
 SARCASTIC = 1
 NON_SARCASTIC = 0
-
-NUM_MOST_COMMON_NGRAMS = 100000
 
 # removes blank lines, replaces \n with space, removes duplicate spaces
 def process_whitespace(token_str):
@@ -137,10 +154,6 @@ def find_ngrams_in_tweets(n, tokenized_tweets):
         tweet_ngrams = get_ngrams(n, tokens)
         ngrams.append(tweet_ngrams)
     return ngrams
-
-
-STOPWORDS = set(stopwords.words('english'))
-PUNCTUATION = { ',', '.', '?', '!', ';', ':' }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tweet Vectors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -277,7 +290,7 @@ def convert_tag(tag):
         return ''
 
 SENTI_TAGS = { 'NN':'n', 'VB':'v', 'JJ':'a', 'RB':'r' }
-SENTI_NETS = ['.01', '.02', '.03']
+SENTI_NETS = [ '.%02d' % i for i in range(1, MAX_SENSES+1) ]
 
 def get_word_tag_senti_score(word_tag_sense, DEBUG=False):
     try:
@@ -303,7 +316,7 @@ def get_senti_score(tweet, DEBUG=False, VERBOSE=False):
         senti_scores = [ get_word_tag_senti_score(word_tag + n) for n in SENTI_NETS ]
         senti_scores_found = [ s for s in senti_scores if s != None ]
         num_exceptions += len(SENTI_NETS) - len(senti_scores_found)
-        if len(senti_scores_found) > 0:
+        if len(senti_scores_found) >= MIN_SENSES:
             senti_score_pos = np.average([ s.pos_score() for s in senti_scores_found ])
             senti_score_neg = np.average([ s.neg_score() for s in senti_scores_found])
             senti_score_dif = (senti_score_pos - senti_score_neg)
@@ -398,6 +411,20 @@ if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
+    # Display hyper-parameters for this run ...
+    print(" Hyper-parameters ".center(80, '-'))
+    print("USE_FULL_TRAIN: %s, TRAIN_SIZE: %d" % (USE_FULL_TRAIN, TRAIN_SIZE))
+    print("Full training set size - sarcastic: %d, non-sarcastic: %d" % \
+        (COUNT_SARCASTIC_TRAINING_TWEETS, COUNT_NON_SARCASTIC_TRAINING_TWEETS))
+    print("Senti-scores - # most common n-grams: %d, remove common n-grams: %s" % \
+        (NUM_MOST_COMMON_NGRAMS, REMOVE_COMMON_NGRAMS))
+    print("Senti-scores - min senses: %d, max senses: %d" % \
+        (MIN_SENSES, MAX_SENSES))
+    print("Senti-scores - remove stopwords: %s remove punctuation: %s" % \
+        (REMOVE_STOPWORDS, REMOVE_PUNCTUATION))
+    print("Senti-scores - punctuation: %s" % ' '.join(SS_PUNCTUATION))
+    print('-'*80)
+
     sarcastic_tweets, non_sarcastic_tweets = load_data()
     train_tweets, train_labels, test_tweets, test_labels, \
         sarcastic_freqs, non_sarcastic_freqs = \
@@ -408,19 +435,27 @@ if __name__ == '__main__':
     assert(len(train_tweets) == len(train_labels))
     assert(len(test_tweets) == len(test_labels))
 
-    # abbreviate the tweets for testing ...
-    TEST_SIZE = 5000
-    _train_tweets = train_tweets[:TEST_SIZE] + train_tweets[-TEST_SIZE:]
-    _train_labels = train_labels[:TEST_SIZE] + train_labels[-TEST_SIZE:]
-    _test_tweets = test_tweets[:TEST_SIZE] + test_tweets[-TEST_SIZE:]
-    _test_labels = test_labels[:TEST_SIZE] + test_labels[-TEST_SIZE:]
 
-    np_train_features = \
-        get_features_tweets(train_tweets, sarcastic_freqs, non_sarcastic_freqs)
-    np_test_features = \
-        get_features_tweets(test_tweets, sarcastic_freqs, non_sarcastic_freqs)
-    np_train_labels = np.array(train_labels)
-    np_test_labels = np.array(test_labels)
+    if USE_FULL_TRAIN:
+        np_train_features = \
+            get_features_tweets(train_tweets, sarcastic_freqs, non_sarcastic_freqs)
+        np_test_features = \
+            get_features_tweets(test_tweets, sarcastic_freqs, non_sarcastic_freqs)
+        np_train_labels = np.array(train_labels)
+        np_test_labels = np.array(test_labels)
+    else:
+    # abbreviate the tweets for testing ...
+        TRAIN_SIZE_HALF = TRAIN_SIZE // 2
+        _train_tweets = train_tweets[:TRAIN_SIZE_HALF] + train_tweets[-TRAIN_SIZE_HALF:]
+        _train_labels = train_labels[:TRAIN_SIZE_HALF] + train_labels[-TRAIN_SIZE_HALF:]
+        _test_tweets = test_tweets[:TRAIN_SIZE_HALF] + test_tweets[-TRAIN_SIZE_HALF:]
+        _test_labels = test_labels[:TRAIN_SIZE_HALF] + test_labels[-TRAIN_SIZE_HALF:]
+        np_train_features = \
+            get_features_tweets(_train_tweets, sarcastic_freqs, non_sarcastic_freqs)
+        np_test_features = \
+            get_features_tweets(_test_tweets, sarcastic_freqs, non_sarcastic_freqs)
+        np_train_labels = np.array(_train_labels)
+        np_test_labels = np.array(_test_labels)
 
     print("Training features:\n%s" % np_train_features[:2])
     print("Training labels:\n%s" % np_train_labels[:10])
@@ -431,10 +466,14 @@ if __name__ == '__main__':
     print("====" + nowStr + "====")
 
     import svm
-    print("Train and predict ...")
-    mse, pearson, f_score = svm.train_and_validate_svm( \
-        np_train_features, np_train_labels, np_test_features, np_test_labels)
-    print("... MSE: %f PEARSON: %s F-SCORE: %f"  % (mse, pearson, f_score))
+    if TUNE:
+        print("Ten-fold cross-validate ...")
+        svm.cross_validate_svm(np_train_features, np_train_labels)
+    else:
+        print("Train and predict ...")
+        mse, pearson, f_score = svm.train_and_validate_svm( \
+            np_train_features, np_train_labels, np_test_features, np_test_labels)
+        print("... MSE: %f PEARSON: %s F-SCORE: %f"  % (mse, pearson, f_score))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
