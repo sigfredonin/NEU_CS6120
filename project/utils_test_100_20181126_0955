@@ -1,0 +1,30 @@
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>python utils.py
+====November 26, 2018 09:54:06 AM====
+num sarcastic tweets: 25273
+num non sarcastic tweets: 117825
+Scoring sentiment in 100 tweets ...
+.[(0, 100)]
+Scoring sentiment in 100 tweets ...
+.[(0, 100)]
+Training features:
+[[0 0 0 0 0 4 0]
+ [0 0 0 0 0 7 0]]
+Training labels:
+[1 1 1 1 1 1 1 1 1 1]
+Testing features:
+[[0 0 0 1 0 0 0]
+ [1 0 1 0 0 5 0]]
+Testing labels:
+[1 1 1 1 1 1 1 1 1 1]
+====November 26, 2018 09:54:56 AM====
+Train and predict ...
+training svm with kernel='rbf', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 0 1 1 0 1 0 0 1] [0 0 1 1 0 1 0 0 0 1]
+mean squared error: 0.44
+pearson coefficient: (0.12087344460380707, 0.23094208781162603)
+f-score: 0.5849056603773586
+... MSE: 0.440000 PEARSON: (0.12087344460380707, 0.23094208781162603) F-SCORE: 0.584906
+====November 26, 2018 09:54:56 AM====
+
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>
