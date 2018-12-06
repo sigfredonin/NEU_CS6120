@@ -79,13 +79,7 @@ def get_data(sarcastic_tweets, non_sarcastic_tweets):
     train_tweets, train_labels = zip(*labeled_train_tweets)
     test_tweets, test_labels = zip(*labeled_test_tweets)
 
-    sarcastic_freqs, non_sarcastic_freqs = \
-        ssf.get_freq_unigram_and_bigram_sets(\
-            list(zip(*training_sarcastic_tweets))[0], \
-            list(zip(*training_non_sarcastic_tweets))[0])
-
-    return train_tweets, train_labels, test_tweets, test_labels, \
-        sarcastic_freqs, non_sarcastic_freqs
+    return train_tweets, train_labels, test_tweets, test_labels
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tweet Vectors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -346,7 +340,19 @@ def assemble_features(tweets, words_in_tweets, bigrams_in_tweets, \
     return features
 
 # Assemble the features for training or test tweets
-def get_features_tweets(tweets, sarcastic_freqs, non_sarcastic_freqs):
+def get_features_train_tweets(tweets, labels):
+    words_in_tweets = get_tweet_words(tweets)
+    bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
+    sarcastic_tweets, non_sarcastic_tweets = \
+        ssf.separate_sarcastic_by_labels(tweets, labels)
+    sarcastic_freqs, non_sarcastic_freqs = \
+        ssf.get_freq_unigram_and_bigram_sets(\
+            sarcastic_tweets, non_sarcastic_tweets)
+    features = assemble_features(tweets, words_in_tweets, bigrams_in_tweets, \
+            sarcastic_freqs, non_sarcastic_freqs)
+    return np.array(features), sarcastic_freqs, non_sarcastic_freqs
+
+def get_features_test_tweets(tweets, sarcastic_freqs, non_sarcastic_freqs):
     words_in_tweets = get_tweet_words(tweets)
     bigrams_in_tweets = find_ngrams_in_tweets(2, words_in_tweets)
     features = assemble_features(tweets, words_in_tweets, bigrams_in_tweets, \
@@ -373,8 +379,7 @@ if __name__ == '__main__':
     print('-'*80)
 
     sarcastic_tweets, non_sarcastic_tweets = load_data()
-    train_tweets, train_labels, test_tweets, test_labels, \
-        sarcastic_freqs, non_sarcastic_freqs = \
+    train_tweets, train_labels, test_tweets, test_labels = \
         get_data(sarcastic_tweets, non_sarcastic_tweets)
 
     assert(len(train_tweets) + len(test_tweets) == \
@@ -396,10 +401,10 @@ if __name__ == '__main__':
         _test_tweets = test_tweets[:TRAIN_SIZE_HALF] + test_tweets[-TRAIN_SIZE_HALF:]
         _test_labels = test_labels[:TRAIN_SIZE_HALF] + test_labels[-TRAIN_SIZE_HALF:]
 
-    np_train_features = \
-        get_features_tweets(_train_tweets, sarcastic_freqs, non_sarcastic_freqs)
+    np_train_features, sarcastic_freqs, non_sarcastic_freqs = \
+        get_features_train_tweets(_train_tweets, _train_labels)
     np_test_features = \
-        get_features_tweets(_test_tweets, sarcastic_freqs, non_sarcastic_freqs)
+        get_features_test_tweets(_test_tweets, sarcastic_freqs, non_sarcastic_freqs)
     np_train_labels = np.array(_train_labels)
     np_test_labels = np.array(_test_labels)
 
