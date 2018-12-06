@@ -1,0 +1,131 @@
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>python utils.py
+====December 05, 2018 05:42:13 PM====
+------------------------------- Hyper-parameters -------------------------------
+USE_FULL_TRAIN: False, TRAIN_SIZE: 20000
+Full training set size - sarcastic: 20000, non-sarcastic: 100000
+Senti-scores - # most common n-grams: 20000, remove common n-grams: True
+Senti-scores - min senses: 3, max senses: 12
+Senti-scores - remove stopwords: False remove punctuation: False
+Senti-scores - punctuation: , : ... .. ; .
+--------------------------------------------------------------------------------
+num sarcastic tweets: 25273
+num non sarcastic tweets: 117825
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2892), (2, 1418), (1, 1205), (3, 1015), (-2, 959), (4, 903), (-1, 888), (5, 829), (-3, 819), (-4, 621), (6, 557), (7, 490), (-5, 490), (8, 424), (11, 386), (9, 378), (10, 339), (-6, 337), (13, 309), (12, 274)]
+Tweets with scored words: 18525; total words scored: 63595
+Tweets with exceptions: 19729; total exceptions: 1138583
+Total word/tags with scores: 5060
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2935), (2, 1514), (1, 1237), (-2, 1114), (3, 1017), (-1, 976), (4, 919), (-3, 846), (5, 770), (-4, 641), (6, 586), (-5, 519), (7, 498), (8, 392), (-6, 388), (11, 347), (9, 320), (10, 301), (-7, 296), (-8, 265)]
+Tweets with scored words: 18503; total words scored: 63445
+Tweets with exceptions: 19742; total exceptions: 1117778
+Total word/tags with scores: 6656
+Training features:
+[[ 0  1  0  3  0  4 -8]
+ [ 0  6  0  6  0  7 -3]]
+Training labels:
+[1 1 1 1 1 1 1 1 1 1]
+Testing features:
+[[0 0 0 3 0 0 1]
+ [1 2 1 0 0 5 0]]
+Testing labels:
+[1 1 1 1 1 1 1 1 1 1]
+====December 05, 2018 05:45:56 PM====
+Ten-fold cross-validate ...
+cross-validating svm...
+--------------------------------- Trial 1 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+mean squared error: 0.1085
+pearson coefficient: (0.7838202079314068, 0.0)
+f-score: 0.89198606271777
+--------------------------------- Trial 2 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 1 1 0]
+mean squared error: 0.1125
+pearson coefficient: (0.7752221409095882, 0.0)
+f-score: 0.8883374689826303
+--------------------------------- Trial 3 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 0 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+mean squared error: 0.1085
+pearson coefficient: (0.7831565416607049, 0.0)
+f-score: 0.8910095429432446
+--------------------------------- Trial 4 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 1 1]
+mean squared error: 0.1085
+pearson coefficient: (0.7829127821316624, 0.0)
+f-score: 0.8892291985706994
+--------------------------------- Trial 5 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 1 1 1 1] [0 0 1 0 0 0 0 0 0 0]
+mean squared error: 0.1245
+pearson coefficient: (0.7503095930260627, 0.0)
+f-score: 0.8676236044657097
+--------------------------------- Trial 6 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 0 1 1 1 1] [0 1 0 1 0 0 0 0 1 0]
+mean squared error: 0.117
+pearson coefficient: (0.7658881296399185, 0.0)
+f-score: 0.8792569659442725
+--------------------------------- Trial 7 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 1 0 0 0 0 0]
+mean squared error: 0.1075
+pearson coefficient: (0.7853363047083635, 0.0)
+f-score: 0.8910288900152052
+--------------------------------- Trial 8 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 1 0 0 0 0]
+mean squared error: 0.124
+pearson coefficient: (0.7520702486405082, 0.0)
+f-score: 0.8775913129318855
+--------------------------------- Trial 9 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+mean squared error: 0.127
+pearson coefficient: (0.7470102155211108, 0.0)
+f-score: 0.8706720977596741
+-------------------------------- Trial 10 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 1 0]
+mean squared error: 0.1075
+pearson coefficient: (0.7853954682925887, 0.0)
+f-score: 0.8938271604938272
+=====================> Mean Squared Error over all trials <=====================
+Mean Squared Error min:   0.1075
+Mean Squared Error mean:  0.1145
+Mean Squared Error max:   0.1270
+================================================================================
+====================> Pearson Coefficients over all trials <====================
+Pearson Coefficients min:   0.7470
+Pearson Coefficients mean:  0.7711
+Pearson Coefficients max:   0.7854
+================================================================================
+==========================> F-Scores over all trials <==========================
+F-Scores min:   0.8676
+F-Scores mean:  0.8841
+F-Scores max:   0.8938
+================================================================================
+====December 05, 2018 05:48:19 PM====
+
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>

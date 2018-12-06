@@ -292,18 +292,39 @@ def convert_tag(tag):
 SENTI_TAGS = { 'NN':'n', 'VB':'v', 'JJ':'a', 'RB':'r' }
 SENTI_NETS = [ '.%02d' % i for i in range(1, MAX_SENSES+1) ]
 
-def get_word_tag_senti_score(word_tag_sense, DEBUG=False):
+def get_word_tag_senti_synset(word_tag_sense, DEBUG=False):
     try:
-        scores = sentiwordnet.senti_synset(word_tag_sense)
+        synset = sentiwordnet.senti_synset(word_tag_sense)
     except WordNetError:
-        scores = None
+        synset = None
     except:
         print("Unexpected error getting synset:", sys.exc_info()[0])
     if DEBUG:
-        print("--- %s : %s" % (word_tag_sense, scores))
-    return scores
+        print("--- %s : %s" % (word_tag_sense, synset))
+    return synset
 
-def get_senti_score(tweet, DEBUG=False, VERBOSE=False):
+def get_word_tag_senti_score(word_tag, senti_scores_dict, VERBOSE=False):
+    senti_score = None
+    num_exceptions = 0
+    if word_tag in senti_scores_dict:
+        senti_score = senti_scores_dict[word_tag]
+    else:
+        synsets = [ get_word_tag_senti_synset(word_tag + n) for n in SENTI_NETS ]
+        synsets_found = [ s for s in synsets if s != None ]
+        num_exceptions += len(SENTI_NETS) - len(synsets_found)
+        if len(synsets_found) >= MIN_SENSES:
+            senti_score_pos = np.average([ s.pos_score() for s in synsets_found ])
+            senti_score_neg = np.average([ s.neg_score() for s in synsets_found])
+            senti_score = (senti_score_pos - senti_score_neg)
+            senti_scores_dict[word_tag] = senti_score
+            if VERBOSE:
+                for i, n in enumerate(SENTI_NETS):
+                    print("%s.%s: %s" % (word_tag, n, synsets[i]))
+                print("Averages: POS %f NEG %f DIFF %f" % \
+                    (senti_score_pos, senti_score_neg, senti_score))
+    return senti_score, num_exceptions
+
+def get_senti_score(tweet, senti_scores_dict, DEBUG=False, VERBOSE=False):
     tokens = nltk.word_tokenize(tweet)
     tagged = nltk.pos_tag(tokens)
     senti_tagged = [ w + '.' + SENTI_TAGS[t[:2]] for w, t in tagged if t[:2] in SENTI_TAGS ]
@@ -313,20 +334,11 @@ def get_senti_score(tweet, DEBUG=False, VERBOSE=False):
     num_exceptions = 0
 
     for word_tag in senti_tagged:
-        senti_scores = [ get_word_tag_senti_score(word_tag + n) for n in SENTI_NETS ]
-        senti_scores_found = [ s for s in senti_scores if s != None ]
-        num_exceptions += len(SENTI_NETS) - len(senti_scores_found)
-        if len(senti_scores_found) >= MIN_SENSES:
-            senti_score_pos = np.average([ s.pos_score() for s in senti_scores_found ])
-            senti_score_neg = np.average([ s.neg_score() for s in senti_scores_found])
-            senti_score_dif = (senti_score_pos - senti_score_neg)
-            avg_senti_score += senti_score_dif
+        senti_score, word_tag_exceptions =  get_word_tag_senti_score(word_tag, senti_scores_dict)
+        num_exceptions += word_tag_exceptions
+        if senti_score != None:
+            avg_senti_score += senti_score
             num_senti_words += 1
-            if VERBOSE:
-                for i, n in enumerate(SENTI_NETS):
-                    print("%s.%s: %s" % (word_tag, n, senti_scores[i]))
-                print("Averages: POS %f NEG %f DIFF %f" % \
-                    (senti_score_pos, senti_score_neg, senti_score_dif))
 
     if num_senti_words > 0:
         avg_senti_score /= num_senti_words
@@ -338,7 +350,7 @@ def get_senti_score(tweet, DEBUG=False, VERBOSE=False):
 
     return adjusted_score, num_senti_words, num_exceptions
 
-def get_sentiments_tweets(tweets):
+def get_sentiments_tweets(tweets, senti_scores_dict):
     DEBUG = False
     sentiments = {}
     scores = []
@@ -348,7 +360,7 @@ def get_sentiments_tweets(tweets):
     tweets_with_exceptions = 0
     print("Scoring sentiment in %d tweets ..." % len(tweets))
     for i, tweet in enumerate(tweets):
-        score, num_words_scored, num_exceptions = get_senti_score(tweet, DEBUG)
+        score, num_words_scored, num_exceptions = get_senti_score(tweet, senti_scores_dict, DEBUG)
         count = sentiments.get(score) or 0
         count += 1
         sentiments[score] = count
@@ -360,7 +372,7 @@ def get_sentiments_tweets(tweets):
         tweets_with_exceptions += 1 if num_exceptions > 0 else 0
         if (i+1) % 100 == 0:
 #           print("%d %d %s" % (i, score, tweet))
-            print(".", end='')
+            print(".", end='', flush=True)
             DEBUG = True
         else:
             DEBUG = False
@@ -371,9 +383,12 @@ def get_sentiments_tweets(tweets):
         (tweets_with_scored_words, total_words_scored))
     print("Tweets with exceptions: %d; total exceptions: %d" % \
         (tweets_with_exceptions, total_exceptions))
+    print("Total word/tags with scores: %d" % len(senti_scores_dict))
     return scores
 
 ############################## Assemble Features ##############################
+
+senti_scores_dict = {}  # word_tag : senti_score = pos - neg
 
 def assemble_features(tweets, words_in_tweets, bigrams_in_tweets, \
         sarcastic_freqs, non_sarcastic_freqs):
@@ -385,7 +400,7 @@ def assemble_features(tweets, words_in_tweets, bigrams_in_tweets, \
         count_non_sarcastic_freq_unigrams, count_non_sarcastic_freq_bigrams))
     repeated_character_counts = get_repeated_character_count_tweets(tweets)
     percent_caps = get_percent_caps_tweets(tweets)
-    sentiment_scores = get_sentiments_tweets(tweets)
+    sentiment_scores = get_sentiments_tweets(tweets, senti_scores_dict)
 
     features = []
     for i, ncs in enumerate(count_ngrams):
