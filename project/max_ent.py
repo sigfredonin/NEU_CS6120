@@ -8,6 +8,8 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import mean_squared_error
 from scipy.stats import pearsonr
 
+from sarcastic_splits import get_features_for_split
+
 def train_and_validate_lr(train_data, train_labels, test_data, test_labels, \
                            penalty='l2', solver='sag', C=1.0, verbose=0, \
                            class_weight='balanced', max_iter=1000):
@@ -26,7 +28,7 @@ def train_and_validate_lr(train_data, train_labels, test_data, test_labels, \
     print('f-score:', f_score)
     return mse, pearson, f_score
 
-def cross_validate_lr(data, labels, \
+def cross_validate_lr(data, labels, tweets, \
                        penalty='l2', solver='sag', C=1.0, verbose=0, \
                        class_weight='balanced', max_iter=1000):
     print('cross-validating max-ent...')
@@ -39,8 +41,12 @@ def cross_validate_lr(data, labels, \
     for trial_index, (train, val) in enumerate(kfold.split(data)):
         print((" Trial %d of %d" % (trial_index+1, num_cross_validation_trials)).center(80, '-'))
 
+        _data, _labels, _val_data, _val_labels = \
+            get_features_for_split(data[train], labels[train], tweets[train],
+                data[val], labels[val], tweets[val])
+
         mse, (pearson_r, pearson_p), f_score = \
-         train_and_validate_lr(data[train], labels[train], data[val], labels[val], \
+         train_and_validate_lr(_data, _labels, _val_data, _val_labels, \
                                 penalty, solver, C, verbose, class_weight, max_iter)
         mses.append(mse)
         pearsons.append(pearson_r)
