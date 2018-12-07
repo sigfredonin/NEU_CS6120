@@ -135,30 +135,6 @@ def get_training_vocabulary(words_in_tweets, bigrams_in_tweets):
     bigram_dict = create_vocab_dict(bigrams)
     return word_dict, bigram_dict
 
-# Compute count of ngrams in each tweet that are in the given set
-def get_count_ngrams_in_set(ngrams_in_tweets, freq_set):
-    counts = []
-    for tokens in ngrams_in_tweets:
-        count = 0
-        for token in tokens:
-            if token in freq_set:
-                count += 1
-        counts.append(count)
-    return counts
-
-def get_ngram_counts(words_in_tweets, bigrams_in_tweets, \
-    sarcastic_freqs, non_sarcastic_freqs):
-    count_sarcastic_freq_unigrams = \
-        get_count_ngrams_in_set(words_in_tweets, sarcastic_freqs)
-    count_sarcastic_freq_bigrams = \
-        get_count_ngrams_in_set(bigrams_in_tweets, sarcastic_freqs)
-    count_non_sarcastic_freq_unigrams = \
-        get_count_ngrams_in_set(words_in_tweets, non_sarcastic_freqs)
-    count_non_sarcastic_freq_bigrams = \
-        get_count_ngrams_in_set(bigrams_in_tweets, non_sarcastic_freqs)
-    return [ count_sarcastic_freq_unigrams, count_sarcastic_freq_bigrams, \
-        count_non_sarcastic_freq_unigrams, count_non_sarcastic_freq_bigrams ]
-
 ############# Repeated Characters and Capitalized Words Features ###############
 
 def _get_repeated_character_count_tweet(tweet):
@@ -320,7 +296,7 @@ def assemble_features(tweets, words_in_tweets, bigrams_in_tweets, \
         sarcastic_freqs, non_sarcastic_freqs):
     count_sarcastic_freq_unigrams, count_sarcastic_freq_bigrams, \
         count_non_sarcastic_freq_unigrams, count_non_sarcastic_freq_bigrams = \
-        get_ngram_counts(words_in_tweets, bigrams_in_tweets, \
+        ssf.get_ngram_counts(words_in_tweets, bigrams_in_tweets, \
             sarcastic_freqs, non_sarcastic_freqs)
     count_ngrams = list(zip(count_sarcastic_freq_unigrams, count_sarcastic_freq_bigrams, \
         count_non_sarcastic_freq_unigrams, count_non_sarcastic_freq_bigrams))
@@ -401,6 +377,7 @@ if __name__ == '__main__':
         _test_tweets = test_tweets[:TRAIN_SIZE_HALF] + test_tweets[-TRAIN_SIZE_HALF:]
         _test_labels = test_labels[:TRAIN_SIZE_HALF] + test_labels[-TRAIN_SIZE_HALF:]
 
+    np_train_tweets = np.array(_train_tweets)
     np_train_features, sarcastic_freqs, non_sarcastic_freqs = \
         get_features_train_tweets(_train_tweets, _train_labels)
     np_test_features = \
@@ -419,7 +396,7 @@ if __name__ == '__main__':
     import svm
     if TUNE:
         print("Ten-fold cross-validate ...")
-        svm.cross_validate_svm(np_train_features, np_train_labels)
+        svm.cross_validate_svm(np_train_features, np_train_labels, np_train_tweets)
     else:
         print("Train and predict ...")
         mse, pearson, f_score = svm.train_and_validate_svm( \

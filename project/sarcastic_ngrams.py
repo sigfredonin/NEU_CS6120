@@ -92,6 +92,30 @@ class sarcastic_set_factory:
         non_sarcastic_set = sarcastic_unigrams_set.union( non_sarcastic_bigrams_set)
         return sarcastic_set, non_sarcastic_set
 
+    # Compute count of ngrams in each tweet that are in the given set
+    def get_count_ngrams_in_set(self, ngrams_in_tweets, freq_set):
+        counts = []
+        for tokens in ngrams_in_tweets:
+            count = 0
+            for token in tokens:
+                if token in freq_set:
+                    count += 1
+            counts.append(count)
+        return counts
+
+    def get_ngram_counts(self, words_in_tweets, bigrams_in_tweets, \
+        sarcastic_freqs, non_sarcastic_freqs):
+        count_sarcastic_freq_unigrams = \
+            self.get_count_ngrams_in_set(words_in_tweets, sarcastic_freqs)
+        count_sarcastic_freq_bigrams = \
+            self.get_count_ngrams_in_set(bigrams_in_tweets, sarcastic_freqs)
+        count_non_sarcastic_freq_unigrams = \
+            self.get_count_ngrams_in_set(words_in_tweets, non_sarcastic_freqs)
+        count_non_sarcastic_freq_bigrams = \
+            self.get_count_ngrams_in_set(bigrams_in_tweets, non_sarcastic_freqs)
+        return [ count_sarcastic_freq_unigrams, count_sarcastic_freq_bigrams, \
+            count_non_sarcastic_freq_unigrams, count_non_sarcastic_freq_bigrams ]
+
     def separate_sarcastic_by_labels(self, tweets, labels):
         sarcastic_tweets = []
         non_sarcastic_tweets = []
