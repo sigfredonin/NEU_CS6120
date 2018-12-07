@@ -1,3 +1,17 @@
+"""
+Sarcastic / Non-sarcastic Tweets
+Features for sarcastic tweets classifiers.
+
+Load tweets and compute features:
+- counts of most-common unigrams and bigrams in sarcastic and non-sarcastic
+- average synset sentiment score
+- percent capitals
+- count repeated characters
+
+Sig Nin
+06 Dec 2018
+"""
+
 import sys
 import re
 import nltk

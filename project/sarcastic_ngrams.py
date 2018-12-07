@@ -1,5 +1,9 @@
 """
-Sarcastic / Non-sarcastic Tweets Common N-Grams
+Sarcastic / Non-sarcastic Tweets
+Common N-Grams and N-Gram Counts
+
+Compute n-grams, most-common n-grams, and n-gram counts.  Remove n-grams found
+in both sarcastic and non-sarcastic tweets.
 
 Sig Nin
 06 Dec 2018
