@@ -34,9 +34,9 @@ from sarcastic_ngrams import sarcastic_set_factory as SSF
 STOPWORDS = set(stopwords.words('english'))
 PUNCTUATION = { ',', '.', '?', '!', ';', ':', '..', '...' }
 
-USE_FULL_TRAIN = False
+USE_FULL_TRAIN = True
 TRAIN_SIZE = 20000       # when USE_FULL_TRAIN = False
-TUNE = True              # Cross-validate if True, else train then predict on test
+TUNE = False             # Cross-validate if True, else train then predict on test
 
 COUNT_SARCASTIC_TRAINING_TWEETS = 20000
 COUNT_NON_SARCASTIC_TRAINING_TWEETS = 100000
@@ -414,7 +414,7 @@ if __name__ == '__main__':
         me.cross_validate_lr(np_train_features, np_train_labels, np_train_tweets)
     else:
         print("Train and predict ...")
-        mse, pearson, f_score = sme.train_and_validate_lr( \
+        mse, pearson, f_score = me.train_and_validate_lr( \
             np_train_features, np_train_labels, np_test_features, np_test_labels)
         print("... MSE: %f PEARSON: %s F-SCORE: %f"  % (mse, pearson, f_score))
 
