@@ -1,0 +1,62 @@
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>python utils.py
+====December 07, 2018 04:01:41 PM====
+------------------------------- Hyper-parameters -------------------------------
+USE_FULL_TRAIN: False, TRAIN_SIZE: 20000
+Full training set size - sarcastic: 20000, non-sarcastic: 100000
+Senti-scores - # most common n-grams: 25000, remove common n-grams: True
+Senti-scores - min senses: 3, max senses: 12
+Senti-scores - remove stopwords: False remove punctuation: False
+Senti-scores - punctuation: : . , ... ; ..
+--------------------------------------------------------------------------------
+num sarcastic tweets: 25273
+num non sarcastic tweets: 117825
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2892), (2, 1418), (1, 1205), (3, 1015), (-2, 959), (4, 903), (-1, 888), (5, 829), (-3, 819), (-4, 621), (6, 557), (7, 490), (-5, 490), (8, 424), (11, 386), (9, 378), (10, 339), (-6, 337), (13, 309), (12, 274)]
+Tweets with scored words: 18525; total words scored: 63595
+Tweets with exceptions: 19729; total exceptions: 1138583
+Total word/tags with scores: 5060
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2935), (2, 1514), (1, 1237), (-2, 1114), (3, 1017), (-1, 976), (4, 919), (-3, 846), (5, 770), (-4, 641), (6, 586), (-5, 519), (7, 498), (8, 392), (-6, 388), (11, 347), (9, 320), (10, 301), (-7, 296), (-8, 265)]
+Tweets with scored words: 18503; total words scored: 63445
+Tweets with exceptions: 19742; total exceptions: 1117778
+Total word/tags with scores: 6656
+Training features:
+[[ 6  6  6  0  0  4 -8]
+ [13 15 13  2  0  7 -3]]
+Training labels:
+[1 1 1 1 1 1 1 1 1 1]
+Testing features:
+[[7 1 7 2 0 0 1]
+ [4 2 4 0 0 5 0]]
+Testing labels:
+[1 1 1 1 1 1 1 1 1 1]
+====December 07, 2018 04:05:29 PM====
++++++++++++++++++++++++++++++++++ Max Entropy ++++++++++++++++++++++++++++++++++
+Train and predict ...
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 0 0 0 0 0 1 1 1] [0 0 1 0 0 0 0 0 0 0]
+mean squared error: 0.2973
+pearson coefficient: (0.3613101086281082, 0.0)
+f-score: 0.5529323308270676
+... MSE: 0.297300 PEARSON: (0.3613101086281082, 0.0) F-SCORE: 0.552932
+++++++++++++++++++++++++++++ Support Vector Machine ++++++++++++++++++++++++++++
+Train and predict ...
+training svm with kernel='rbf', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 0 0 0 0 1 0 1 1] [0 0 1 0 0 0 0 0 0 1]
+mean squared error: 0.297
+pearson coefficient: (0.3703585362541989, 0.0)
+f-score: 0.5592163846838824
+... MSE: 0.297000 PEARSON: (0.3703585362541989, 0.0) F-SCORE: 0.559216
+====December 07, 2018 04:05:38 PM====
+
+(venv) (base) C:\Users\Alice\NLP\NEU_CS6120\project>
