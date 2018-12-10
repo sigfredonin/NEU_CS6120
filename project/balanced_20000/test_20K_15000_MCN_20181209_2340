@@ -1,0 +1,217 @@
+====December 09, 2018 11:40:11 PM====
+------------------------------- Hyper-parameters -------------------------------
+USE_FULL_TRAIN: False, TRAIN_SIZE: 20000
+Full training set size - sarcastic: 20000, non-sarcastic: 100000
+Senti-scores - # most common n-grams: 15000, remove common n-grams: True
+Senti-scores - min senses: 3, max senses: 12
+Senti-scores - remove stopwords: False remove punctuation: False
+Senti-scores - punctuation: ... . .. , : ;
+--------------------------------------------------------------------------------
+num sarcastic tweets: 25273
+num non sarcastic tweets: 117825
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2892), (2, 1418), (1, 1205), (3, 1015), (-2, 959), (4, 903), (-1, 888), (5, 829), (-3, 819), (-4, 621), (6, 557), (7, 490), (-5, 490), (8, 424), (11, 386), (9, 378), (10, 339), (-6, 337), (13, 309), (12, 274)]
+Tweets with scored words: 18525; total words scored: 63595
+Tweets with exceptions: 19729; total exceptions: 1138583
+Total word/tags with scores: 5060
+Scoring sentiment in 20000 tweets ...
+..................................................
+..................................................
+..................................................
+..................................................
+[(0, 2935), (2, 1514), (1, 1237), (-2, 1114), (3, 1017), (-1, 976), (4, 919), (-3, 846), (5, 770), (-4, 641), (6, 586), (-5, 519), (7, 498), (8, 392), (-6, 388), (11, 347), (9, 320), (10, 301), (-7, 296), (-8, 265)]
+Tweets with scored words: 18503; total words scored: 63445
+Tweets with exceptions: 19742; total exceptions: 1117778
+Total word/tags with scores: 6656
+Training features:
+[[ 6  6  6  0  0  4 -8]
+ [13 15 13  2  0  7 -3]]
+Training labels:
+[1 1 1 1 1 1 1 1 1 1]
+Testing features:
+[[7 1 7 2 0 0 1]
+ [4 2 4 0 0 5 0]]
+Testing labels:
+[1 1 1 1 1 1 1 1 1 1]
+====December 09, 2018 11:43:30 PM====
++++++++++++++++++++++++++++++++++ Max Entropy ++++++++++++++++++++++++++++++++++
+Ten-fold cross-validate ...
+cross-validating max-ent...
+--------------------------------- Trial 1 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 0 1 0 1 1 1 1 1 0] [0 0 1 0 0 0 0 0 0 0]
+mean squared error: 0.2885
+pearson coefficient: (0.4232229774137345, 9.786913903928333e-88)
+f-score: 0.7147800296589225
+--------------------------------- Trial 2 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 1 1 1 0 0 1 1 0] [0 0 0 0 0 0 0 1 1 0]
+mean squared error: 0.305
+pearson coefficient: (0.3900896125404656, 1.0958250723016683e-73)
+f-score: 0.6977205153617443
+--------------------------------- Trial 3 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 0 1 0 1 1 1 0 1 0] [0 0 0 0 0 1 0 0 0 0]
+mean squared error: 0.309
+pearson coefficient: (0.38320084097808166, 5.819653427260398e-71)
+f-score: 0.6811145510835913
+--------------------------------- Trial 4 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 0 1 1 1 1 1 1 1] [0 0 0 0 1 0 0 0 0 0]
+mean squared error: 0.304
+pearson coefficient: (0.39182980703963877, 2.1925740420419485e-74)
+f-score: 0.6907426246185148
+--------------------------------- Trial 5 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 0 0 1 1 1 1 1 1] [0 1 0 0 0 0 0 0 0 0]
+mean squared error: 0.304
+pearson coefficient: (0.39121327592058774, 3.881579707293089e-74)
+f-score: 0.6836628511966703
+--------------------------------- Trial 6 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 0 1 1 1 1 0 0 0 1] [0 1 0 0 0 0 1 0 0 0]
+mean squared error: 0.3125
+pearson coefficient: (0.3748138752269957, 9.895504547806472e-68)
+f-score: 0.6816097809475293
+--------------------------------- Trial 7 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 0 1 1 1 1 1 0 1 1] [0 1 0 0 1 0 0 0 0 0]
+mean squared error: 0.2835
+pearson coefficient: (0.43308303526830444, 3.1267889862141635e-92)
+f-score: 0.7197231833910034
+--------------------------------- Trial 8 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 1 1 1 0 1 1 1 1] [0 0 1 0 0 1 0 1 0 0]
+mean squared error: 0.288
+pearson coefficient: (0.4239774709721694, 4.486474851287575e-88)
+f-score: 0.7140019860973187
+--------------------------------- Trial 9 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 0 0 1 1] [1 0 0 0 0 1 0 0 0 0]
+mean squared error: 0.2915
+pearson coefficient: (0.41714910189189164, 4.856404496230595e-85)
+f-score: 0.7074761665830407
+-------------------------------- Trial 10 of 10---------------------------------
+training max_ent with penalty=l2, solver=sag, C=1.0, and class_weight=balanced
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 1 1 1 1 0 0 1 0] [0 0 0 1 0 1 0 1 0 0]
+mean squared error: 0.3045
+pearson coefficient: (0.3908222452860308, 5.572639389769887e-74)
+f-score: 0.7016168544830965
+=====================> Mean Squared Error over all trials <=====================
+Mean Squared Error min:   0.2835
+Mean Squared Error mean:  0.2990
+Mean Squared Error max:   0.3125
+================================================================================
+====================> Pearson Coefficients over all trials <====================
+Pearson Coefficients min:   0.3748
+Pearson Coefficients mean:  0.4019
+Pearson Coefficients max:   0.4331
+================================================================================
+==========================> F-Scores over all trials <==========================
+F-Scores min:   0.6811
+F-Scores mean:  0.6992
+F-Scores max:   0.7197
+================================================================================
+++++++++++++++++++++++++++++ Support Vector Machine ++++++++++++++++++++++++++++
+Ten-fold cross-validate ...
+cross-validating svm...
+--------------------------------- Trial 1 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 0 1 0 1 1 1 1 1 0] [0 0 1 0 0 0 0 0 0 0]
+mean squared error: 0.287
+pearson coefficient: (0.4264254707742422, 3.522709181750449e-89)
+f-score: 0.7152777777777779
+--------------------------------- Trial 2 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 1 1 1 0 0 1 1 0] [0 0 0 0 0 0 0 1 1 0]
+mean squared error: 0.3055
+pearson coefficient: (0.38932630718476635, 2.2127093566655614e-73)
+f-score: 0.6955655206776283
+--------------------------------- Trial 3 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 0 1 0 1 1 1 0 1 0] [0 0 0 0 0 1 0 0 0 0]
+mean squared error: 0.3095
+pearson coefficient: (0.382491001065298, 1.101557414366461e-70)
+f-score: 0.6791083462934163
+--------------------------------- Trial 4 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 0 1 1 1 1 1 1 1] [0 0 0 0 1 0 0 0 0 0]
+mean squared error: 0.3005
+pearson coefficient: (0.3987717327201455, 3.244702042593862e-77)
+f-score: 0.6935237123916369
+--------------------------------- Trial 5 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 0 0 1 1 1 1 1 1] [0 1 0 0 0 0 0 0 0 0]
+mean squared error: 0.3045
+pearson coefficient: (0.39010013910686436, 1.0852427005638049e-73)
+f-score: 0.6826472120896301
+--------------------------------- Trial 6 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 0 1 1 1 1 0 0 0 1] [0 1 0 0 0 0 1 0 0 0]
+mean squared error: 0.309
+pearson coefficient: (0.3817651446940135, 2.111835631952885e-70)
+f-score: 0.6846938775510205
+--------------------------------- Trial 7 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 0 1 1 1 1 1 0 1 1] [0 1 0 0 1 0 0 0 1 0]
+mean squared error: 0.285
+pearson coefficient: (0.4300152317032085, 8.125718736140763e-91)
+f-score: 0.7166998011928429
+--------------------------------- Trial 8 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 0 1 1 1 1] [0 0 1 0 0 1 0 1 0 0]
+mean squared error: 0.2875
+pearson coefficient: (0.42501616275778936, 1.5281104378975943e-88)
+f-score: 0.7129306040938593
+--------------------------------- Trial 9 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [1 1 1 1 1 1 0 0 1 1] [1 0 0 0 0 1 0 0 0 0]
+mean squared error: 0.29
+pearson coefficient: (0.42035254144445455, 1.868516764467558e-86)
+f-score: 0.7070707070707071
+-------------------------------- Trial 10 of 10---------------------------------
+training svm with kernel='linear', C=1.0, gamma='scale', class_weight='balanced'
+test [1 1 1 1 1 1 1 1 1 1] [0 0 0 0 0 0 0 0 0 0]
+pred [0 1 1 1 1 1 0 0 1 0] [0 0 0 1 0 1 0 1 0 0]
+mean squared error: 0.3035
+pearson coefficient: (0.39296769759347744, 7.61631269836489e-75)
+f-score: 0.7017199017199017
+=====================> Mean Squared Error over all trials <=====================
+Mean Squared Error min:   0.2850
+Mean Squared Error mean:  0.2982
+Mean Squared Error max:   0.3095
+================================================================================
+====================> Pearson Coefficients over all trials <====================
+Pearson Coefficients min:   0.3818
+Pearson Coefficients mean:  0.4037
+Pearson Coefficients max:   0.4300
+================================================================================
+==========================> F-Scores over all trials <==========================
+F-Scores min:   0.6791
+F-Scores mean:  0.6989
+F-Scores max:   0.7167
+================================================================================
+====December 09, 2018 11:52:31 PM====
