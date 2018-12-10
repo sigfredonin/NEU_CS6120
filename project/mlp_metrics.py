@@ -25,5 +25,5 @@ class Metrics(Callback):
         self.val_f1s.append(_val_f1)
         self.val_pearson_rs.append(_val_pearson_r)
         self.val_pearson_ps.append(_val_pearson_p)
-        print(" - f-score: %f - Pearson r: %f - Pearson p-value: %f" % \
+        print(" - f-score: %7.5f - Pearson coefficient: (%7.5f, %7.5f)" % \
             (_val_f1, _val_pearson_r, _val_pearson_p))
