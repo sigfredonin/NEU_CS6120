@@ -36,9 +36,9 @@ PUNCTUATION = { ',', '.', '?', '!', ';', ':', '..', '...' }
 
 RUN_MLP = True
 RUN_MXE = True
-RUN_SVM = True
+RUN_SVM = False
 
-USE_FULL_TRAIN = False
+USE_FULL_TRAIN = True
 TRAIN_SIZE = 20000       # when USE_FULL_TRAIN = False
 TUNE = False             # Cross-validate if True, else train then predict on test
 
