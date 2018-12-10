@@ -16,11 +16,14 @@ class Metrics(Callback):
         self.val_pearson_ps = []
 
     def on_epoch_end(self, epoch, logs={}):
-        val_predicted = (np.asarray(self.model.predict(self.val_data))).round()
+        val_predicted = np.round(np.transpose(self.model.predict(self.val_data))[0]).astype(int)
+        print()
+        print('val ', self.val_labels[:10], self.val_labels[-10:])
+        print('pred', val_predicted[:10], val_predicted[-10:])
         _val_f1 = f1_score(self.val_labels, val_predicted)
         _val_pearson_r, _val_pearson_p = pearsonr(self.val_labels, val_predicted)
         self.val_f1s.append(_val_f1)
         self.val_pearson_rs.append(_val_pearson_r)
         self.val_pearson_ps.append(_val_pearson_p)
-        print(" — val_f1: %f — val_pearson_r: %f — val_pearson_p: %f" % \
+        print(" - f-score: %f - Pearson r: %f - Pearson p-value: %f" % \
             (_val_f1, _val_pearson_r, _val_pearson_p))

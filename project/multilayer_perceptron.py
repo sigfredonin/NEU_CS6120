@@ -45,7 +45,7 @@ def mlp_model(input_shape, \
     print("Input    : %d x %d" % (1, input_dim))
     print("Layer h1 : %d x %d %s" % (input_dim, num_h1_units, h1_activation))
     print("Layer h2 : %d x %d %s" % (num_h1_units, num_h2_units, h2_activation))
-    print("Output   : %d x %d SOFTMAX" % (num_h2_units, num_classes))
+    print("Output   : %d x %d SIGMOID" % (num_h2_units, num_classes))
     print("----------")
 
     model = models.Sequential()
@@ -58,7 +58,7 @@ def mlp_model(input_shape, \
     model.add(Dense(units=num_h2_units, activation=h2_activation))
     model.add(Dropout(rate=dropout_rate))
     # output layer
-    model.add(Dense(units=num_classes, activation='softmax'))
+    model.add(Dense(units=num_classes, activation='sigmoid'))
 
     return model
 

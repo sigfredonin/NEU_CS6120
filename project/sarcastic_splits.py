@@ -19,7 +19,7 @@ from sarcastic_ngrams import find_ngrams_in_tweets
 from sarcastic_ngrams import sarcastic_set_factory as SSF
 
 # n-grams processing
-NUM_MOST_COMMON_NGRAMS = 20000
+NUM_MOST_COMMON_NGRAMS = 25000
 ssf = SSF(NUM_MOST_COMMON_NGRAMS)
 
 # replace original n-gram features with those computed for the split

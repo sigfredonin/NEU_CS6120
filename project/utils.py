@@ -34,11 +34,11 @@ from sarcastic_ngrams import sarcastic_set_factory as SSF
 STOPWORDS = set(stopwords.words('english'))
 PUNCTUATION = { ',', '.', '?', '!', ';', ':', '..', '...' }
 
-RUN_MLP = False
+RUN_MLP = True
 RUN_MXE = True
-RUN_SVM = False
+RUN_SVM = True
 
-USE_FULL_TRAIN = True
+USE_FULL_TRAIN = False
 TRAIN_SIZE = 20000       # when USE_FULL_TRAIN = False
 TUNE = True              # Cross-validate if True, else train then predict on test
 
@@ -46,7 +46,7 @@ COUNT_SARCASTIC_TRAINING_TWEETS = 20000
 COUNT_NON_SARCASTIC_TRAINING_TWEETS = 100000
 
 # n-grams processing
-NUM_MOST_COMMON_NGRAMS = 5000
+NUM_MOST_COMMON_NGRAMS = 25000
 ssf = SSF(NUM_MOST_COMMON_NGRAMS)
 
 # Synsets processing
