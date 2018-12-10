@@ -16,7 +16,8 @@ class Metrics(Callback):
         self.val_pearson_ps = []
 
     def on_epoch_end(self, epoch, logs={}):
-        val_predicted = np.round(np.transpose(self.model.predict(self.val_data))[0]).astype(int)
+        predictions = self.model.predict(self.val_data)
+        val_predicted = np.round(np.transpose(predictions)[0]).astype(int)
         print()
         print('val ', self.val_labels[:10], self.val_labels[-10:])
         print('pred', val_predicted[:10], val_predicted[-10:])
