@@ -34,15 +34,19 @@ from sarcastic_ngrams import sarcastic_set_factory as SSF
 STOPWORDS = set(stopwords.words('english'))
 PUNCTUATION = { ',', '.', '?', '!', ';', ':', '..', '...' }
 
+RUN_MLP = False
+RUN_MXE = True
+RUN_SVM = False
+
 USE_FULL_TRAIN = True
 TRAIN_SIZE = 20000       # when USE_FULL_TRAIN = False
-TUNE = False             # Cross-validate if True, else train then predict on test
+TUNE = True              # Cross-validate if True, else train then predict on test
 
 COUNT_SARCASTIC_TRAINING_TWEETS = 20000
 COUNT_NON_SARCASTIC_TRAINING_TWEETS = 100000
 
 # n-grams processing
-NUM_MOST_COMMON_NGRAMS = 25000
+NUM_MOST_COMMON_NGRAMS = 5000
 ssf = SSF(NUM_MOST_COMMON_NGRAMS)
 
 # Synsets processing
@@ -407,27 +411,41 @@ if __name__ == '__main__':
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
 
-    import max_ent as me
-    print(" Max Entropy ".center(80, '+'))
-    if TUNE:
-        print("Ten-fold cross-validate ...")
-        me.cross_validate_lr(np_train_features, np_train_labels, np_train_tweets)
-    else:
-        print("Train and predict ...")
-        mse, pearson, f_score = me.train_and_validate_lr( \
-            np_train_features, np_train_labels, np_test_features, np_test_labels)
-        print("... MSE: %f PEARSON: %s F-SCORE: %f"  % (mse, pearson, f_score))
+    if RUN_MLP:
+        import multilayer_perceptron as mlp
+        print(" Multilayer Perceptron ".center(80, '+'))
+        if TUNE:
+            print("Ten-fold cross-validate ...")
+            mlp.cross_validate_mlp(np_train_features, np_train_labels, np_train_tweets)
+        else:
+            print("Train and predict ...")
+            mse, pearson, f_score = mlp.train_and_validate_mlp( \
+                np_train_features, np_train_labels, np_test_features, np_test_labels)
+            print("... MSE: %f PEARSON: %s F-SCORE: %f"  % (mse, pearson, f_score))
 
-    import svm
-    print(" Support Vector Machine ".center(80, '+'))
-    if TUNE:
-        print("Ten-fold cross-validate ...")
-        svm.cross_validate_svm(np_train_features, np_train_labels, np_train_tweets)
-    else:
-        print("Train and predict ...")
-        mse, pearson, f_score = svm.train_and_validate_svm( \
-            np_train_features, np_train_labels, np_test_features, np_test_labels)
-        print("... MSE: %f PEARSON: %s F-SCORE: %f"  % (mse, pearson, f_score))
+    if RUN_MXE:
+        import max_ent as me
+        print(" Max Entropy ".center(80, '+'))
+        if TUNE:
+            print("Ten-fold cross-validate ...")
+            me.cross_validate_lr(np_train_features, np_train_labels, np_train_tweets)
+        else:
+            print("Train and predict ...")
+            mse, pearson, f_score = me.train_and_validate_lr( \
+                np_train_features, np_train_labels, np_test_features, np_test_labels)
+            print("... MSE: %f PEARSON: %s F-SCORE: %f"  % (mse, pearson, f_score))
+
+    if RUN_SVM:
+        import svm
+        print(" Support Vector Machine ".center(80, '+'))
+        if TUNE:
+            print("Ten-fold cross-validate ...")
+            svm.cross_validate_svm(np_train_features, np_train_labels, np_train_tweets)
+        else:
+            print("Train and predict ...")
+            mse, pearson, f_score = svm.train_and_validate_svm( \
+                np_train_features, np_train_labels, np_test_features, np_test_labels)
+            print("... MSE: %f PEARSON: %s F-SCORE: %f"  % (mse, pearson, f_score))
 
     nowStr = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     print("====" + nowStr + "====")
