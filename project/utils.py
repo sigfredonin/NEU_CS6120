@@ -36,7 +36,7 @@ PUNCTUATION = { ',', '.', '?', '!', ';', ':', '..', '...' }
 
 RUN_MLP = True
 RUN_MXE = True
-RUN_SVM = False
+RUN_SVM = True
 
 USE_FULL_TRAIN = True
 TRAIN_SIZE = 20000       # when USE_FULL_TRAIN = False
