@@ -53,8 +53,9 @@ class sarcastic_set_factory:
     Create sarcastic and non-sarcastic common words and n-grams sets.
     """
 
-    def __init__(self, num_most_common_ngrams=20000):
+    def __init__(self, num_most_common_ngrams=20000, REMOVE_COMMON_NGRAMS = True):
         self.NUM_MOST_COMMON_NGRAMS = num_most_common_ngrams
+        self.REMOVE_COMMON_NGRAMS = REMOVE_COMMON_NGRAMS
 
     def get_ngram_frequencies(self, ngrams_in_tweets):
         ngrams = [ ngram for tweet in ngrams_in_tweets for ngram in tweet]
@@ -64,8 +65,12 @@ class sarcastic_set_factory:
     def remove_common_ngrams(self, ngrams_in_sarcastic_tweets, ngrams_in_non_sarcastic_tweets):
         fd_sarcastic = self.get_ngram_frequencies(ngrams_in_sarcastic_tweets)
         fd_non_sarcastic = self.get_ngram_frequencies(ngrams_in_non_sarcastic_tweets)
-        fd_just_sarcastic = fd_sarcastic - fd_non_sarcastic
-        fd_just_non_sarcastic = fd_non_sarcastic - fd_sarcastic
+        if self.REMOVE_COMMON_NGRAMS:
+            fd_just_sarcastic = fd_sarcastic - fd_non_sarcastic
+            fd_just_non_sarcastic = fd_non_sarcastic - fd_sarcastic
+        else:
+            fd_just_sarcastic = fd_sarcastic
+            fd_just_non_sarcastic = fd_non_sarcastic
         return fd_just_sarcastic, fd_just_non_sarcastic
 
     def get_most_common_ngrams_set(self, fd_ngrams):
