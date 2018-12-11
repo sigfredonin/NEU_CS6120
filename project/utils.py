@@ -38,7 +38,7 @@ RUN_MLP = True
 RUN_MXE = True
 RUN_SVM = True
 
-USE_FULL_TRAIN = True
+USE_FULL_TRAIN = False
 TRAIN_SIZE = 20000       # when USE_FULL_TRAIN = False
 TUNE = False             # Cross-validate if True, else train then predict on test
 
@@ -392,8 +392,8 @@ if __name__ == '__main__':
         TRAIN_SIZE_HALF = TRAIN_SIZE // 2
         _train_tweets = train_tweets[:TRAIN_SIZE_HALF] + train_tweets[-TRAIN_SIZE_HALF:]
         _train_labels = train_labels[:TRAIN_SIZE_HALF] + train_labels[-TRAIN_SIZE_HALF:]
-        _test_tweets = test_tweets[:TRAIN_SIZE_HALF] + test_tweets[-TRAIN_SIZE_HALF:]
-        _test_labels = test_labels[:TRAIN_SIZE_HALF] + test_labels[-TRAIN_SIZE_HALF:]
+        _test_tweets = test_tweets
+        _test_labels = test_labels
 
     np_train_tweets = np.array(_train_tweets)
     np_train_features, sarcastic_freqs, non_sarcastic_freqs = \
