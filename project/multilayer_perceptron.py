@@ -22,7 +22,7 @@ TEST_PATH = "../resources/test_data.txt"
 THRESHOLD = 1
 
 # Defaults
-H1U = 20        # Hidden Layer 1 number of units
+H1U = 60        # Hidden Layer 1 number of units
 H1F = 'relu'    # Hidden Layer 1 activation function
 H2U = 10        # Hidden Layer 2 number of units
 H2F = 'relu'    # Hidden Layer 2 activation function

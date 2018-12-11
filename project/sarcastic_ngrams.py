@@ -64,8 +64,14 @@ class sarcastic_set_factory:
     def remove_common_ngrams(self, ngrams_in_sarcastic_tweets, ngrams_in_non_sarcastic_tweets):
         fd_sarcastic = self.get_ngram_frequencies(ngrams_in_sarcastic_tweets)
         fd_non_sarcastic = self.get_ngram_frequencies(ngrams_in_non_sarcastic_tweets)
-        fd_just_sarcastic = fd_sarcastic - fd_non_sarcastic
-        fd_just_non_sarcastic = fd_non_sarcastic - fd_sarcastic
+        dict_just_sarcastic = { ngram : fd_sarcastic[ngram] \
+            for ngram in fd_sarcastic \
+            if ngram not in fd_non_sarcastic }
+        fd_just_sarcastic = nltk.FreqDist(dict_just_sarcastic)
+        dict_just_non_sarcastic = { ngram : fd_non_sarcastic[ngram] \
+            for ngram in fd_non_sarcastic \
+            if ngram not in fd_sarcastic }
+        fd_just_non_sarcastic = nltk.FreqDist(dict_just_non_sarcastic)
         return fd_just_sarcastic, fd_just_non_sarcastic
 
     def get_most_common_ngrams_set(self, fd_ngrams):
