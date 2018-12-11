@@ -53,9 +53,12 @@ class sarcastic_set_factory:
     Create sarcastic and non-sarcastic common words and n-grams sets.
     """
 
-    def __init__(self, num_most_common_ngrams=20000, REMOVE_COMMON_NGRAMS = True):
+    def __init__(self, num_most_common_ngrams=20000, \
+            REMOVE_COMMON_NGRAMS = True, \
+            REMOVE_COMMON_NGRAMS_EXACTLY = False):
         self.NUM_MOST_COMMON_NGRAMS = num_most_common_ngrams
         self.REMOVE_COMMON_NGRAMS = REMOVE_COMMON_NGRAMS
+        self.REMOVE_COMMON_NGRAMS_EXACTLY = REMOVE_COMMON_NGRAMS_EXACTLY
 
     def get_ngram_frequencies(self, ngrams_in_tweets):
         ngrams = [ ngram for tweet in ngrams_in_tweets for ngram in tweet]
@@ -65,7 +68,16 @@ class sarcastic_set_factory:
     def remove_common_ngrams(self, ngrams_in_sarcastic_tweets, ngrams_in_non_sarcastic_tweets):
         fd_sarcastic = self.get_ngram_frequencies(ngrams_in_sarcastic_tweets)
         fd_non_sarcastic = self.get_ngram_frequencies(ngrams_in_non_sarcastic_tweets)
-        if self.REMOVE_COMMON_NGRAMS:
+        if self.REMOVE_COMMON_NGRAMS_EXACTLY:
+            dict_just_sarcastic = { ngram : fd_sarcastic[ngram] \
+                for ngram in fd_sarcastic \
+                if ngram not in fd_non_sarcastic }
+            fd_just_sarcastic = nltk.FreqDist(dict_just_sarcastic)
+            dict_just_non_sarcastic = { ngram : fd_non_sarcastic[ngram] \
+                for ngram in fd_non_sarcastic \
+                if ngram not in fd_sarcastic }
+            fd_just_non_sarcastic = nltk.FreqDist(dict_just_non_sarcastic)
+        elif self.REMOVE_COMMON_NGRAMS:
             fd_just_sarcastic = fd_sarcastic - fd_non_sarcastic
             fd_just_non_sarcastic = fd_non_sarcastic - fd_sarcastic
         else:
