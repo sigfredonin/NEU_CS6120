@@ -1,0 +1,29 @@
+>>> import NB
+>>> sarcastic_tweets, non_sarcastic_tweets = NB.load_data()
+num sarcastic tweets: 25273
+num non sarcastic tweets: 117825
+>>> sarcastic_tweets[0]
+'My family is so open and loving.'
+>>> sarcastic_tweets[1]
+"What who did to who? Others? Let America decide what to do? That's helpful advice!"
+>>> st = [ (t,1) for t in sarcastic_tweets ]
+>>> nt = [ (t,0) for t in non_sarcastic_tweets ]
+>>> tweets = st + nt
+>>> import nltk
+>>> words_in_tweets_non_sarcastic = [ w for t in tweets for w in nltk.word_tokenize(t[0]) if t[1] == 0 ]
+>>> words_in_tweets_sarcastic = [ w for t in tweets for w in nltk.word_tokenize(t[0]) if t[1] == 1 ]
+>>> fd_sarcastic = nltk.FreqDist(words_in_tweets_sarcastic)
+>>> fd_non_sarcastic = nltk.FreqDist(words_in_tweets_non_sarcastic)
+>>> fd_sarcastic
+FreqDist({'.': 15858, 'I': 10228, 'the': 8972, 'to': 8382, '!': 8282, 'a': 6669, 'is': 4314, '...': 3966, 'of': 3805, 'and': 3768, ...})
+>>> fd_non_sarcastic
+FreqDist({'I': 55783, '.': 47097, 'the': 36292, 'to': 35670, '!': 27974, 'a': 27921, 'and': 19831, 'my': 18927, 'you': 18632, 'is': 17648, ...})
+>>> dsu = { w : fd_sarcastic[w] for w in fd_sarcastic if w not in fd_non_sarcastic }
+>>> dnu = { w : fd_non_sarcastic[w] for w in fd_non_sarcastic if w not in fd_sarcastic }
+>>> fd_dsu = nltk.FreqDist(dsu)
+>>> fd_dnu = nltk.FreqDist(dnu)
+>>> fd_dsu
+FreqDist({'/': 51, 'w/': 31, 'S/O': 25, 'Shocker': 17, 'socialist': 16, 'Neville': 14, 'hooray': 12, '1/2': 12, 'BBRY': 11, 'Welbeck': 10, ...})
+>>> fd_dnu
+FreqDist({'DEMPSEY': 162, 'lmfao': 152, 'JONES': 117, 'CLINT': 87, 'Bruh': 84, 'Jozy': 83, 'idc': 81, 'needa': 79, 'HATE': 72, 'jones': 70, ...})
+>>>
