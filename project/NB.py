@@ -351,12 +351,12 @@ def sarcasm_on_test():
                 non_sarcastic_unigram_counts, total_non_sarcastic_unigram_count, unique_unigram_count)
 
         # bigram testing
-        bigrams = _get_bigrams(tokenized_tweet)
+        bigrams_tweet = _get_bigrams(tokenized_tweet)
         sarcastic_prob *= \
-            _get_smoothed_probability_product(tokenized_tweet, \
+            _get_smoothed_probability_product(bigrams_tweet, \
                 sarcastic_bigram_counts, total_sarcastic_bigram_count, unique_bigram_count)
         non_sarcastic_prob *= \
-            _get_smoothed_probability_product(tokenized_tweet, \
+            _get_smoothed_probability_product(bigrams_tweet, \
                 non_sarcastic_bigram_counts, total_non_sarcastic_bigram_count, unique_bigram_count)
 
         # repeated character testing
